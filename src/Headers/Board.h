@@ -25,7 +25,8 @@ class Board{
                                  57,58,59,60,61,62,63,64};
         
         sf::Sprite sprites[64];
-        void loadBoard(sf::RectangleShape rectangles[64], int width, int height);
+        void loadBoard(sf::RectangleShape rectangles[64], sf::Sprite sprites[16], int width, int height);
+        void loadTextures(sf::Texture textures[64]);
         ~Board(){};
 };
 
