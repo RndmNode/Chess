@@ -1,7 +1,12 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <bitset>
+#include <string>
 
 #include "Headers/Board.h"
+#include "Headers/piece.h"
+
+using namespace std;
 
 int width = 800;
 int height = 800;
@@ -35,6 +40,11 @@ void game() {
 }
 
 int main() {
-    game();
+    //game();
+    Piece piece;
+    bitset<4> b1 ( string("0011"));
+    cout << b1.to_string() << endl;
+    cout << piece.whitePawn.to_string() << endl;
+    cout << piece.blackPawn.to_string() << endl;
     return 0;
 }
