@@ -1,4 +1,8 @@
+#include <bitset>
+
 #include "Headers/Board.h"
+
+using namespace std;
 
 struct color{
     int r;
@@ -8,11 +12,18 @@ struct color{
 color light = {255, 248, 227}; //light squares
 color dark = {122, 109, 94};   //dark squares
 
-//This fuction will display once at the beginning before placing pieces
-// and ~should~ not have to be touched again
+Board::Board(){
+    whiteSquares = bitset<64>( string("1010101001010101101010100101010110101010010101011010101001010101"));
+    blackSquares = bitset<64>( string("0101010110101010010101011010101001010101101010100101010110101010"));
+    whitePieces = bitset<64>( string("0000000000000000000000000000000000000000000000001111111111111111"));
+    blackPieces = bitset<64>( string("1111111111111111000000000000000000000000000000000000000000000000"));
+    occupiedSquares = bitset<64>( string("1111111111111111000000000000000000000000000000001111111111111111"));
+    emptySquares = bitset<64>( string("0000000000000000111111111111111111111111111111110000000000000000"));
+}
+
 void Board::loadBoard(sf::RectangleShape rectangles[64], sf::Sprite sprites[16], int width, int height){
-    float rectX = width / 8.0f;
-    float rectY = height / 8.0f;
+    float rectX = (width / 8.0f);
+    float rectY = (height / 8.0f);
 
     // setting square sizes equal to width & height / 8
     for(int i=0; i<64; i++){
@@ -32,7 +43,7 @@ void Board::loadBoard(sf::RectangleShape rectangles[64], sf::Sprite sprites[16],
 
 void Board::loadTextures(sf::Texture textures[64]){
     for(int i=0; i<64; i++){
-        switch (this->board[i])
+        switch (this->boardPieceMap[i])
         {
         case -1:
             textures[i].loadFromFile("include/pieces/black/Rook.png");

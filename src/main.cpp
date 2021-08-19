@@ -40,11 +40,6 @@ void game() {
 }
 
 int main() {
-    //game();
-    Piece piece;
-    bitset<4> b1 ( string("0011"));
-    cout << b1.to_string() << endl;
-    cout << piece.whitePawn.to_string() << endl;
-    cout << piece.blackPawn.to_string() << endl;
+    game();
     return 0;
 }
