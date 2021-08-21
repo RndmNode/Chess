@@ -1,10 +1,13 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <bitset>
-#include <string>
+#include <string.h>
+#include <vector>
 
 #include "Headers/Board.h"
 #include "Headers/piece.h"
+
+typedef bitset<64> BOARD;
 
 using namespace std;
 
@@ -40,6 +43,16 @@ void game() {
 }
 
 int main() {
-    game();
+    //game();
+    Piece piece;
+
+    string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    piece.parseFen(startingFEN);
+    //vector<BOARD> b[12] = piece.boards;
+
+    for(unsigned int i=0; i < piece.boards.size(); ){
+        cout << i << endl;
+    }
+
     return 0;
 }

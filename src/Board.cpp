@@ -12,6 +12,8 @@ struct color{
 color light = {255, 248, 227}; //light squares
 color dark = {122, 109, 94};   //dark squares
 
+
+// Not really sure if these bitsets are necessary at the moment...
 Board::Board(){
     whiteSquares = bitset<64>( string("1010101001010101101010100101010110101010010101011010101001010101"));
     blackSquares = bitset<64>( string("0101010110101010010101011010101001010101101010100101010110101010"));
