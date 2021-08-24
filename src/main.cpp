@@ -5,9 +5,6 @@
 #include <vector>
 
 #include "Headers/Board.h"
-#include "Headers/piece.h"
-
-typedef bitset<64> BOARD;
 
 using namespace std;
 
@@ -44,14 +41,13 @@ void game() {
 
 int main() {
     //game();
-    Piece piece;
+    Board gameBoard;
 
     string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    piece.parseFen(startingFEN);
-    //vector<BOARD> b[12] = piece.boards;
+    gameBoard.parseFen(startingFEN);
 
-    for(unsigned int i=0; i < piece.boards.size(); ){
-        cout << i << endl;
+    for(long unsigned int i=0; i<gameBoard.boards.size(); i++){
+        cout << gameBoard.boards[i].to_string() << endl;
     }
 
     return 0;
