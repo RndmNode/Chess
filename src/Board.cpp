@@ -64,7 +64,11 @@ void Board::loadTextures(sf::Texture textures[64]){
 }
 
 void Board::parseFen(string fen){
-    int length = fen.length();
+    //split out the position information from the FEN string
+    string pos = fen.substr(0,fen.find_first_of(' '));
+    int length = pos.length();
+
+    int placeTracker = 0;
 
     for(long unsigned int i=0; i<boards.size(); i++){
         boards[i].reset();
@@ -74,76 +78,100 @@ void Board::parseFen(string fen){
         switch (fen[i])
         {
         case 'r':
-            this->blackRook.set(i);
+            this->blackRook.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'n':
-            this->blackKnight.set(i);
+            this->blackKnight.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'b':
-            this->blackBishop.set(i);
+            this->blackBishop.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'q':
-            this->blackQueen.set(i);
+            this->blackQueen.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'k':
-            this->blackKing.set(i);
+            this->blackKing.set(placeTracker);
+            placeTracker++;
             break;
 
         case 'p':
-            this->blackPawn.set(i);
+            this->blackPawn.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'R':
-            this->blackRook.set(i);
+            this->whiteRook.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'N':
-            this->blackKnight.set(i);
+            this->whiteKnight.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'B':
-            this->blackBishop.set(i);
+            this->whiteBishop.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'Q':
-            this->blackQueen.set(i);
+            this->whiteQueen.set(placeTracker);
+            placeTracker++;
             break;
         
         case 'K':
-            this->blackKing.set(i);
+            this->whiteKing.set(placeTracker);
+            placeTracker++;
             break;
 
         case 'P':
-            this->blackPawn.set(i);
+            this->whitePawn.set(placeTracker);
+            placeTracker++;
             break;
-            
-        case '/':
 
-            break;
+        case '/':
+            continue;
 
         default:
             if(isdigit(fen[i])){
-                i += ((int)fen[i] - 1);
+                placeTracker += (((int)fen[i] - '0'));
             }
         }
-        cout << "i = " << i << endl;
+        
     }
     boards.clear();
-    // boards.push_back(whitePawn);
-    // boards.push_back(whiteKnight);
-    // boards.push_back(whiteBishop);
-    // boards.push_back(whiteQueen);
-    // boards.push_back(whiteKing);
-    // boards.push_back(whiteRook);
+    boards.push_back(whitePawn);
+    boards.push_back(whiteKnight);
+    boards.push_back(whiteBishop);
+    boards.push_back(whiteQueen);
+    boards.push_back(whiteKing);
+    boards.push_back(whiteRook);
     boards.push_back(blackPawn);
     boards.push_back(blackKnight);
     boards.push_back(blackBishop);
     boards.push_back(blackRook);
     boards.push_back(blackQueen);
     boards.push_back(blackKing);
+
+    boardNames.push_back("whitePawn");
+    boardNames.push_back("whiteKnight");
+    boardNames.push_back("whiteBishop");
+    boardNames.push_back("whiteQueen");
+    boardNames.push_back("whiteKing");
+    boardNames.push_back("whiteRook");
+    boardNames.push_back("blackPawn");
+    boardNames.push_back("blackKnight");
+    boardNames.push_back("blackBishop");
+    boardNames.push_back("blackRook");
+    boardNames.push_back("blackQueen");
+    boardNames.push_back("blackKing");
 
 }

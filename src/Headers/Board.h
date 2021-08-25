@@ -62,6 +62,7 @@ class Board{
         bitset<64> blackKing;
 
         vector<bitset<64> > boards;
+        vector<string> boardNames;
         
         sf::Sprite sprites[64];
         void loadBoard(sf::RectangleShape rectangles[64], sf::Sprite sprites[16], int width, int height);

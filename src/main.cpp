@@ -47,6 +47,7 @@ int main() {
     gameBoard.parseFen(startingFEN);
 
     for(long unsigned int i=0; i<gameBoard.boards.size(); i++){
+        cout << gameBoard.boardNames[i] << ": ";
         cout << gameBoard.boards[i].to_string() << endl;
     }
 
