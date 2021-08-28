@@ -4,7 +4,7 @@
 #include <string.h>
 #include <vector>
 
-#include "Headers/Board.h"
+#include "Headers/ChessGame.h"
 
 using namespace std;
 
@@ -12,12 +12,8 @@ int width = 800;
 int height = 800;
 
 void game() {
+    ChessGame chess;
     sf::RenderWindow window;
-    sf::RectangleShape rectangles[64];
-    sf::Sprite sprites[16];
-    
-    Board board;
-    board.loadBoard(rectangles, sprites, width, height);
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     // run the program as long as the window is open
@@ -32,24 +28,13 @@ void game() {
         }
 
         window.clear();
-        for(int i=0; i<64; i++){
-            window.draw(rectangles[i]);
-        }
+        window.draw(chess);
         window.display();
     }
 }
 
 int main() {
-    //game();
-    Board gameBoard;
-
-    string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    gameBoard.parseFen(startingFEN);
-
-    for(long unsigned int i=0; i<gameBoard.boards.size(); i++){
-        cout << gameBoard.boardNames[i] << ": ";
-        cout << gameBoard.boards[i].to_string() << endl;
-    }
+    game();
 
     return 0;
 }

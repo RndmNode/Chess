@@ -6,17 +6,9 @@
 
 using namespace std;
 
-class Board{
+class Board: public sf::Drawable{
     public:
-        Board();
-        // int boardPieceMap[64] = {-1,-2,-3,-4,-5,-3,-2,-1,
-        //                          -6,-6,-6,-6,-6,-6,-6,-6,
-        //                           0, 0, 0, 0, 0, 0, 0, 0,
-        //                           0, 0, 0, 0, 0, 0, 0, 0,
-        //                           0, 0, 0, 0, 0, 0, 0, 0,
-        //                           0, 0, 0, 0, 0, 0, 0, 0,
-        //                           6, 6, 6, 6, 6, 6, 6, 6,
-        //                           1, 2, 3, 4, 5, 3, 2, 1};
+        Board(int width, int height);
         
         const int coordinateMap[64] = {56,57,58,59,60,61,62,63,
                                        48,49,50,51,52,53,54,55,
@@ -26,15 +18,6 @@ class Board{
                                        16,17,18,19,20,21,22,23,
                                         8, 9,10,11,12,13,14,15,
                                         0, 1, 2, 3, 4, 5, 6, 7};
-        
-        // const char *square_names[64] = {"a8","b8","c8","d8","e8","f8","g8","h8",
-        //                                 "a7","b7","c7","d7","e7","f7","g7","h7",
-        //                                 "a6","b6","c6","d6","e6","f6","g6","h6",
-        //                                 "a5","b5","c5","d5","e5","f5","g5","h5",
-        //                                 "a4","b4","c4","d4","e4","f4","g4","h4",
-        //                                 "a3","b3","c3","d3","e3","f3","g3","h3",
-        //                                 "a2","b2","c2","d2","e2","f2","g2","h2",
-        //                                 "a1","b1","c1","d1","e1","f1","g1","h1"};
         
         //BitBoards for different categories in regards of the board
         bitset<64> whiteSquares;
@@ -46,6 +29,8 @@ class Board{
 
         //variable to hold the FEN string for the board positioning
         string FEN;
+
+        bool b_player = true;       //true = white, false = black
 
         //BitBoards for piece types and colors
         bitset<64> whitePawn;
@@ -61,14 +46,20 @@ class Board{
         bitset<64> blackQueen;
         bitset<64> blackKing;
 
-        vector<bitset<64> > boards;
-        vector<string> boardNames;
+        //vectors for piece boards by color
+        vector<bitset<64> > whiteBoards;
+        vector<bitset<64> > blackBoards;
         
-        sf::Sprite sprites[64];
-        void loadBoard(sf::RectangleShape rectangles[64], sf::Sprite sprites[16], int width, int height);
-        void loadTextures(sf::Texture textures[64]);
+        //Board representation squares
+        sf::RectangleShape rectangles[64];
+
+        //methods
+        void loadBoard(int width, int height);
         void parseFen(string fen);
         ~Board(){};
+
+        private:
+            virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif //BOARD_H
