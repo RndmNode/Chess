@@ -1,7 +1,5 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <bitset>
-#include <string.h>
 #include <vector>
 
 #include "Headers/ChessGame.h"
