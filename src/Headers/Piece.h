@@ -3,10 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <bitset>
+#include "PieceTextures.h"
 
 class Piece: public sf::Drawable {
     public:
-        Piece(char type, bool color);
+        Piece(char type='P', bool color= true);
         void setPosition(sf::Vector2f coordinates);
         void setTexture();
         ~Piece(){};

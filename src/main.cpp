@@ -12,24 +12,6 @@ int height = 800;
 void game() {
     ChessGame chess;
     sf::RenderWindow window;
-    sf::Texture texture, texture2;
-    sf::Sprite sprite;
-
-    texture.loadFromFile("include/pieces/black/Knight.png");
-    texture.setSmooth(true);
-    sprite.setTexture(texture);
-    sprite.setScale(1.6, 1.6);
-    sprite.setPosition(100,100);
-
-    sf::Vector2f pos = sf::Vector2f(200,400);
-    texture2.loadFromFile("include/pieces/white/Knight.png");
-    texture2.setSmooth(true);
-    Piece piece('N', true);
-    // piece.setTexture();
-    piece.m_sprite.setTexture(texture2);
-    piece.m_sprite.setScale(1.6,1.6);
-    piece.setPosition(pos);
-
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     // run the program as long as the window is open
@@ -45,8 +27,6 @@ void game() {
 
         window.clear();
         window.draw(chess);
-        window.draw(sprite);
-        window.draw(piece);
         window.display();
     }
 }

@@ -13,66 +13,36 @@ Piece::Piece(char type, bool color){
 
 void Piece::setTexture(){
     m_sprite = sf::Sprite();
-    sf::Texture tmpTexture;
 
     switch (m_type)
     {
     case 'P':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/Pawn.png" : "include/pieces/black/Pawn.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whitePawn : PieceTextures::blackPawn);
         m_sprite.setScale(1.6,1.6);
         break;
     case 'N':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/Knight.png" : "include/pieces/black/Knight.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whiteKnight : PieceTextures::blackKnight);
         m_sprite.setScale(1.6,1.6);
         break;
     case 'B':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/Bishop.png" : "include/pieces/black/Bishop.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whiteBishop : PieceTextures::blackBishop);
         m_sprite.setScale(1.6,1.6);
         break;
     case 'R':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/Rook.png" : "include/pieces/black/Rook.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whiteRook : PieceTextures::blackRook);
         m_sprite.setScale(1.6,1.6);
         break;
     case 'Q':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/Queen.png" : "include/pieces/black/Queen.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whiteQueen : PieceTextures::blackQueen);
         m_sprite.setScale(1.6,1.6);
         break;
     case 'K':
-        if(!tmpTexture.loadFromFile(m_player ? "include/pieces/white/King.png" : "include/pieces/black/King.png")){
-            std::cout << "Could not load texture..." << std::endl;
-            break;
-        }
-        tmpTexture.setSmooth(true);
-        m_sprite.setTexture(tmpTexture);
+        m_sprite.setTexture(m_player ? PieceTextures::whiteKing : PieceTextures::blackKing);
         m_sprite.setScale(1.6,1.6);
         break;
 
     default:
+        std::cerr << "Error: piece does not exist.\n";
         break;
     }
 }
