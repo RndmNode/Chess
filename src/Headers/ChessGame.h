@@ -11,8 +11,8 @@
 class ChessGame: public sf::Drawable {
     private:
         Board board;
-        std::array<Piece, 16> whitePieces;
-        std::array<Piece, 16> blackPieces;
+        // std::array<Piece, 16> whitePieces;
+        // std::array<Piece, 16> blackPieces;
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

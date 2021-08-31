@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Headers/Board.h"
+#include "Headers/Piece.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ Board::Board(int width, int height){
     FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     parseFen(FEN);
 
-    loadBoard(800, 800);
+    loadBoard(width, height);
 }
 
 void Board::loadBoard(int width, int height){

@@ -2,21 +2,26 @@
 #define PIECE_H
 
 #include <SFML/Graphics.hpp>
+#include <bitset>
 
 class Piece: public sf::Drawable {
     public:
-        Piece(){};
+        Piece(char type, bool color);
+        void setPosition(sf::Vector2f coordinates);
+        void setTexture();
         ~Piece(){};
     
     private:
-        sf::Sprite a_sprite;
+        sf::Sprite m_sprite;
 
-        char a_type;
-        bool a_player;
-        std::string a_position;
+        char m_type;
+        bool m_player;
+        std::string m_position;
+        std::bitset<64> board;
 
         void toString(sf::Vector2f coordinates);
-        void setTexture();
+        
+        
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
