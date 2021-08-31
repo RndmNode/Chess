@@ -11,7 +11,7 @@ class Piece: public sf::Drawable {
         void setTexture();
         ~Piece(){};
     
-    private:
+    // private:
         sf::Sprite m_sprite;
 
         char m_type;
@@ -19,7 +19,7 @@ class Piece: public sf::Drawable {
         std::string m_position;
         std::bitset<64> board;
 
-        void toString(sf::Vector2f coordinates);
+        // void toString(sf::Vector2f coordinates);
         
         
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
