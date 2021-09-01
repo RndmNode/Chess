@@ -10,10 +10,10 @@
 
 class ChessGame: public sf::Drawable {
     private:
+        // objects, vectors, enums
         Board board;
-        // std::array<Piece, 16> whitePieces;
-        // std::array<Piece, 16> blackPieces;
 
+        // methods
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     public:

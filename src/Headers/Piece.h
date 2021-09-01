@@ -8,21 +8,23 @@
 class Piece: public sf::Drawable {
     public:
         Piece(char type='P', bool color= true);
+
         void setPosition(sf::Vector2f coordinates);
-        void setTexture();
+
         ~Piece(){};
     
-    // private:
+    private:
+        //objects, vectors, enums
         sf::Sprite m_sprite;
 
+        //Attributes
         char m_type;
         bool m_player;
-        std::string m_position;
-        std::bitset<64> board;
+        sf::Vector2f m_position;
+        std::string m_strPosition;
 
-        // void toString(sf::Vector2f coordinates);
-        
-        
+        //Methods
+        void setTexture();
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

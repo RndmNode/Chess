@@ -6,11 +6,6 @@ Piece::Piece(char type, bool color){
     m_player = color;
 }
 
-// void Piece::toString(sf::Vector2f coordinates){
-//     //take in x & y positions to calculate algorithmic coordinates (e.g. 'b5') and store in piece.a_position
-
-// }
-
 void Piece::setTexture(){
     m_sprite = sf::Sprite();
 
