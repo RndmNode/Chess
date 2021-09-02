@@ -7,24 +7,30 @@
 
 class Piece: public sf::Drawable {
     public:
-        Piece(char type='P', bool color= true);
+        //Constructors
+        Piece(){};
+        Piece(int type, bool color);
 
-        void setPosition(sf::Vector2f coordinates);
-
-        ~Piece(){};
-    
-    private:
         //objects, vectors, enums
         sf::Sprite m_sprite;
 
         //Attributes
-        char m_type;
+        bool m_captured = false;
+        bool m_updated = false;
+        int m_type;
         bool m_player;
-        sf::Vector2f m_position;
-        std::string m_strPosition;
 
         //Methods
+        void setPosition(sf::Vector2f coordinates);
         void setTexture();
+
+        ~Piece(){};
+    
+    private:
+        
+
+        //Methods
+        
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

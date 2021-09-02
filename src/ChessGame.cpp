@@ -2,7 +2,7 @@
 
 #include "Headers/ChessGame.h"
 
-ChessGame::ChessGame(): board(800, 800){
+ChessGame::ChessGame(sf::RenderTarget& target): board(target.getSize().x, target.getSize().y){
 
 }
 

@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Headers/Piece.h"
+#include "Headers/Board.h"
 
-Piece::Piece(char type, bool color){
+Piece::Piece(int type, bool color){
     m_type = type;
     m_player = color;
 }
@@ -11,27 +11,27 @@ void Piece::setTexture(){
 
     switch (m_type)
     {
-    case 'P':
+    case P:
         m_sprite.setTexture(m_player ? PieceTextures::whitePawn : PieceTextures::blackPawn);
         m_sprite.setScale(1.6,1.6);
         break;
-    case 'N':
+    case N:
         m_sprite.setTexture(m_player ? PieceTextures::whiteKnight : PieceTextures::blackKnight);
         m_sprite.setScale(1.6,1.6);
         break;
-    case 'B':
+    case B:
         m_sprite.setTexture(m_player ? PieceTextures::whiteBishop : PieceTextures::blackBishop);
         m_sprite.setScale(1.6,1.6);
         break;
-    case 'R':
+    case R:
         m_sprite.setTexture(m_player ? PieceTextures::whiteRook : PieceTextures::blackRook);
         m_sprite.setScale(1.6,1.6);
         break;
-    case 'Q':
+    case Q:
         m_sprite.setTexture(m_player ? PieceTextures::whiteQueen : PieceTextures::blackQueen);
         m_sprite.setScale(1.6,1.6);
         break;
-    case 'K':
+    case K:
         m_sprite.setTexture(m_player ? PieceTextures::whiteKing : PieceTextures::blackKing);
         m_sprite.setScale(1.6,1.6);
         break;

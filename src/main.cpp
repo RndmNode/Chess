@@ -11,10 +11,10 @@ int width = 800;
 int height = 800;
 
 void game() {
-    ChessGame chess;
     sf::RenderWindow window;
 
     window.create(sf::VideoMode(width, height), "CHESS!");
+    ChessGame chess(window);
     // run the program as long as the window is open
     while(window.isOpen()){
         // check all the window's events that were triggered since the last iteration of the loop
@@ -33,7 +33,32 @@ void game() {
 }
 
 int main() {
-    game();
+    //game();
+    Board board(800,800);
+
+    char bBoard[64];
+
+    for(int i=0; i<12; i++){
+        for(int rank=0; rank<8; rank++){
+            for(int file=0; file<8; file++){
+                if(board.bitboards[i][(rank*8)+file] == 1){
+                    bBoard[(rank*8)+file] = piece_to_char.at(i);
+                    bBoard[(rank*8)+file + 1] = ' ';
+                }else bBoard[(rank*8)+file] = '. ';
+            }
+        }
+    }
+
+    for(int i=0; i<12; i++){
+        cout << board.boardNames[i] << ":\n ";
+        for(int rank=0; rank<8; rank++){
+            for(int file=0; file<8; file++){
+                cout << bBoard[(rank*8)+file];
+            }
+            cout << "\n ";
+        }
+        cout << "\n";
+    }
 
     return 0;
 }
