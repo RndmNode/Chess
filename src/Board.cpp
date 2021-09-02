@@ -94,6 +94,14 @@ int Board::getBit(bitset<64> board, int index){
 }
 
 void Board::findPieces(){
+    // loop through all pieces to reset their m_updated bool
+    for(int i=0; i<32; i++){
+        // if not captured
+        if(!pieces[i].m_captured){
+            pieces[i].m_updated = false;
+        }
+    }
+
     // loop through ranks and files
     for(int rank=0; rank<8; rank++){
         for(int file=0; file<8; file++){
@@ -120,14 +128,6 @@ void Board::findPieces(){
 void Board::placePiece(int type, sf::Vector2f square, int color){
     sf::Vector2f pos = sf::Vector2f(square.x * 100, square.y * 100);
 
-    // loop through all pieces to reset their m_updated bool
-    for(int i=0; i<32; i++){
-        // if not captured
-        if(!pieces[i].m_captured){
-            pieces[i].m_updated = false;
-        }
-    }
-    
     // check for color of piece to edit
     if(color == white){
         // loop through pieces to find which to edit
@@ -140,6 +140,7 @@ void Board::placePiece(int type, sf::Vector2f square, int color){
                     if(!pieces[i].m_updated){
                         pieces[i].m_updated = true;
                         pieces[i].m_sprite.setPosition(pos);
+                        break;
                     }
                 }
             }
@@ -155,6 +156,7 @@ void Board::placePiece(int type, sf::Vector2f square, int color){
                     if(!pieces[i].m_updated){
                         pieces[i].m_updated = true;
                         pieces[i].m_sprite.setPosition(pos);
+                        break;
                     }
                 }
             }
@@ -194,7 +196,7 @@ void Board::parseFen(string fen){
             // if it is a number, adjust file index
             if(fen[index] >= '0' && fen[index] <= '9'){
                 int offset = fen[index] - '0';
-                file += offset;
+                file += offset - 1;
                 index++;
                 continue;
             }
@@ -215,8 +217,11 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     }
 
     for(int i=0; i<32; i++){
-        if(!pieces[i].m_captured){
-            target.draw(pieces[i]);
+        if(this->pieces[i].m_updated){
+            //cout << "Piece " << char(piece_to_char.at(this->pieces[i].m_type)) << " updated!\n";
+        }
+        if(!this->pieces[i].m_captured && this->pieces[i].m_updated){
+            target.draw(this->pieces[i]);
         }
     }
 }

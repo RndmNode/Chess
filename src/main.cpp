@@ -32,30 +32,42 @@ void game() {
     }
 }
 
-int main() {
+// FEN parsing debugger
+void printFullCharBoard(Board board){
+    char fullBoard[64];
+    bool occupied;
+
+    // loop through the squares
+    for(int rank=0; rank<8; rank++){
+        for(int file=0; file<8; file++){
+            int square = (rank*8)+file;
+            occupied = false;
+
+            // loop through the boards to check bits
+            for(int i=P; i<=k; i++){
+                int bit = board.getBit(board.bitboards[i], square);
+                if(bit == 1){
+                    occupied = true;
+                    fullBoard[square] = piece_to_char.at(i);
+                    break;
+                }
+            }
+            if(!occupied) fullBoard[square] = '.';
+        }   
+    }
+
+    cout << "\nFull Board:\n ";
+    for(int rank=0; rank<8; rank++){
+        for(int file=0; file<8; file++){
+            cout << fullBoard[(rank*8)+file];
+        }
+        cout << "\n ";
+    }
+}
+
+int main(){
     game();
-    // Board board(800,800);
-
-    // char bBoard[64];
-
-    // for(int i=0; i<12; i++){
-    //     for(int rank=0; rank<8; rank++){
-    //         for(int file=0; file<8; file++){
-    //             if(board.bitboards[i][(rank*8)+file] == 1){
-    //                 bBoard[(rank*8)+file] = piece_to_char.at(i);
-    //                 bBoard[(rank*8)+file + 1] = ' ';
-    //             }
-    //         }
-    //     }
-    // }
-
-    // cout << "\n\n";
-    // for(int rank=0; rank<8; rank++){
-    //     for(int file=0; file<8; file++){
-    //         cout << bBoard[(rank*8)+file];
-    //     }
-    //     cout << "\n ";
-    // }
 
     return 0;
 }
+

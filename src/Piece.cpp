@@ -13,27 +13,27 @@ void Piece::setTexture(){
     {
     case P:
         m_sprite.setTexture(m_player ? PieceTextures::whitePawn : PieceTextures::blackPawn);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
     case N:
         m_sprite.setTexture(m_player ? PieceTextures::whiteKnight : PieceTextures::blackKnight);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
     case B:
         m_sprite.setTexture(m_player ? PieceTextures::whiteBishop : PieceTextures::blackBishop);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
     case R:
         m_sprite.setTexture(m_player ? PieceTextures::whiteRook : PieceTextures::blackRook);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
     case Q:
         m_sprite.setTexture(m_player ? PieceTextures::whiteQueen : PieceTextures::blackQueen);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
     case K:
         m_sprite.setTexture(m_player ? PieceTextures::whiteKing : PieceTextures::blackKing);
-        m_sprite.setScale(1.6,1.6);
+        m_sprite.setScale(1.625,1.625);
         break;
 
     default:
