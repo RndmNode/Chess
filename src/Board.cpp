@@ -67,6 +67,7 @@ Board::Board(int width, int height){
     }
 
     loadBoard(width, height);
+    findPieces();
 }
 
 void Board::loadBoard(int width, int height){
@@ -181,7 +182,7 @@ void Board::parseFen(string fen){
     for(int rank=0; rank<8; rank++){
         for(int file=0; file<8; file++){
             int square = (rank*8) + file;
-            cout << "fen[i]: " << fen[index] << endl;
+            //cout << "fen[i]: " << fen[index] << endl;
             // if it is a piece, set the bit on the corresponding bitboard
             if((fen[index] >= 'a' && fen[index] <= 'z') || (fen[index] >= 'A' && fen[index] <= 'Z')){
                 int piece = char_to_piece.at(fen[index]);
