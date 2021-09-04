@@ -126,7 +126,7 @@ void Board::findPieces(){
 }
 
 void Board::placePiece(int type, sf::Vector2f square, int color){
-    sf::Vector2f pos = sf::Vector2f(square.x * 100, square.y * 100);
+    sf::Vector2f pos = sf::Vector2f(square.x * 100 + 50, square.y * 100 + 50);
 
     // check for color of piece to edit
     if(color == white){

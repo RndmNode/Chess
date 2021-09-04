@@ -8,14 +8,12 @@
 #include "Board.h"
 
 class ChessGame: public sf::Drawable {
-    private:
+    public:
         // objects, vectors, enums
         Board board;
 
         // methods
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-    public:
         ChessGame(sf::RenderTarget& target);
         ~ChessGame(){};
 };

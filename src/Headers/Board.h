@@ -52,12 +52,12 @@ class Board: public sf::Drawable{
         void setBit(int board, int sqr){bitboards[board].set(sqr);};
 
         vector<bitset<64> > bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
+        vector<Piece> pieces;
         
         ~Board(){};
 
     private:
         //Objects, Vectors, enums
-        vector<Piece> pieces;
         sf::RectangleShape rectangles[64];
         
 

@@ -15,6 +15,8 @@ class Piece: public sf::Drawable {
         sf::Sprite m_sprite;
 
         //Attributes
+        sf::Vector2f originOffset;
+        bool m_selected = false;
         bool m_captured = false;
         bool m_updated = false;
         int m_type;
