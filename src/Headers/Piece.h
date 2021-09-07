@@ -23,7 +23,7 @@ class Piece: public sf::Drawable {
         bool m_player;
 
         //Methods
-        void setPosition(sf::Vector2f coordinates);
+        void setPosition(sf::RenderTarget& target, sf::Vector2f coordinates);
         void setTexture();
 
         ~Piece(){};

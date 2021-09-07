@@ -49,9 +49,14 @@ void Piece::setTexture(){
     }
 }
 
-void Piece::setPosition(sf::Vector2f coordinates){
-    sf::Vector2f pos = sf::Vector2f(coordinates.x, coordinates.y);
-    m_sprite.setPosition(pos);
+void Piece::setPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
+    int x = coordinates.x;
+    int y = coordinates.y;
+    int windowX = target.getSize().x;
+    int windowY = target.getSize().y;
+    int side_x = windowX/8;
+    int side_y = windowY/8;
+
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const{

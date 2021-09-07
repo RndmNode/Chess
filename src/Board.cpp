@@ -212,16 +212,17 @@ void Board::parseFen(string fen){
 }
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-    for(int i=0; i<64; i++){
-        target.draw(rectangles[i]);
+    for(auto &i : rectangles) target.draw(i);
+    
+    int selected = 0;
+    int iter = 0;
+    for(auto &i : pieces){
+        if(!i.m_selected){
+            if(!i.m_captured && i.m_updated){
+                target.draw(i);
+            }
+        }else selected = iter;
+        iter++;
     }
-
-    for(int i=0; i<32; i++){
-        if(this->pieces[i].m_updated){
-            //cout << "Piece " << char(piece_to_char.at(this->pieces[i].m_type)) << " updated!\n";
-        }
-        if(!this->pieces[i].m_captured && this->pieces[i].m_updated){
-            target.draw(this->pieces[i]);
-        }
-    }
+    target.draw(pieces[selected]);
 }
