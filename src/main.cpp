@@ -98,7 +98,7 @@ void game() {
         }else{
             for(auto &i :chess.board.pieces){
                 if(i.m_selected){
-                    i.m_sprite.setPosition(100,100);
+                    i.setPosition(window, sf::Vector2f(mouseX, mouseY));
                     i.m_selected = false;
                 }
             }
