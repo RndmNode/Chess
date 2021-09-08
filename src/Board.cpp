@@ -2,10 +2,10 @@
 
 using namespace std;
 
-bitset<64> not_a_file = 18374403900871474942ULL;
-bitset<64> not_h_file = 9187201950435737471ULL;
-bitset<64> not_gh_file = 4557430888798830399ULL;
-bitset<64> not_ab_file = 18229723555195321596ULL;
+const bitset<64> not_a_file = 18374403900871474942ULL;
+const bitset<64> not_h_file = 9187201950435737471ULL;
+const bitset<64> not_gh_file = 4557430888798830399ULL;
+const bitset<64> not_ab_file = 18229723555195321596ULL;
 
 struct color{
     int r;

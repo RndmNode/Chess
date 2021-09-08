@@ -32,10 +32,10 @@ const map<char, int> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'},
                                     {p,'p'}, {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}, {k,'k'}};
 
 // not_boards
-extern bitset<64> not_a_file;
-extern bitset<64> not_h_file;
-extern bitset<64> not_gh_file;
-extern bitset<64> not_ab_file;
+extern const bitset<64> not_a_file;
+extern const bitset<64> not_h_file;
+extern const bitset<64> not_gh_file;
+extern const bitset<64> not_ab_file;
 
 //***----------------------------***//
 
