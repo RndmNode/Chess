@@ -102,6 +102,7 @@ void game() {
             }
         }
 
+        // clear and draw screen
         window.clear();
         window.draw(chess);
         window.display();
@@ -141,7 +142,8 @@ void printFullCharBoard(Board board){
     }
 }
 
-void printBitboard(bitset<64> bitboard, string name){
+// bitboard visualization
+void printBitboard(BITBOARD bitboard, string name){
     int y = 8;
     cout << "\n      " << name << ":\n";
     for(int rank=0; rank<8; rank++){
@@ -155,8 +157,31 @@ void printBitboard(bitset<64> bitboard, string name){
     cout << "\n\n  value: " << bitboard.to_ullong() << endl;
 }
 
+// bitboard visualization(2)
+void printBitboard(BITBOARD bitboard){
+    int y = 8;
+    cout << "\n\n";
+    for(int rank=0; rank<8; rank++){
+        cout << "\n  " << y << "   ";
+        for(int file=0; file<8; file++){
+            cout << bitboard[(rank * 8) + file] << " ";
+        }
+        y--;
+    }
+    cout << "\n\n      a b c d e f g h";
+    cout << "\n\n  value: " << bitboard.to_ullong() << endl;
+    cout << "\n";
+}
+
+
 int main(){
     // game();
+    ChessGame chess;
+    chess.init_leaper_attacks();
+
+    for(int i=0; i<64; i++){
+        printBitboard(chess.king_attacks[i]);
+    }
 
     return 0;
 }

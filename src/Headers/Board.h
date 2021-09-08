@@ -5,6 +5,8 @@
 #include <map>
 #include "Piece.h"
 
+#define BITBOARD bitset<64>
+
 using namespace std;
 
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -32,10 +34,10 @@ const map<char, int> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'},
                                     {p,'p'}, {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}, {k,'k'}};
 
 // not_boards
-extern const bitset<64> not_a_file;
-extern const bitset<64> not_h_file;
-extern const bitset<64> not_gh_file;
-extern const bitset<64> not_ab_file;
+extern const BITBOARD not_a_file;
+extern const BITBOARD not_h_file;
+extern const BITBOARD not_gh_file;
+extern const BITBOARD not_ab_file;
 
 //***----------------------------***//
 
@@ -53,11 +55,11 @@ class Board: public sf::Drawable{
         void loadBoard(int width, int height);
         void findPieces();
         void placePiece(int, sf::Vector2f, int);
-        int getBit(bitset<64>, int);
-        void setBit(int board, boardSquares sqr){bitboards[board].set(sqr);};
+        int getBit(BITBOARD, int);
         void setBit(int board, int sqr){bitboards[board].set(sqr);};
+        static BITBOARD setBit(BITBOARD board, int sqr){board.set(sqr); return board;}
 
-        vector<bitset<64> > bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
+        vector<BITBOARD> bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
         vector<Piece> pieces;
         
         ~Board(){};

@@ -2,10 +2,10 @@
 
 using namespace std;
 
-const bitset<64> not_a_file = 18374403900871474942ULL;
-const bitset<64> not_h_file = 9187201950435737471ULL;
-const bitset<64> not_gh_file = 4557430888798830399ULL;
-const bitset<64> not_ab_file = 18229723555195321596ULL;
+const BITBOARD not_a_file = 18374403900871474942ULL;
+const BITBOARD not_h_file = 9187201950435737471ULL;
+const BITBOARD not_gh_file = 4557430888798830399ULL;
+const BITBOARD not_ab_file = 18229723555195321596ULL;
 
 struct color{
     int r;
@@ -17,7 +17,7 @@ color dark = {122, 109, 94};   //dark squares
 
 Board::Board(int width, int height){
     // initializing boards and pieces
-    bitset<64> temp;
+    BITBOARD temp;
     temp.all();
     for(int i=0; i<12; i++){
         bitboards.push_back(temp);
@@ -90,7 +90,7 @@ void Board::loadBoard(int width, int height){
     }
 }
 
-int Board::getBit(bitset<64> board, int index){
+int Board::getBit(BITBOARD board, int index){
     string str = board.to_string();
     return int(str[64 - index - 1] - '0');
 }

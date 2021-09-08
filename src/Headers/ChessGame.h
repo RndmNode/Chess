@@ -8,9 +8,19 @@ class ChessGame: public sf::Drawable {
         // objects, vectors, enums
         Board board;
 
+        // attributes
+        BITBOARD pawn_attacks[2][64];
+        BITBOARD knight_attacks[64];
+        BITBOARD king_attacks[64];
+
         // methods
+        BITBOARD generatePawnAttacks(int side, int square);
+        BITBOARD generateKnightAttacks(int square);
+        BITBOARD generateKingAttacks(int square);
+        void init_leaper_attacks();
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
+        ChessGame(){};
         ~ChessGame(){};
 };
 
