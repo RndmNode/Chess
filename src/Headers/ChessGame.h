@@ -1,10 +1,6 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <vector>
-
 #include "Board.h"
 
 class ChessGame: public sf::Drawable {

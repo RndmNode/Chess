@@ -1,8 +1,3 @@
-#include <iostream>
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <bitset>
-
 #include "Headers/ChessGame.h"
 
 using namespace std;
@@ -15,12 +10,19 @@ float mouseX = 0.0f;
 float mouseY = 0.0f;
 
 sf::Vector2f traslateToSquare(sf::Vector2f pos, sf::RenderTarget &target){
-    int x = pos.x;
-    int y = pos.y;
     int windowX = target.getSize().x;
     int windowY = target.getSize().y;
 
-    return sf::Vector2f(0,0);
+    int side_x = windowX/8;
+    int side_y = windowY/8;
+
+    int x_boardPos = pos.x/side_x;
+    int y_boardPos = pos.y/side_y;
+
+    int x = (x_boardPos * side_x) + (side_x / 2);
+    int y = (y_boardPos * side_y) + (side_y / 2);
+
+    return sf::Vector2f(x, y);
 }
 
 void game() {
@@ -34,10 +36,6 @@ void game() {
         sf::Event event;
 
         while(window.pollEvent(event)){
-            // "close requested" event: we close the window
-            if(event.type == sf::Event::Closed){
-                window.close();
-            }
             switch (event.type)
             {
             case sf::Event::Closed:
@@ -143,8 +141,22 @@ void printFullCharBoard(Board board){
     }
 }
 
+void printBitboard(bitset<64> bitboard, string name){
+    int y = 8;
+    cout << "\n      " << name << ":\n";
+    for(int rank=0; rank<8; rank++){
+        cout << "\n  " << y << "   ";
+        for(int file=0; file<8; file++){
+            cout << bitboard[(rank * 8) + file] << " ";
+        }
+        y--;
+    }
+    cout << "\n\n      a b c d e f g h";
+    cout << "\n\n  value: " << bitboard.to_ullong() << endl;
+}
+
 int main(){
-    game();
+    // game();
 
     return 0;
 }

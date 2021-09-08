@@ -1,8 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include <SFML/Graphics.hpp>
-#include <bitset>
 #include "PieceTextures.h"
 
 class Piece: public sf::Drawable {

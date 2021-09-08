@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Headers/Board.h"
 
 Piece::Piece(int type, bool color){

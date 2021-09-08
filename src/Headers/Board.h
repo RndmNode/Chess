@@ -3,8 +3,6 @@
 
 #include <bitset>
 #include <map>
-#include <string>
-#include <SFML/Graphics.hpp>
 #include "Piece.h"
 
 using namespace std;
@@ -15,7 +13,7 @@ using namespace std;
 #define HAKMEM_70 "5B2/6P1/1p6/8/1N6/kP6/2K5/8 w - - "
 #define SZEN_POSITION "4k3/5ppp/8/8/8/8/PPP5/3K4 w - - "
 
-//Globals
+//***---Global Board Constants---***//
 enum boardSquares {a8,b8,c8,d8,e8,f8,g8,h8,
                    a7,b7,c7,d7,e7,f7,g7,h7,
                    a6,b6,c6,d6,e6,f6,g6,h6,
@@ -32,6 +30,14 @@ const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q},
                                     {'p',p}, {'n',n}, {'b',b}, {'r',r}, {'q',q}, {'k',k}, {'/',-1}};
 const map<char, int> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'}, {K,'K'},
                                     {p,'p'}, {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}, {k,'k'}};
+
+// not_boards
+extern bitset<64> not_a_file;
+extern bitset<64> not_h_file;
+extern bitset<64> not_gh_file;
+extern bitset<64> not_ab_file;
+
+//***----------------------------***//
 
 
 class Board: public sf::Drawable{
@@ -59,16 +65,11 @@ class Board: public sf::Drawable{
     private:
         //Objects, Vectors, enums
         sf::RectangleShape rectangles[64];
-        
 
         //Attributes
         string FEN;
 
-        
-        
-
         void parseFen(string);
-        
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
