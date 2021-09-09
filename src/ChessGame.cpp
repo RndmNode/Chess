@@ -73,6 +73,21 @@ void ChessGame::init_leaper_attacks(){
     }
 }
 
+BITBOARD ChessGame::generateBishopOccupancy(int square){
+    BITBOARD attacks = 0ULL;
+
+    int r, f;               // rank and file
+    int tr = square / 8;    // target rank
+    int tf = square % 8;    // target file
+
+    for(r = tr+1, f = tf+1; r<=6 && f<=6; r++, f++) attacks |= (1ULL << ((r*8)+f));     // lower right
+    for(r = tr-1, f = tf+1; r>=1 && f<=6; r--, f++) attacks |= (1ULL << ((r*8)+f));     // upper right
+    for(r = tr+1, f = tf-1; r<=6 && f>=1; r++, f--) attacks |= (1ULL << ((r*8)+f));     // lower left
+    for(r = tr-1, f = tf-1; r>=1 && f>=1; r--, f--) attacks |= (1ULL << ((r*8)+f));     // upper left
+
+    return attacks;
+}
+
 void ChessGame::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     target.draw(board);
 }

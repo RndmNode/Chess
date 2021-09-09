@@ -18,6 +18,8 @@ class ChessGame: public sf::Drawable {
         BITBOARD generateKnightAttacks(int square);
         BITBOARD generateKingAttacks(int square);
         void init_leaper_attacks();
+
+        BITBOARD generateBishopOccupancy(int square);
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
         ChessGame(){};

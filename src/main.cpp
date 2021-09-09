@@ -154,7 +154,8 @@ void printBitboard(BITBOARD bitboard, string name){
         y--;
     }
     cout << "\n\n      a b c d e f g h";
-    cout << "\n\n  value: " << bitboard.to_ullong() << endl;
+    cout << "\n";
+    //cout << "\n\n  value: " << bitboard.to_ullong() << endl;
 }
 
 // bitboard visualization(2)
@@ -173,14 +174,15 @@ void printBitboard(BITBOARD bitboard){
     cout << "\n";
 }
 
-
 int main(){
     // game();
     ChessGame chess;
     chess.init_leaper_attacks();
 
-    for(int i=0; i<64; i++){
-        printBitboard(chess.king_attacks[i]);
+    for(int r=0; r<8; r++){
+        for(int f=0; f<8; f++){
+            printBitboard(chess.generateBishopOccupancy((r*8)+f));
+        }
     }
 
     return 0;
