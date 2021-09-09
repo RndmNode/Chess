@@ -73,7 +73,7 @@ void ChessGame::init_leaper_attacks(){
     }
 }
 
-BITBOARD ChessGame::generateBishopOccupancy(int square){
+BITBOARD ChessGame::getBishopOccupancy(int square){
     BITBOARD attacks = 0ULL;
 
     int r, f;               // rank and file
@@ -88,6 +88,76 @@ BITBOARD ChessGame::generateBishopOccupancy(int square){
     return attacks;
 }
 
+BITBOARD ChessGame::getRookOccupancy(int square){
+    BITBOARD attacks = 0ULL;
+
+    int r, f;               // rank and file
+    int tr = square / 8;    // target rank
+    int tf = square % 8;    // target file
+
+    for(r = tr+1; r<=6; r++) attacks |= (1ULL << ((r*8) + tf));   // down
+    for(r = tr-1; r>=1; r--) attacks |= (1ULL << ((r*8) + tf));   // up
+    for(f = tf+1; f<=6; f++) attacks |= (1ULL << ((tr*8) + f));   // right
+    for(f = tf-1; f>=1; f--) attacks |= (1ULL << ((tr*8) + f));   // left
+
+    return attacks;    
+}
+
+BITBOARD ChessGame::generateBishopAttacks(int square, BITBOARD blockers){
+    BITBOARD attacks = 0ULL;
+
+    int r, f;               // rank and file
+    int tr = square / 8;    // target rank
+    int tf = square % 8;    // target file
+
+    for(r = tr+1, f = tf+1; r<=7 && f<=7; r++, f++){
+        attacks |= (1ULL << ((r*8)+f));
+        if((1ULL << ((r*8)+f) & blockers.to_ullong()) != 0ULL) break;
+    }
+    for(r = tr-1, f = tf+1; r>=0 && f<=7; r--, f++){
+        attacks |= (1ULL << ((r*8)+f));
+        if((1ULL << ((r*8)+f) & blockers.to_ullong()) != 0ULL) break;
+    }
+    for(r = tr+1, f = tf-1; r<=7 && f>=0; r++, f--){
+        attacks |= (1ULL << ((r*8)+f));
+        if((1ULL << ((r*8)+f) & blockers.to_ullong()) != 0ULL) break;
+    }
+    for(r = tr-1, f = tf-1; r>=0 && f>=0; r--, f--){
+        attacks |= (1ULL << ((r*8)+f));
+        if((1ULL << ((r*8)+f) & blockers.to_ullong()) != 0ULL) break;
+    }
+
+    return attacks;
+}
+
+BITBOARD ChessGame::generateRookAttacks(int square, BITBOARD blockers){
+    BITBOARD attacks = 0ULL;
+
+    int r, f;               // rank and file
+    int tr = square / 8;    // target rank
+    int tf = square % 8;    // target file
+
+    for(r = tr+1; r<=7; r++){
+        attacks |= (1ULL << ((r*8) + tf));
+        if(((1ULL << ((r*8) + tf)) & blockers.to_ullong()) != 0ULL) break;
+    }   
+    for(r = tr-1; r>=0; r--){
+        attacks |= (1ULL << ((r*8) + tf));
+        if(((1ULL << ((r*8) + tf)) & blockers.to_ullong()) != 0ULL) break;
+    } 
+    for(f = tf+1; f<=7; f++){
+        attacks |= (1ULL << ((tr*8) + f));
+        if(((1ULL << ((tr*8) + f)) & blockers.to_ullong()) != 0ULL) break;
+    } 
+    for(f = tf-1; f>=0; f--){
+        attacks |= (1ULL << ((tr*8) + f));
+        if(((1ULL << ((tr*8) + f)) & blockers.to_ullong()) != 0ULL) break;
+    } 
+
+    return attacks;    
+}
+
+/*--------------DRAW--------------*/
 void ChessGame::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     target.draw(board);
 }

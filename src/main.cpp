@@ -171,7 +171,6 @@ void printBitboard(BITBOARD bitboard){
     }
     cout << "\n\n      a b c d e f g h";
     cout << "\n\n  value: " << bitboard.to_ullong() << endl;
-    cout << "\n";
 }
 
 int main(){
@@ -179,11 +178,18 @@ int main(){
     ChessGame chess;
     chess.init_leaper_attacks();
 
-    for(int r=0; r<8; r++){
-        for(int f=0; f<8; f++){
-            printBitboard(chess.generateBishopOccupancy((r*8)+f));
-        }
-    }
+    // for(int s=a8; s<no_sq; s++){
+    //     printBitboard(chess.getRookOccupancy(s));
+    // }
+
+    BITBOARD block = 0ULL;
+    block = Board::setBit(block, b4);
+    block = Board::setBit(block, d7);
+    block = Board::setBit(block, d3);
+    block = Board::setBit(block, g4);
+
+    printBitboard(block);
+    printBitboard(chess.generateRookAttacks(d4, block));
 
     return 0;
 }
