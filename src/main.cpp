@@ -161,7 +161,7 @@ void printBitboard(BITBOARD bitboard, string name){
 // bitboard visualization(2)
 void printBitboard(BITBOARD bitboard){
     int y = 8;
-    cout << "\n\n";
+    cout << "\n";
     for(int rank=0; rank<8; rank++){
         cout << "\n  " << y << "   ";
         for(int file=0; file<8; file++){
@@ -170,7 +170,8 @@ void printBitboard(BITBOARD bitboard){
         y--;
     }
     cout << "\n\n      a b c d e f g h";
-    cout << "\n\n  value: " << bitboard.to_ullong() << endl;
+    cout << "\n  -------------------";
+    cout << "\n  Value: " << bitboard.to_ullong() << endl;
 }
 
 int main(){
@@ -189,7 +190,8 @@ int main(){
     block = Board::setBit(block, g4);
 
     printBitboard(block);
-    printBitboard(chess.generateRookAttacks(d4, block));
+    cout << "  LS1B: " << chess.indexLeastSigBit(block) << endl;
+    cout << "  coordinate: " << square_to_coordinates[chess.indexLeastSigBit(block)] << endl;
 
     return 0;
 }

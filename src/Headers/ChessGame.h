@@ -24,6 +24,9 @@ class ChessGame: public sf::Drawable {
         void init_slider_attacks();
         void init_leaper_attacks();
 
+        int countBits(BITBOARD);
+        int indexLeastSigBit(BITBOARD);
+
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
         ChessGame(){};

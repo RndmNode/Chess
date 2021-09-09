@@ -157,6 +157,23 @@ BITBOARD ChessGame::generateRookAttacks(int square, BITBOARD blockers){
     return attacks;    
 }
 
+int ChessGame::countBits(BITBOARD bitboard){
+    int count = 0;
+
+    while(bitboard.to_ullong() > 0ULL){
+        count++;
+        bitboard &= bitboard.to_ullong() - 1;
+    }
+
+    return count;
+}
+
+int ChessGame::indexLeastSigBit(BITBOARD bitboard){
+    if(bitboard.to_ullong() != 0ULL){
+        return countBits((bitboard.to_ullong() & -bitboard.to_ullong()) - 1);
+    }else return -1;
+}
+
 /*--------------DRAW--------------*/
 void ChessGame::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     target.draw(board);
