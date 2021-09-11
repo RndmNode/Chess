@@ -175,23 +175,7 @@ void printBitboard(BITBOARD bitboard){
 }
 
 int main(){
-    // game();
-    ChessGame chess;
-    chess.init_leaper_attacks();
-
-    // for(int s=a8; s<no_sq; s++){
-    //     printBitboard(chess.getRookOccupancy(s));
-    // }
-
-    BITBOARD block = 0ULL;
-    block = Board::setBit(block, b4);
-    block = Board::setBit(block, d7);
-    block = Board::setBit(block, d3);
-    block = Board::setBit(block, g4);
-
-    printBitboard(block);
-    cout << "  LS1B: " << chess.indexLeastSigBit(block) << endl;
-    cout << "  coordinate: " << square_to_coordinates[chess.indexLeastSigBit(block)] << endl;
+    game();
 
     return 0;
 }

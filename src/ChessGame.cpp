@@ -4,6 +4,7 @@ ChessGame::ChessGame(sf::RenderTarget& target){
     board = Board(target.getSize().x,target.getSize().y);
 }
 
+// Generates attacking bitboard for pawns depending on side and square
 BITBOARD ChessGame::generatePawnAttacks(int side, int square){
     BITBOARD attacks = 0ULL;
     BITBOARD position = 0ULL;
@@ -21,6 +22,7 @@ BITBOARD ChessGame::generatePawnAttacks(int side, int square){
     return attacks;
 }
 
+// Generates knight attacks depending on square
 BITBOARD ChessGame::generateKnightAttacks(int square){
     BITBOARD attacks = 0ULL;
     BITBOARD position = 0ULL;
@@ -40,6 +42,7 @@ BITBOARD ChessGame::generateKnightAttacks(int square){
     return attacks;
 }
 
+// Generates king attacks depending on square
 BITBOARD ChessGame::generateKingAttacks(int square){
     BITBOARD attacks = 0ULL;
     BITBOARD position = 0ULL;
@@ -59,6 +62,7 @@ BITBOARD ChessGame::generateKingAttacks(int square){
     return attacks;
 }
 
+// Initializes all attacking boards on all squares for pawns, knights, and kings
 void ChessGame::init_leaper_attacks(){
     for(int i=0; i<64; i++){
         // pawns
@@ -73,6 +77,7 @@ void ChessGame::init_leaper_attacks(){
     }
 }
 
+// Gets occupancy squares for bishops
 BITBOARD ChessGame::getBishopOccupancy(int square){
     BITBOARD attacks = 0ULL;
 
@@ -88,6 +93,7 @@ BITBOARD ChessGame::getBishopOccupancy(int square){
     return attacks;
 }
 
+// Gets occupancy squares for rooks
 BITBOARD ChessGame::getRookOccupancy(int square){
     BITBOARD attacks = 0ULL;
 
@@ -103,6 +109,7 @@ BITBOARD ChessGame::getRookOccupancy(int square){
     return attacks;    
 }
 
+// Generates attacking bitboard for bishops while accounting for blocking pieces
 BITBOARD ChessGame::generateBishopAttacks(int square, BITBOARD blockers){
     BITBOARD attacks = 0ULL;
 
@@ -130,6 +137,7 @@ BITBOARD ChessGame::generateBishopAttacks(int square, BITBOARD blockers){
     return attacks;
 }
 
+// Generates attacking bitboard for rooks while accounting for blocking pieces
 BITBOARD ChessGame::generateRookAttacks(int square, BITBOARD blockers){
     BITBOARD attacks = 0ULL;
 
@@ -157,6 +165,7 @@ BITBOARD ChessGame::generateRookAttacks(int square, BITBOARD blockers){
     return attacks;    
 }
 
+// Counts the number of set bits in a bitboard
 int ChessGame::countBits(BITBOARD bitboard){
     int count = 0;
 
@@ -168,10 +177,28 @@ int ChessGame::countBits(BITBOARD bitboard){
     return count;
 }
 
+// Gets the index of the least significant bit in bitboard
 int ChessGame::indexLeastSigBit(BITBOARD bitboard){
     if(bitboard.to_ullong() != 0ULL){
         return countBits((bitboard.to_ullong() & -bitboard.to_ullong()) - 1);
     }else return -1;
+}
+
+// Sets occupancy squares for piece depending on magic number
+BITBOARD ChessGame::setOccupancies(int index, int bits_in_mask, BITBOARD attacks){
+    BITBOARD occupancy = 0ULL;
+
+    for(int count=0; count<bits_in_mask; count++){
+        int square = indexLeastSigBit(attacks);
+        attacks[square].flip();
+
+        // check occupany with index to populate occupancy table
+        if(index & (1 << count)){
+            occupancy |= (1ULL << square);
+        }
+    }
+
+    return occupancy;
 }
 
 /*--------------DRAW--------------*/

@@ -21,6 +21,7 @@ class ChessGame: public sf::Drawable {
         BITBOARD getRookOccupancy(int square);
         BITBOARD generateBishopAttacks(int, BITBOARD);
         BITBOARD generateRookAttacks(int, BITBOARD);
+        BITBOARD setOccupancies(int, int, BITBOARD);
         void init_slider_attacks();
         void init_leaper_attacks();
 
