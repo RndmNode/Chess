@@ -15,8 +15,12 @@ class ChessGame: public sf::Drawable {
         BITBOARD pawn_attacks[2][64];
         BITBOARD knight_attacks[64];
         BITBOARD king_attacks[64];
+        unsigned int random_state = 1804289383;      // state determined by random number generator
 
         // methods
+        unsigned int get_random_U32_number();
+        BITBOARD get_random_U64_number();
+        BITBOARD get_random_magic_number();
         BITBOARD generatePawnAttacks(int side, int square);
         BITBOARD generateKnightAttacks(int square);
         BITBOARD generateKingAttacks(int square);

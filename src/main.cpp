@@ -175,16 +175,7 @@ void printBitboard(BITBOARD bitboard){
 }
 
 int main(){
-    // game();
-    ChessGame chess;
-
-    for(int rank=0; rank<8; rank++){
-        for(int file=0; file<8; file++){
-            int sqr = (rank*8) + file;
-            cout << chess.countBits(chess.getRookOccupancy(sqr)) << ", ";
-        }
-        cout << "\n";
-    }
+    game();
 
     return 0;
 }

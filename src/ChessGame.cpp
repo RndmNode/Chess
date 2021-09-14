@@ -24,6 +24,36 @@ ChessGame::ChessGame(sf::RenderTarget& target){
     board = Board(target.getSize().x,target.getSize().y);
 }
 
+// generate 32-bit pseudo random legal numbers
+unsigned int ChessGame::get_random_U32_number(){
+    // xor shift algorithm
+    random_state ^= random_state << 13;
+    random_state ^= random_state >> 17;
+    random_state ^= random_state << 5;
+
+    return random_state;
+}
+
+// generate 64-bit pseudo random legal numbers
+BITBOARD ChessGame::get_random_U64_number(){
+    // define 4 random numbers
+    BITBOARD n1, n2, n3, n4;
+
+    // init random numbers while isolating the "top" 16 bits
+    n1 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
+    n2 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
+    n3 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
+    n4 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
+
+    // return random number
+    return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
+}
+
+// generating magic number candidates
+BITBOARD ChessGame::get_random_magic_number(){
+    return get_random_U64_number() & get_random_U64_number() & get_random_U64_number();
+}
+
 // Generates attacking bitboard for pawns depending on side and square
 BITBOARD ChessGame::generatePawnAttacks(int side, int square){
     BITBOARD attacks = 0ULL;
