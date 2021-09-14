@@ -2,6 +2,7 @@
 #define CHESSGAME_H
 
 #include "Board.h"
+#include <string.h>
 
 extern const int bishop_relevant_bits[64];
 extern const int rook_relevant_bits[64];
@@ -21,6 +22,8 @@ class ChessGame: public sf::Drawable {
         unsigned int get_random_U32_number();
         BITBOARD get_random_U64_number();
         BITBOARD get_random_magic_number();
+        BITBOARD find_magic_number(int, int, int);
+        void init_magic();
         BITBOARD generatePawnAttacks(int side, int square);
         BITBOARD generateKnightAttacks(int square);
         BITBOARD generateKingAttacks(int square);
@@ -29,7 +32,6 @@ class ChessGame: public sf::Drawable {
         BITBOARD generateBishopAttacks(int, BITBOARD);
         BITBOARD generateRookAttacks(int, BITBOARD);
         BITBOARD setOccupancies(int, int, BITBOARD);
-        void init_slider_attacks();
         void init_leaper_attacks();
 
         int countBits(BITBOARD);

@@ -28,6 +28,7 @@ enum boardSquares {a8,b8,c8,d8,e8,f8,g8,h8,
 extern const char *square_to_coordinates[];
 
 enum sideToMove {white, black, both};
+enum {rook, bishop};        // flags for magic number generation
 enum castling {wk = 1, wq = 2, bk = 4, bq = 8};
 enum encoded_pieces {P, N, B, R, Q, K, p, n, b, r, q, k};
 const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q}, {'K',K},

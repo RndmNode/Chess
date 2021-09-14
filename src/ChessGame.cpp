@@ -40,10 +40,10 @@ BITBOARD ChessGame::get_random_U64_number(){
     BITBOARD n1, n2, n3, n4;
 
     // init random numbers while isolating the "top" 16 bits
-    n1 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
-    n2 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
-    n3 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
-    n4 = (BITBOARD)(get_random_U32_number() & 0xFFFF);
+    n1 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+    n2 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+    n3 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+    n4 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
 
     // return random number
     return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
@@ -52,6 +52,81 @@ BITBOARD ChessGame::get_random_U64_number(){
 // generating magic number candidates
 BITBOARD ChessGame::get_random_magic_number(){
     return get_random_U64_number() & get_random_U64_number() & get_random_U64_number();
+}
+
+// finds appropriate magic number 
+BITBOARD ChessGame::find_magic_number(int square, int relevantBits, int bishopFlag){
+    // init occupancies
+    BITBOARD occupancies[4096];
+
+    // init attack tables
+    BITBOARD attacks[4096];
+    
+    // init used attacks
+    BITBOARD used_attacks[4096];
+
+    // init attack mask for current piece
+    BITBOARD attack_mask = bishopFlag ? getBishopOccupancy(square) : getRookOccupancy(square);
+
+    // init occupancy indicies
+    int occupancy_indicies = 1 << relevantBits;
+
+    // loop over occupancy indicies
+    for(int index=0; index<occupancy_indicies; index++){
+        // init occupancies 
+        occupancies[index] = setOccupancies(index, relevantBits, attack_mask);
+        // init attacks
+        attacks[index] = bishopFlag ? generateBishopAttacks(square, occupancies[index]) : 
+                                      generateRookAttacks(square, occupancies[index]);
+    }
+
+    // test magic numbers loop
+    for(int random_count=0; random_count<100000000; random_count++){
+        BITBOARD magic_number = get_random_magic_number();
+        // skip inappropriate magic numbers
+        if(countBits((attack_mask.to_ullong() * magic_number.to_ullong()) & 0xFF00000000000000) < 6) continue;
+
+        // init used attacks
+        memset(used_attacks, 0ULL, sizeof(used_attacks));
+
+        // init index & fail flag
+        int index, fail;
+        
+        // test magic index
+        for(index=0, fail=0; !fail && index<occupancy_indicies; index++){
+            // init magic index
+            int magic_index = (int)(occupancies[index].to_ullong() * magic_number.to_ullong()) >> (64 - relevantBits);
+
+            // if magic index works
+            if(used_attacks[magic_index] == 0ULL){
+                // init used attacks
+                used_attacks[magic_index] = attacks[magic_index];
+            }else if(used_attacks[magic_index] != attacks[magic_index]){
+                fail = 1;
+            }
+        }
+
+        // if magic number works, return it
+        if(!fail) return magic_number;
+    }
+    // else
+    cout << "Magic number failed!" << endl;
+    return 0ULL;
+}
+
+// initialize magic numbers
+void ChessGame::init_magic(){
+    // loop over board squares
+    for(int square=0; square<64; square++){
+        // init rook magic numbers
+        printf(" 0x%llxULL\n", find_magic_number(square, rook_relevant_bits[square], rook).to_ullong());
+    }
+
+    cout << "\n\n";
+    for(int square=0; square<64; square++){
+        // init bishop magic numbers
+        printf(" 0x%llxULL\n", find_magic_number(square, bishop_relevant_bits[square], bishop).to_ullong());
+    }
 }
 
 // Generates attacking bitboard for pawns depending on side and square
