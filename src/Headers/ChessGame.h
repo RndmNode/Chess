@@ -3,6 +3,9 @@
 
 #include "Board.h"
 
+extern const int bishop_relevant_bits[64];
+extern const int rook_relevant_bits[64];
+
 class ChessGame: public sf::Drawable {
     public:
         // objects, vectors, enums
