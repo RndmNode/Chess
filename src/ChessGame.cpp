@@ -1,5 +1,14 @@
 #include "Headers/ChessGame.h"
 
+BITBOARD pawn_attacks[2][64];
+BITBOARD knight_attacks[64];
+BITBOARD king_attacks[64];
+BITBOARD bishop_masks[64];
+BITBOARD rook_masks[64];
+BITBOARD bishop_attacks[64][512];
+BITBOARD rook_attacks[64][4096];
+unsigned int random_state = 1804289383;
+
 // relevant occupancy bit count for every bishop position
 const int bishop_relevant_bits[64] = {6, 5, 5, 5, 5, 5, 5, 6,
                                       5, 5, 5, 5, 5, 5, 5, 5,
@@ -114,8 +123,8 @@ BITBOARD ChessGame::find_magic_number(int square, int relevantBits, int bishopFl
         // init occupancies 
         occupancies[index] = setOccupancies(index, relevantBits, attack_mask);
         // init attacks
-        attacks[index] = bishopFlag ? generateBishopAttacks(square, occupancies[index]) : 
-                                      generateRookAttacks(square, occupancies[index]);
+        attacks[index] = bishopFlag ? generateBishopAttacks_onTheFly(square, occupancies[index]) : 
+                                      generateRookAttacks_onTheFly(square, occupancies[index]);
     }
 
     // test magic numbers loop
@@ -241,6 +250,70 @@ void ChessGame::init_leaper_attacks(){
     }
 }
 
+// Initializes all attacking boards on all squares for rooks, bishops, and queens
+void ChessGame::init_slider_attacks(int bishopFlag){
+    // loop over 64 board squares
+    for(int square=0; square<64; square++){
+        // init masks
+        bishop_masks[square] = getBishopOccupancy(square);
+        rook_masks[square] = getRookOccupancy(square);
+
+        // init current mask
+        BITBOARD attack_mask = bishopFlag ? bishop_masks[square] : rook_masks[square];
+
+        // init relevant bit count
+        int relevant_bit_count = countBits(attack_mask);
+
+        // init occupancy indicies
+        int occupancy_indicies = 1 << relevant_bit_count;
+
+        // loop over occupany indicies
+        for(int index=0; index<occupancy_indicies; index++){
+            // bishop
+            if(bishopFlag){
+                // init current occupancy variation
+                BITBOARD occupancy = setOccupancies(index, relevant_bit_count, attack_mask);
+
+                //init magic index
+                int magic_index = (occupancy.to_ullong() * bishop_magic_numbers[square].to_ullong()) >> (64-bishop_relevant_bits[square]);
+
+                // init bishop attacks
+                bishop_attacks[square][magic_index] = generateBishopAttacks_onTheFly(square, occupancy);
+            }else{  // rook
+                // init current occupancy variation
+                BITBOARD occupancy = setOccupancies(index, relevant_bit_count, attack_mask);
+
+                //init magic index
+                int magic_index = (occupancy.to_ullong() * rook_magic_numbers[square].to_ullong()) >> (64-rook_relevant_bits[square]);
+
+                // init rook attacks
+                rook_attacks[square][magic_index] = generateRookAttacks_onTheFly(square, occupancy);
+            }
+        }
+    }
+}
+
+// get bishop attacks
+BITBOARD ChessGame::get_Bishop_Attacks(int square, BITBOARD occupancy){
+    // get bishop attacks assuming current board occupancy
+    occupancy &= bishop_masks[square];
+    occupancy = occupancy.to_ullong() * bishop_magic_numbers[square].to_ullong();
+    occupancy >>= 64 - bishop_relevant_bits[square];
+
+    return bishop_attacks[square][occupancy.to_ullong()];
+}
+
+// get rook attacks
+BITBOARD ChessGame::get_Rook_Attacks(int square, BITBOARD occupancy){
+    // get bishop attacks assuming current board occupancy
+    occupancy &= rook_masks[square];
+    occupancy = occupancy.to_ullong() * rook_magic_numbers[square].to_ullong();
+    occupancy >>= 64 - rook_relevant_bits[square];
+
+    return rook_attacks[square][occupancy.to_ullong()];
+}
+
+
 // Gets occupancy squares for bishops (in video series, this is equal to mask_bishop_attacks)
 BITBOARD ChessGame::getBishopOccupancy(int square){
     BITBOARD attacks = 0ULL;
@@ -274,7 +347,7 @@ BITBOARD ChessGame::getRookOccupancy(int square){
 }
 
 // Generates attacking bitboard for bishops while accounting for blocking pieces (in video series, this is equal to bishop_attacks_on_the_fly)
-BITBOARD ChessGame::generateBishopAttacks(int square, BITBOARD blockers){
+BITBOARD ChessGame::generateBishopAttacks_onTheFly(int square, BITBOARD blockers){
     BITBOARD attacks = 0ULL;
 
     int r, f;               // rank and file
@@ -302,7 +375,7 @@ BITBOARD ChessGame::generateBishopAttacks(int square, BITBOARD blockers){
 }
 
 // Generates attacking bitboard for rooks while accounting for blocking pieces (in video series, this is equal to rook_attacks_on_the_fly)
-BITBOARD ChessGame::generateRookAttacks(int square, BITBOARD blockers){
+BITBOARD ChessGame::generateRookAttacks_onTheFly(int square, BITBOARD blockers){
     BITBOARD attacks = 0ULL;
 
     int r, f;               // rank and file
@@ -367,7 +440,8 @@ BITBOARD ChessGame::setOccupancies(int index, int bits_in_mask, BITBOARD attacks
 
 void ChessGame::init_all(){
     init_leaper_attacks();
-    // init_magic();
+    init_slider_attacks(bishop);
+    init_slider_attacks(rook);
 }
 
 /*--------------DRAW--------------*/
