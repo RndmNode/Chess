@@ -7,6 +7,9 @@
 extern const int bishop_relevant_bits[64];
 extern const int rook_relevant_bits[64];
 
+extern const BITBOARD rook_magic_numbers[64];
+extern const BITBOARD bishop_magic_numbers[64];
+
 class ChessGame: public sf::Drawable {
     public:
         // objects, vectors, enums
@@ -33,6 +36,7 @@ class ChessGame: public sf::Drawable {
         BITBOARD generateRookAttacks(int, BITBOARD);
         BITBOARD setOccupancies(int, int, BITBOARD);
         void init_leaper_attacks();
+        void init_all();
 
         int countBits(BITBOARD);
         int indexLeastSigBit(BITBOARD);

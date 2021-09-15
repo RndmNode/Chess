@@ -175,10 +175,7 @@ void printBitboard(BITBOARD bitboard){
 }
 
 int main(){
-    // game();
-
-    ChessGame chess;
-    chess.init_magic();
+    game();
 
     return 0;
 }
