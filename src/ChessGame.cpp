@@ -69,6 +69,7 @@ const BITBOARD bishop_magic_numbers[64] = {
 
 ChessGame::ChessGame(sf::RenderTarget& target){
     board = Board(target.getSize().x,target.getSize().y);
+    side_to_move = white;
 }
 
 // generate 32-bit pseudo random legal numbers

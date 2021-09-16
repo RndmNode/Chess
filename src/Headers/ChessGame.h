@@ -25,6 +25,9 @@ class ChessGame: public sf::Drawable {
         Board board;
 
         // attributes
+        int side_to_move = -1;
+        int enpassant_square = no_sq;
+        int castling_rights;
 
         // methods
         unsigned int get_random_U32_number();
