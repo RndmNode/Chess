@@ -69,99 +69,98 @@ const BITBOARD bishop_magic_numbers[64] = {
 
 ChessGame::ChessGame(sf::RenderTarget& target){
     board = Board(target.getSize().x,target.getSize().y);
-    side_to_move = white;
 }
 
-// generate 32-bit pseudo random legal numbers
-unsigned int ChessGame::get_random_U32_number(){
-    // xor shift algorithm
-    random_state ^= random_state << 13;
-    random_state ^= random_state >> 17;
-    random_state ^= random_state << 5;
+// // generate 32-bit pseudo random legal numbers
+// unsigned int ChessGame::get_random_U32_number(){
+//     // xor shift algorithm
+//     random_state ^= random_state << 13;
+//     random_state ^= random_state >> 17;
+//     random_state ^= random_state << 5;
 
-    return random_state;
-}
+//     return random_state;
+// }
 
-// generate 64-bit pseudo random legal numbers
-BITBOARD ChessGame::get_random_U64_number(){
-    // define 4 random numbers
-    BITBOARD n1, n2, n3, n4;
+// // generate 64-bit pseudo random legal numbers
+// BITBOARD ChessGame::get_random_U64_number(){
+//     // define 4 random numbers
+//     BITBOARD n1, n2, n3, n4;
 
-    // init random numbers while isolating the "top" 16 bits
-    n1 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
-    n2 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
-    n3 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
-    n4 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+//     // init random numbers while isolating the "top" 16 bits
+//     n1 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+//     n2 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+//     n3 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
+//     n4 = (BITBOARD)(get_random_U32_number()) & (BITBOARD)(0xFFFF);
 
-    // return random number
-    return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
-}
+//     // return random number
+//     return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
+// }
 
-// generating magic number candidates
-BITBOARD ChessGame::get_random_magic_number(){
-    return get_random_U64_number() & get_random_U64_number() & get_random_U64_number();
-}
+// // generating magic number candidates
+// BITBOARD ChessGame::get_random_magic_number(){
+//     return get_random_U64_number() & get_random_U64_number() & get_random_U64_number();
+// }
 
-// finds appropriate magic number 
-BITBOARD ChessGame::find_magic_number(int square, int relevantBits, int bishopFlag){
-    // init occupancies
-    BITBOARD occupancies[4096];
+// // finds appropriate magic number 
+// BITBOARD ChessGame::find_magic_number(int square, int relevantBits, int bishopFlag){
+//     // init occupancies
+//     BITBOARD occupancies[4096];
 
-    // init attack tables
-    BITBOARD attacks[4096];
+//     // init attack tables
+//     BITBOARD attacks[4096];
     
-    // init used attacks
-    BITBOARD used_attacks[4096];
+//     // init used attacks
+//     BITBOARD used_attacks[4096];
 
-    // init attack mask for current piece
-    BITBOARD attack_mask = bishopFlag ? getBishopOccupancy(square) : getRookOccupancy(square);
+//     // init attack mask for current piece
+//     BITBOARD attack_mask = bishopFlag ? getBishopOccupancy(square) : getRookOccupancy(square);
 
-    // init occupancy indicies
-    int occupancy_indicies = 1 << relevantBits;
+//     // init occupancy indicies
+//     int occupancy_indicies = 1 << relevantBits;
 
-    // loop over occupancy indicies
-    for(int index=0; index<occupancy_indicies; index++){
-        // init occupancies 
-        occupancies[index] = setOccupancies(index, relevantBits, attack_mask);
-        // init attacks
-        attacks[index] = bishopFlag ? generateBishopAttacks_onTheFly(square, occupancies[index]) : 
-                                      generateRookAttacks_onTheFly(square, occupancies[index]);
-    }
+//     // loop over occupancy indicies
+//     for(int index=0; index<occupancy_indicies; index++){
+//         // init occupancies 
+//         occupancies[index] = setOccupancies(index, relevantBits, attack_mask);
+//         // init attacks
+//         attacks[index] = bishopFlag ? generateBishopAttacks_onTheFly(square, occupancies[index]) : 
+//                                       generateRookAttacks_onTheFly(square, occupancies[index]);
+//     }
 
-    // test magic numbers loop
-    for(int random_count=0; random_count<10000000; random_count++){
-        // generate magic number candidate
-        BITBOARD magic_number = get_random_magic_number(); 
-        // skip inappropriate magic numbers
-        if(countBits((attack_mask.to_ullong() * magic_number.to_ullong()) & 0xFF00000000000000) < 6) continue;
+//     // test magic numbers loop
+//     for(int random_count=0; random_count<10000000; random_count++){
+//         // generate magic number candidate
+//         BITBOARD magic_number = get_random_magic_number(); 
+//         // skip inappropriate magic numbers
+//         if(countBits((attack_mask.to_ullong() * magic_number.to_ullong()) & 0xFF00000000000000) < 6) continue;
 
-        // init used attacks
-        memset(used_attacks, 0ULL, sizeof(used_attacks));
+//         // init used attacks
+//         memset(used_attacks, 0ULL, sizeof(used_attacks));
 
-        // init index & fail flag
-        int index, fail;
+//         // init index & fail flag
+//         int index, fail;
         
-        // test magic index
-        for(index=0, fail=0; !fail && index<occupancy_indicies; index++){
-            // init magic index
-            int magic_index = (int)((occupancies[index].to_ullong() * magic_number.to_ullong()) >> (64 - relevantBits));
+//         // test magic index
+//         for(index=0, fail=0; !fail && index<occupancy_indicies; index++){
+//             // init magic index
+//             int magic_index = (int)((occupancies[index].to_ullong() * magic_number.to_ullong()) >> (64 - relevantBits));
 
-            // if magic index works
-            if(used_attacks[magic_index] == 0ULL){
-                // init used attacks
-                used_attacks[magic_index] = attacks[index];
-            }else if(used_attacks[magic_index] != attacks[index]){
-                fail = 1;
-            }
-        }
+//             // if magic index works
+//             if(used_attacks[magic_index] == 0ULL){
+//                 // init used attacks
+//                 used_attacks[magic_index] = attacks[index];
+//             }else if(used_attacks[magic_index] != attacks[index]){
+//                 fail = 1;
+//             }
+//         }
 
-        // if magic number works, return it
-        if(!fail) return magic_number;
-    }
-    // else
-    cout << "Magic number failed!" << endl;
-    return 0ULL;
-}
+//         // if magic number works, return it
+//         if(!fail) return magic_number;
+//     }
+//     // else
+//     cout << "Magic number failed!" << endl;
+//     return 0ULL;
+// }
 
 // // initialize magic numbers
 // void ChessGame::init_magic(){
@@ -306,7 +305,7 @@ BITBOARD ChessGame::get_Bishop_Attacks(int square, BITBOARD occupancy){
 
 // get rook attacks
 BITBOARD ChessGame::get_Rook_Attacks(int square, BITBOARD occupancy){
-    // get bishop attacks assuming current board occupancy
+    // get rook attacks assuming current board occupancy
     occupancy &= rook_masks[square];
     occupancy = occupancy.to_ullong() * rook_magic_numbers[square].to_ullong();
     occupancy >>= 64 - rook_relevant_bits[square];
@@ -403,6 +402,31 @@ BITBOARD ChessGame::generateRookAttacks_onTheFly(int square, BITBOARD blockers){
     return attacks;    
 }
 
+BITBOARD ChessGame::get_Queen_Attacks(int square, BITBOARD occupancy){
+    // init holder boards
+    BITBOARD queen_attacks = 0ULL;
+    BITBOARD bishopOccupancies = occupancy;
+    BITBOARD rookOccupancies = occupancy;
+
+    // get rook attacks assuming current board occupancy
+    bishopOccupancies &= bishop_masks[square];
+    bishopOccupancies = bishopOccupancies.to_ullong() * bishop_magic_numbers[square].to_ullong();
+    bishopOccupancies >>= 64 - bishop_relevant_bits[square];
+
+    // get bishop attacks
+    queen_attacks = bishop_attacks[square][bishopOccupancies.to_ullong()];
+
+    // get rook attacks assuming current board occupancy
+    rookOccupancies &= rook_masks[square];
+    rookOccupancies = rookOccupancies.to_ullong() * rook_magic_numbers[square].to_ullong();
+    rookOccupancies >>= 64 - rook_relevant_bits[square];
+    
+    // get rook attacks
+    queen_attacks |= rook_attacks[square][rookOccupancies.to_ullong()];
+
+    return queen_attacks;
+}
+
 // Counts the number of set bits in a bitboard
 int ChessGame::countBits(BITBOARD bitboard){
     int count = 0;
@@ -443,6 +467,46 @@ void ChessGame::init_all(){
     init_leaper_attacks();
     init_slider_attacks(bishop);
     init_slider_attacks(rook);
+}
+
+bool ChessGame::is_square_attacked(int square, int side){
+    // attacked by white pawns
+    if((side == white) && (pawn_attacks[black][square] & board.bitboards[P]).to_ullong()) return true;
+
+    // attacked by black pawns
+    if((side == black) && (pawn_attacks[white][square] & board.bitboards[p]).to_ullong()) return true;
+
+    // attacked by knights
+    if(knight_attacks[square].to_ullong() & ((side == white) ? board.bitboards[N]: board.bitboards[n]).to_ullong()) return true;
+
+    // attacked by kings
+    if(king_attacks[square].to_ullong() & ((side == white) ? board.bitboards[K]: board.bitboards[k]).to_ullong()) return true;
+
+    // attacked by bishops
+    if(get_Bishop_Attacks(square, board.occupancies[both]).to_ullong() & ((side == white) ? board.bitboards[B] : board.bitboards[b]).to_ullong()) return true;
+
+    // attacked by rooks
+    if(get_Rook_Attacks(square, board.occupancies[both]).to_ullong() & ((side == white) ? board.bitboards[R] : board.bitboards[r]).to_ullong()) return true;
+
+    // attacked by queens
+    if(get_Queen_Attacks(square, board.occupancies[both]).to_ullong() & ((side == white) ? board.bitboards[Q] : board.bitboards[q]).to_ullong()) return true;
+
+    // by default, return false
+    return false;
+}
+
+void ChessGame::print_attacked_squares(int side){
+    cout << "\n";
+    for(int rank=0; rank<8; rank++){
+        for(int file=0; file<8; file++){
+            int square = (rank*8)+file;
+            if(!file) cout << "  " << 8-rank << " ";
+            int answer = is_square_attacked(square, side) ? 1 : 0;
+            cout << " " << answer;
+        }
+        cout << "\n";
+    }
+    cout << "\n     a b c d e f g h\n\n";
 }
 
 /*--------------DRAW--------------*/

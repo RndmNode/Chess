@@ -25,9 +25,6 @@ class ChessGame: public sf::Drawable {
         Board board;
 
         // attributes
-        int side_to_move = -1;
-        int enpassant_square = no_sq;
-        int castling_rights;
 
         // methods
         unsigned int get_random_U32_number();
@@ -43,8 +40,9 @@ class ChessGame: public sf::Drawable {
         BITBOARD generateBishopAttacks_onTheFly(int, BITBOARD);
         BITBOARD generateRookAttacks_onTheFly(int, BITBOARD);
         BITBOARD setOccupancies(int, int, BITBOARD);
-        static BITBOARD get_Bishop_Attacks(int, BITBOARD);
-        static BITBOARD get_Rook_Attacks(int, BITBOARD);
+        BITBOARD get_Bishop_Attacks(int, BITBOARD);
+        BITBOARD get_Rook_Attacks(int, BITBOARD);
+        BITBOARD get_Queen_Attacks(int, BITBOARD);
         void init_leaper_attacks();
         void init_slider_attacks(int);
         void init_all();
@@ -52,9 +50,12 @@ class ChessGame: public sf::Drawable {
         int countBits(BITBOARD);
         int indexLeastSigBit(BITBOARD);
 
+        bool is_square_attacked(int, int);
+        void print_attacked_squares(int);
+
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
-        ChessGame(){};
+        ChessGame(){board = Board(800,800);};
         ~ChessGame(){};
 };
 

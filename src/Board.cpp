@@ -31,10 +31,12 @@ Board::Board(int width, int height){
     temp.all();
     for(int i=0; i<12; i++){
         bitboards.push_back(temp);
+        if(i<3) occupancies.push_back(temp);
     }
 
-    //set starting FEN and parse
-    parseFen(START_POSITION);
+    // set starting FEN and parse
+    FEN = START_POSITION;
+    parseFen(FEN);
 
     // white Pawns
     for(int w=0; w<8; w++){
@@ -187,16 +189,32 @@ void Board::printBoard(int board){
     }
 }
 
+// bitboard visualization
+void Board::printBitboard(BITBOARD bitboard){
+    for(int rank=0; rank<8; rank++){
+        cout << "\n  " << 8- rank << "  ";
+        for(int file=0; file<8; file++){
+            cout << bitboard[(rank * 8) + file] << " ";
+        }
+    }
+    cout << "\n\n     a b c d e f g h";
+    cout << "\n  -------------------";
+    cout << "\n  Value: " << bitboard.to_ullong() << endl;
+}
+
 void Board::parseFen(string fen){
+    // reset game variables
     for(int i=0; i<12; i++){
         bitboards[i].reset();
     }
+    side_to_move = -1;
+    enpassant_square = no_sq;
+    castling_rights = 0;
 
     int index = 0;
     for(int rank=0; rank<8; rank++){
         for(int file=0; file<8; file++){
             int square = (rank*8) + file;
-            //cout << "fen[i]: " << fen[index] << endl;
             // if it is a piece, set the bit on the corresponding bitboard
             if((fen[index] >= 'a' && fen[index] <= 'z') || (fen[index] >= 'A' && fen[index] <= 'Z')){
                 int piece = char_to_piece.at(fen[index]);
@@ -212,15 +230,51 @@ void Board::parseFen(string fen){
                 index++;
                 continue;
             }
-
+            // if it's next rank, adjust indicies accordingly
             if(fen[index] == '/'){
                 index++;
                 file--;
                 continue;
             }
-            
         }
     }
+
+    // isolate game state from position
+    int variables = fen.find_first_of(" ") + 1;
+    string variable_settings = fen.substr(variables,fen.size()-variables);
+
+    // set game state variables
+    side_to_move = (variable_settings[0] == 'w') ? white : black;
+
+    index = 2;
+    while(variable_settings[index] != ' '){
+        switch (variable_settings[index])
+        {
+        case 'K': castling_rights |= wk; break;
+        case 'Q': castling_rights |= wq; break;
+        case 'k': castling_rights |= bk; break;
+        case 'q': castling_rights |= bq; break;
+        default:break;
+        }
+        index++;
+    }
+
+    index++;
+    if(variable_settings[index] != '-'){
+        int file = variable_settings[index] -'a';
+        int rank = 8 - (variable_settings[++index] - '0');
+
+        enpassant_square = (rank*8) + file;
+    }else{
+        enpassant_square = no_sq;
+    }
+
+    // init occupancy boards
+    for(int piece=P; piece<=K; piece++){
+        occupancies[white] |= bitboards[piece];
+        occupancies[black] |= bitboards[piece + p];
+    }
+    occupancies[both] |= (occupancies[white] | occupancies[black]);
 }
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{

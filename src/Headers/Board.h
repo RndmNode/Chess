@@ -10,7 +10,6 @@
 using namespace std;
 
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#define BEHTING_STUDY "8/8/7p/3KNN1k/2p4p/8/3P2p1/8 w - - ; bm Kc6 "
 #define DJAJA_STUDY "6R1/P2k4/r7/5N1P/r7/p7/7K/8 w - -"
 #define HAKMEM_70 "5B2/6P1/1p6/8/1N6/kP6/2K5/8 w - - "
 #define SZEN_POSITION "4k3/5ppp/8/8/8/8/PPP5/3K4 w - - "
@@ -30,6 +29,12 @@ extern const char *square_to_coordinates[];
 enum sideToMove {white, black, both};
 enum {rook, bishop};        // flags for magic number generation
 enum castling {wk = 1, wq = 2, bk = 4, bq = 8};
+/*
+    K       = 1
+    KQ      = 3
+    KQk     = 7
+    KQkq    = 15
+*/
 enum encoded_pieces {P, N, B, R, Q, K, p, n, b, r, q, k};
 const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q}, {'K',K},
                                     {'p',p}, {'n',n}, {'b',b}, {'r',r}, {'q',q}, {'k',k}, {'/',-1}};
@@ -53,8 +58,13 @@ class Board: public sf::Drawable{
         string boardNames[12] = {"whitePawn","whiteKnight","whiteBishop","whiteRook","whiteQueen","whiteKing",
                                  "blackPawn","blackKnight","blackBishop","blackRook","blackQueen","blackKing"};
 
+        int side_to_move = -1;
+        int enpassant_square = no_sq;
+        int castling_rights;
+
         //Methods
         void printBoard(int);
+        void printBitboard(BITBOARD);
         void loadBoard(int width, int height);
         void findPieces();
         void placePiece(int, sf::Vector2f, int);
@@ -63,6 +73,7 @@ class Board: public sf::Drawable{
         static BITBOARD setBit(BITBOARD board, int sqr){board.set(sqr); return board;}
 
         vector<BITBOARD> bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
+        vector<BITBOARD> occupancies;
         vector<Piece> pieces;
         
         ~Board(){};

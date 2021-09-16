@@ -30,6 +30,10 @@ void game() {
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
+
+    // cout << chess.board.enpassant_square << "\n";
+    // cout << square_to_coordinates[chess.board.enpassant_square] << "\n";
+
     // run the program as long as the window is open
     while(window.isOpen()){
         // check all the window's events that were triggered since the last iteration of the loop
@@ -89,7 +93,7 @@ void game() {
         if(dragging){
             for(auto &i : chess.board.pieces){
                 if(i.m_selected){
-                    i.m_sprite.setPosition(mouseX,mouseY);
+                    i.m_sprite.setPosition(mouseX, mouseY);
                     break;
                 }
             }
@@ -133,48 +137,24 @@ void printFullCharBoard(Board board){
         }   
     }
 
-    cout << "\nFull Board:\n ";
+    cout << "\n  Full Board:\n ";
     for(int rank=0; rank<8; rank++){
+        cout << " " << 8 - rank << "  ";
         for(int file=0; file<8; file++){
-            cout << fullBoard[(rank*8)+file];
+            cout << fullBoard[(rank*8)+file] << " ";
         }
         cout << "\n ";
     }
+    cout << "\n     a b c d e f g h\n\n";
 }
 
-// bitboard visualization
-void printBitboard(BITBOARD bitboard, string name){
-    int y = 8;
-    cout << "\n      " << name << ":\n";
-    for(int rank=0; rank<8; rank++){
-        cout << "\n  " << y << "   ";
-        for(int file=0; file<8; file++){
-            cout << bitboard[(rank * 8) + file] << " ";
-        }
-        y--;
-    }
-    cout << "\n\n      a b c d e f g h";
-    cout << "\n";
-    //cout << "\n\n  value: " << bitboard.to_ullong() << endl;
-}
+int main(){ 
+    ChessGame chess;
+    chess.init_all();
+    printFullCharBoard(chess.board);
+    chess.print_attacked_squares(white);
+    chess.print_attacked_squares(black);
 
-// bitboard visualization(2)
-void printBitboard(BITBOARD bitboard){
-    int y = 8;
-    cout << "\n";
-    for(int rank=0; rank<8; rank++){
-        cout << "\n  " << y << "   ";
-        for(int file=0; file<8; file++){
-            cout << bitboard[(rank * 8) + file] << " ";
-        }
-        y--;
-    }
-    cout << "\n\n      a b c d e f g h";
-    cout << "\n  -------------------";
-    cout << "\n  Value: " << bitboard.to_ullong() << endl;
-}
-
-int main(){
     game();
 
     return 0;
