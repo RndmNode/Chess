@@ -52,6 +52,7 @@ class ChessGame: public sf::Drawable {
 
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
+        void generateMoves();
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

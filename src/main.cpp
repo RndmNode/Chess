@@ -137,25 +137,24 @@ void printFullCharBoard(Board board){
         }   
     }
 
-    cout << "\n  Full Board:\n ";
+    cout << "\n  Full Board:\n\n ";
     for(int rank=0; rank<8; rank++){
-        cout << " " << 8 - rank << "  ";
+        cout << " " << 8 - rank << "   ";
         for(int file=0; file<8; file++){
             cout << fullBoard[(rank*8)+file] << " ";
         }
         cout << "\n ";
     }
-    cout << "\n     a b c d e f g h\n\n";
+    cout << "\n      a b c d e f g h\n\n";
 }
 
 int main(){ 
+    // game();
+
     ChessGame chess;
     chess.init_all();
     printFullCharBoard(chess.board);
-    chess.print_attacked_squares(white);
-    chess.print_attacked_squares(black);
-
-    game();
+    chess.generateMoves();
 
     return 0;
 }

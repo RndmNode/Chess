@@ -35,7 +35,7 @@ Board::Board(int width, int height){
     }
 
     // set starting FEN and parse
-    FEN = START_POSITION;
+    FEN = "rnbqkbnr/p1p1p1p1/8/1p1p1p1p/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
     parseFen(FEN);
 
     // white Pawns

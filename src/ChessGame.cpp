@@ -469,6 +469,12 @@ void ChessGame::init_all(){
     init_slider_attacks(rook);
 }
 
+/**********************************\
+ ==================================
+          Move Generation
+ ==================================
+\**********************************/
+
 bool ChessGame::is_square_attacked(int square, int side){
     // attacked by white pawns
     if((side == white) && (pawn_attacks[black][square] & board.bitboards[P]).to_ullong()) return true;
@@ -495,6 +501,7 @@ bool ChessGame::is_square_attacked(int square, int side){
     return false;
 }
 
+// printing all squares attacked given a side
 void ChessGame::print_attacked_squares(int side){
     cout << "\n";
     for(int rank=0; rank<8; rank++){
@@ -509,7 +516,110 @@ void ChessGame::print_attacked_squares(int side){
     cout << "\n     a b c d e f g h\n\n";
 }
 
-/*--------------DRAW--------------*/
+// generate all moves
+void ChessGame::generateMoves(){
+    // define source and target squares
+    int sourceSquare, targetSquare;
+
+    // define current piece's bitboard copy & its attacks
+    BITBOARD bitboard, attacks;
+
+    // loop over all bitboards
+    for(int piece=P; piece<=k; piece++){
+        // init bitboard copy
+        bitboard = board.bitboards[piece];
+
+        // generate white pawns & white king castling
+        if(board.side_to_move == white){
+            // Pawns
+            if(piece == P){
+                // while pieces have not been accounted for (bitboard.to_ullong() is greater than 0)
+                while(bitboard.to_ullong()){
+                    // init source and target square
+                    sourceSquare = indexLeastSigBit(bitboard);
+                    targetSquare = sourceSquare - 8;
+
+                    // generate quiet pawn moves
+                    if(!(targetSquare < a8) && !board.getBit(board.occupancies[both],targetSquare)){
+                        // if pawn promotion
+                        if(sourceSquare >= a7 && sourceSquare <= h7){
+                            //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                        }else{
+                            // one square ahead
+                            //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                            cout << "Pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+
+                            // two squares ahead
+                            if((sourceSquare >= a2 && sourceSquare <= h2) && !board.getBit(board.occupancies[both], targetSquare - 8)){
+                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARES*2
+                                cout << "Double pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare - 8] << endl;
+                            }
+                        }
+                    }
+
+                    // pop LS1B from bitboard copy
+                    bitboard.flip(sourceSquare);
+                }
+            }
+        } else {    // black pawns & king castling
+            // Pawns
+            if(piece == p){
+                // while pieces have not been accounted for (bitboard.to_ullong() is greater than 0)
+                while(bitboard.to_ullong()){
+                    // init source and target square
+                    sourceSquare = indexLeastSigBit(bitboard);
+                    targetSquare = sourceSquare + 8;
+
+                    // generate quiet pawn moves
+                    if(!(targetSquare < a8) && !board.getBit(board.occupancies[both],targetSquare)){
+                        // if pawn promotion
+                        if(sourceSquare >= a2 && sourceSquare <= h2){
+                            //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
+                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                        }else{
+                            // one square ahead
+                            //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                            cout << "Pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+
+                            // two squares ahead
+                            if((sourceSquare >= a7 && sourceSquare <= h7) && !board.getBit(board.occupancies[both], targetSquare + 8)){
+                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARES*2
+                                cout << "Double pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare + 8] << endl;
+                            }
+                        }
+                    }
+
+                    // pop LS1B from bitboard copy
+                    bitboard.flip(sourceSquare);
+                }
+            }
+        }
+
+        // generate knight moves
+        
+        // generate bishop moves
+
+        // generate rook moves
+
+        // generate queen moves
+
+        // generate king moves
+
+    }
+}
+
+/**********************************\
+ ==================================
+             Drawing
+ ==================================
+\**********************************/
 void ChessGame::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     target.draw(board);
 }
