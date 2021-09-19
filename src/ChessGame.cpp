@@ -561,6 +561,39 @@ void ChessGame::generateMoves(){
                         }
                     }
 
+                    // init pawn attacks bitboard
+                    attacks = pawn_attacks[board.side_to_move][sourceSquare] & board.occupancies[black];
+
+                    // generate pawn captures
+                    while(attacks.to_ullong()){
+                        targetSquare = indexLeastSigBit(attacks);
+
+                        // handle capture and promotion combo
+                        if(sourceSquare >= a7 && sourceSquare <= h7){
+                            //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                        }else{
+                            //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                            cout << "Pawn capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        }
+                        // pop LS1B from bitboard copy
+                        attacks.flip(targetSquare);
+                    }
+
+                    // generate enpassant captures
+                    if(board.enpassant_square != no_sq){
+                        BITBOARD enpassant_attacks = pawn_attacks[board.side_to_move][sourceSquare].to_ullong() & (1ULL << board.enpassant_square);
+
+                        // if enpassant is available
+                        if(enpassant_attacks.to_ullong()){
+                            int enpassant_target = indexLeastSigBit(enpassant_attacks);
+                            cout << "Pawn enpassant capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[enpassant_target] << endl;
+                        }
+                    }
+
                     // pop LS1B from bitboard copy
                     bitboard.flip(sourceSquare);
                 }
@@ -593,6 +626,39 @@ void ChessGame::generateMoves(){
                                 //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARES*2
                                 cout << "Double pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare + 8] << endl;
                             }
+                        }
+                    }
+
+                    // init pawn attacks bitboard
+                    attacks = pawn_attacks[board.side_to_move][sourceSquare] & board.occupancies[white];
+
+                    // generate pawn captures
+                    while(attacks.to_ullong()){
+                        targetSquare = indexLeastSigBit(attacks);
+
+                        // handle capture and promotion combo
+                        if(sourceSquare >= a2 && sourceSquare <= h2){
+                            //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
+                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                        }else{
+                            //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                            cout << "Pawn capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        }
+                        // pop LS1B from bitboard copy
+                        attacks.flip(targetSquare);
+                    }
+
+                    // generate enpassant captures
+                    if(board.enpassant_square != no_sq){
+                        BITBOARD enpassant_attacks = pawn_attacks[board.side_to_move][sourceSquare].to_ullong() & (1ULL << board.enpassant_square);
+
+                        // if enpassant is available
+                        if(enpassant_attacks.to_ullong()){
+                            int enpassant_target = indexLeastSigBit(enpassant_attacks);
+                            cout << "Pawn enpassant capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[enpassant_target] << endl;
                         }
                     }
 
