@@ -79,7 +79,7 @@ Board::Board(int width, int height){
     for(unsigned long int i=0; i<pieces.size(); i++){
         pieces[i].setTexture();
     }
-
+    
     loadBoard(width, height);
     findPieces();
 }

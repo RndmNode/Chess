@@ -39,8 +39,10 @@ enum encoded_pieces {P, N, B, R, Q, K, p, n, b, r, q, k};
 const char charPieces[12] = {'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
 const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q}, {'K',K},
                                     {'p',p}, {'n',n}, {'b',b}, {'r',r}, {'q',q}, {'k',k}, {'/',-1}};
-const map<char, int> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'}, {K,'K'},
+const map<int, char> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'}, {K,'K'},
                                     {p,'p'}, {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}, {k,'k'}};
+const map<int, char> promoted_piece {{N,'n'}, {B,'b'}, {R,'r'}, {Q,'q'},
+                                     {n,'n'}, {b,'b'}, {r,'R'}, {q,'Q'}};
 
 // not_boards
 extern const BITBOARD not_a_file;

@@ -40,10 +40,17 @@ extern BITBOARD bishop_attacks[64][512];
 extern BITBOARD rook_attacks[64][4096];
 extern unsigned int random_state;
 
+struct moves{
+    int moves[256];     // moves
+    int count;          // move count
+};
+
+
 class ChessGame: public sf::Drawable {
     public:
         // objects, vectors, enums
         Board board;
+        moves m_list_of_moves[1];
 
         // attributes
 
@@ -74,6 +81,9 @@ class ChessGame: public sf::Drawable {
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
         void generateMoves();
+        void add_move(moves *move_list, int);
+        void print_move(int);
+        void print_move_list(moves *move_list);
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

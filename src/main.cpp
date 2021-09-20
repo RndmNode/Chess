@@ -30,6 +30,7 @@ void game() {
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
+    chess.init_all();
 
     // run the program as long as the window is open
     while(window.isOpen()){
@@ -149,18 +150,15 @@ int main(){
     // game();
     ChessGame chess;
     chess.init_all();
-    
-    // create move
-    int move = encode_move(d7, e8, P, Q, 1, 0, 0, 0);
 
-    cout << "\nsource square: " << square_to_coordinates[get_move_source(move)] << endl;
-    cout << "target square: " << square_to_coordinates[get_move_target(move)] << endl;
-    cout << "piece: " << charPieces[get_move_piece(move)] << endl;
-    cout << "promoted: " << charPieces[get_move_promoted(move)] << endl;
-    cout << "capture: " << (get_move_capture(move) ? 1 : 0) << endl; 
-    cout << "doublePush: " << (get_move_doublePush(move) ? 1 : 0) << endl;
-    cout << "enpassant: " << (get_move_enpassant(move) ? 1 : 0) << endl;
-    cout << "castling: " << (get_move_castling(move) ? 1 : 0) << "\n\n";
+    // create move list
+    moves move_list[1];
+    move_list->count = 0;
+
+    // create move
+    chess.add_move(move_list, encode_move(d7, e8, B, Q, 1, 0, 1, 0));
+
+    chess.print_move_list(move_list);
 
     return 0;
 }

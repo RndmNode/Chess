@@ -883,6 +883,44 @@ void ChessGame::generateMoves(){
     }
 }
 
+// add move to move_list
+void ChessGame::add_move(moves *move_list, int move){
+    // store move
+    move_list->moves[move_list->count] = move;
+
+    // increment move count
+    move_list->count++;
+}
+
+// short version of printing a move
+void ChessGame::print_move(int move){
+    cout << square_to_coordinates[get_move_source(move)] << 
+            square_to_coordinates[get_move_target(move)] << 
+            promoted_piece.at(get_move_promoted(move)) << 
+            endl;
+}
+
+// print move list
+void ChessGame::print_move_list(moves *move_list){
+    printf("\n   move    piece   capture   doublePush   enpass   castling\n\n");
+    // loop over moves in list
+    for(int move_count=0; move_count<move_list->count; move_count++){
+        int move = move_list->moves[move_count];
+        printf("   %s%s%c   %c       %d         %d            %d        %d\n", 
+                square_to_coordinates[get_move_source(move)], 
+                square_to_coordinates[get_move_target(move)],
+                promoted_piece.at(get_move_promoted(move)),
+                piece_to_char.at(get_move_piece(move)),
+                (get_move_capture(move)) ? 1:0, 
+                (get_move_doublePush(move)) ? 1:0,
+                (get_move_enpassant(move)) ? 1:0,
+                (get_move_castling(move)) ? 1:0);
+    }
+
+    // print total number of moves
+    printf("Total number of moves: %d\n\n", move_list->count);
+}
+
 /**********************************\
  ==================================
              Drawing
