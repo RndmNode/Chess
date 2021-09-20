@@ -28,7 +28,7 @@ extern const char *square_to_coordinates[];
 
 enum sideToMove {white, black, both};
 enum {rook, bishop};        // flags for magic number generation
-enum castling {wk = 1, wq = 2, bk = 4, bq = 8};
+enum encoded_castling {wk = 1, wq = 2, bk = 4, bq = 8};
 /*
     K       = 1
     KQ      = 3
@@ -36,6 +36,7 @@ enum castling {wk = 1, wq = 2, bk = 4, bq = 8};
     KQkq    = 15
 */
 enum encoded_pieces {P, N, B, R, Q, K, p, n, b, r, q, k};
+const char charPieces[12] = {'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
 const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q}, {'K',K},
                                     {'p',p}, {'n',n}, {'b',b}, {'r',r}, {'q',q}, {'k',k}, {'/',-1}};
 const map<char, int> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'}, {K,'K'},

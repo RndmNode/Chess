@@ -31,9 +31,6 @@ void game() {
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
 
-    // cout << chess.board.enpassant_square << "\n";
-    // cout << square_to_coordinates[chess.board.enpassant_square] << "\n";
-
     // run the program as long as the window is open
     while(window.isOpen()){
         // check all the window's events that were triggered since the last iteration of the loop
@@ -150,11 +147,20 @@ void printFullCharBoard(Board board){
 
 int main(){ 
     // game();
-
     ChessGame chess;
     chess.init_all();
-    printFullCharBoard(chess.board);
-    chess.generateMoves();
+    
+    // create move
+    int move = encode_move(d7, e8, P, Q, 1, 0, 0, 0);
+
+    cout << "\nsource square: " << square_to_coordinates[get_move_source(move)] << endl;
+    cout << "target square: " << square_to_coordinates[get_move_target(move)] << endl;
+    cout << "piece: " << charPieces[get_move_piece(move)] << endl;
+    cout << "promoted: " << charPieces[get_move_promoted(move)] << endl;
+    cout << "capture: " << (get_move_capture(move) ? 1 : 0) << endl; 
+    cout << "doublePush: " << (get_move_doublePush(move) ? 1 : 0) << endl;
+    cout << "enpassant: " << (get_move_enpassant(move) ? 1 : 0) << endl;
+    cout << "castling: " << (get_move_castling(move) ? 1 : 0) << "\n\n";
 
     return 0;
 }

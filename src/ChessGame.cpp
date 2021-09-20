@@ -67,6 +67,21 @@ const BITBOARD bishop_magic_numbers[64] = {
     0x28000010020204ULL, 0x6000020202d0240ULL, 0x8918844842082200ULL, 0x4010011029020020ULL
 };
 
+/*                          BINARY FORMATTING of MOVE ITEMS
+
+    BINARY REPRESENTATION               DESCRIPTION             HEXIDECIMAL CONSTANTS
+    =============================       =================       =====================
+    0000 0000 0000 0000 0011 1111       source square           0x3f
+    0000 0000 0000 1111 1100 0000       target square           0xfc0
+    0000 0000 1111 0000 0000 0000       piece                   0xf000
+    0000 1111 0000 0000 0000 0000       promoted piece          0xf0000
+    0001 0000 0000 0000 0000 0000       capture flag            0x100000
+    0010 0000 0000 0000 0000 0000       double push flag        0x200000
+    0100 0000 0000 0000 0000 0000       enpassant capture       0x400000
+    1000 0000 0000 0000 0000 0000       castling flag           0x800000
+
+*/
+
 ChessGame::ChessGame(sf::RenderTarget& target){
     board = Board(target.getSize().x,target.getSize().y);
 }

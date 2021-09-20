@@ -4,6 +4,27 @@
 #include "Board.h"
 #include <string.h>
 
+// encode moves into integers
+#define encode_move(source, target, piece, promoted, capture, doublePush, enpassant, castling)\
+    (source) |              \
+    (target << 6) |         \
+    (piece << 12) |         \
+    (promoted << 16) |      \
+    (capture << 20) |       \
+    (doublePush << 21) |    \
+    (enpassant << 22)  |    \
+    (castling << 23)        
+
+// extract move information
+#define get_move_source(move)       (move & 0x3f)
+#define get_move_target(move)       ((move & 0xfc0) >> 6)
+#define get_move_piece(move)        ((move & 0xf000) >> 12)
+#define get_move_promoted(move)     ((move & 0xf0000) >> 16)
+#define get_move_capture(move)      (move & 0x100000)
+#define get_move_doublePush(move)   (move & 0x200000)
+#define get_move_enpassant(move)    (move & 0x400000)
+#define get_move_castling(move)     (move & 0x800000)
+
 extern const int bishop_relevant_bits[64];
 extern const int rook_relevant_bits[64];
 
