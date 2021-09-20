@@ -598,6 +598,31 @@ void ChessGame::generateMoves(){
                     bitboard.flip(sourceSquare);
                 }
             }
+
+            // castling moves
+            if(piece == K){
+                // king side castling
+                if(board.castling_rights & wk){
+                    // make sure no pieces are between the king and king's rook
+                    if (!board.getBit(board.occupancies[both], f1) && !board.getBit(board.occupancies[both], g1)){
+                        // make sure king is not moving out of, or through, check
+                        if(!is_square_attacked(e1, black) && !is_square_attacked(f1, black)){
+                            cout << "Castling move: e1g1" << endl;
+                        }
+                    }
+                }
+
+                // queen side castling
+                if(board.castling_rights & wq){
+                    // make sure no pieces are between the king and queen's rook
+                    if (!board.getBit(board.occupancies[both], d1) && !board.getBit(board.occupancies[both], c1) && !board.getBit(board.occupancies[both], b1)){
+                        // make sure king is not moving out of, or through, check
+                        if(!is_square_attacked(e1, black) && !is_square_attacked(d1, black)){
+                            cout << "Castling move: e1c1" << endl;
+                        }
+                    }
+                }
+            }
         } else {    // black pawns & king castling
             // Pawns
             if(piece == p){
@@ -661,23 +686,185 @@ void ChessGame::generateMoves(){
                             cout << "Pawn enpassant capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[enpassant_target] << endl;
                         }
                     }
-
                     // pop LS1B from bitboard copy
                     bitboard.flip(sourceSquare);
+                }
+            }
+
+            // castling moves
+            if(piece == k){
+                // king side castling
+                if(board.castling_rights & bk){
+                    // make sure no pieces are between the king and king's rook
+                    if (!board.getBit(board.occupancies[both], f8) && !board.getBit(board.occupancies[both], g8)){
+                        // make sure king is not moving out of, or through, check
+                        if(!is_square_attacked(e8, white) && !is_square_attacked(f8, white)){
+                            cout << "Castling move: e8g8" << endl;
+                        }
+                    }
+                }
+
+                // queen side castling
+                if(board.castling_rights & bq){
+                    // make sure no pieces are between the king and queen's rook
+                    if (!board.getBit(board.occupancies[both], d8) && !board.getBit(board.occupancies[both], c8) && !board.getBit(board.occupancies[both], b8)){
+                        // make sure king is not moving out of, or through, check
+                        if(!is_square_attacked(e8, white) && !is_square_attacked(d8, white)){
+                            cout << "Castling move: e8c8" << endl;
+                        }
+                    }
                 }
             }
         }
 
         // generate knight moves
+        if((board.side_to_move == white) ? piece == N : piece == n){
+            // loop over source squares of piece bitboard copy
+            while(bitboard.to_ullong()){
+                // init source square
+                sourceSquare = indexLeastSigBit(bitboard);
+
+                // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+                attacks = knight_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+                while (attacks.to_ullong()){
+                    // init target square
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    // quiet move
+                    if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+                        cout << "Knight Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    } else { // captures
+                        cout << "Knight Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
         
         // generate bishop moves
+        if((board.side_to_move == white) ? piece == B : piece == b){
+            // loop over source squares of piece bitboard copy
+            while(bitboard.to_ullong()){
+                // init source square
+                sourceSquare = indexLeastSigBit(bitboard);
+
+                // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+                attacks = get_Bishop_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+                // loop over attack squares of attack bitboard
+                while (attacks.to_ullong()){
+                    // init target square
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    // quiet move
+                    if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+                        cout << "Bishop Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    } else { // captures
+                        cout << "Bishop Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // generate rook moves
+        if((board.side_to_move == white) ? piece == R : piece == r){
+            // loop over source squares of piece bitboard copy
+            while(bitboard.to_ullong()){
+                // init source square
+                sourceSquare = indexLeastSigBit(bitboard);
+
+                // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+                attacks = get_Rook_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+                // loop over attack squares of attack bitboard
+                while (attacks.to_ullong()){
+                    // init target square
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    // quiet move
+                    if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+                        cout << "Rook Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    } else { // captures
+                        cout << "Rook Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // generate queen moves
+        if((board.side_to_move == white) ? piece == Q : piece == q){
+            // loop over source squares of piece bitboard copy
+            while(bitboard.to_ullong()){
+                // init source square
+                sourceSquare = indexLeastSigBit(bitboard);
+
+                // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+                attacks = get_Queen_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+                // loop over attack squares of attack bitboard
+                while (attacks.to_ullong()){
+                    // init target square
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    // quiet move
+                    if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+                        cout << "Queen Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    } else { // captures
+                        cout << "Queen Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // generate king moves
+        if((board.side_to_move == white) ? piece == K : piece == k){
+            // loop over source squares of piece bitboard copy
+            while(bitboard.to_ullong()){
+                // init source square
+                sourceSquare = indexLeastSigBit(bitboard);
 
+                // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+                attacks = king_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+                // loop over attack squares of attack bitboard
+                while (attacks.to_ullong()){
+                    // init target square
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    // quiet move
+                    if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+                        cout << "King Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    } else { // captures
+                        cout << "King Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
     }
 }
 
