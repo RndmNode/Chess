@@ -154,17 +154,7 @@ void printFullCharBoard(Board board){
 }
 
 int main(){ 
-    // game();
-    ChessGame chess;
-    chess.init_all();
-    printFullCharBoard(chess.board);
-    chess.board.copy_board();
-
-    chess.board.parseFen(EMPTY_BOARD);
-    printFullCharBoard(chess.board);
-
-    chess.board.restore_board();
-    printFullCharBoard(chess.board);
+    game();
 
     return 0;
 }

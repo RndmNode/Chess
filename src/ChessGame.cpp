@@ -904,16 +904,16 @@ void ChessGame::print_move(int move){
 }
 
 // print move list
-void ChessGame::print_move_list(moves *move_list){
+void ChessGame::print_move_list(){
     // do nothing on empty move list
-    if(!move_list->count){
+    if(!m_list_of_moves->count){
         cout << "  No move in the move list!" << endl;
     }
 
     printf("\n   move    piece   capture   doublePush   enpass   castling\n\n");
     // loop over moves in list
-    for(int move_count=0; move_count<move_list->count; move_count++){
-        int move = move_list->moves[move_count];
+    for(int move_count=0; move_count<m_list_of_moves->count; move_count++){
+        int move = m_list_of_moves->moves[move_count];
         printf("   %s%s%c   %c       %d         %d            %d        %d\n", 
                 square_to_coordinates[get_move_source(move)], 
                 square_to_coordinates[get_move_target(move)],
@@ -926,7 +926,7 @@ void ChessGame::print_move_list(moves *move_list){
     }
 
     // print total number of moves
-    printf("Total number of moves: %d\n\n", move_list->count);
+    printf("Total number of moves: %d\n\n", m_list_of_moves->count);
 }
 
 /**********************************\

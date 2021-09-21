@@ -83,7 +83,7 @@ class ChessGame: public sf::Drawable {
         void generateMoves();
         void add_move(int);
         void print_move(int);
-        void print_move_list(moves *move_list);
+        void print_move_list();
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

@@ -20,26 +20,31 @@ void Piece::setTexture(){
         m_sprite.setTexture(m_player ? PieceTextures::whiteKnight : PieceTextures::blackKnight);
         m_sprite.setScale(1.625,1.625);
         m_sprite.setOrigin(m_sprite.getLocalBounds().width/2,m_sprite.getLocalBounds().height/2);
+        originOffset = m_sprite.getOrigin();
         break;
     case B:
         m_sprite.setTexture(m_player ? PieceTextures::whiteBishop : PieceTextures::blackBishop);
         m_sprite.setScale(1.625,1.625);
         m_sprite.setOrigin(m_sprite.getLocalBounds().width/2,m_sprite.getLocalBounds().height/2);
+        originOffset = m_sprite.getOrigin();
         break;
     case R:
         m_sprite.setTexture(m_player ? PieceTextures::whiteRook : PieceTextures::blackRook);
         m_sprite.setScale(1.625,1.625);
         m_sprite.setOrigin(m_sprite.getLocalBounds().width/2,m_sprite.getLocalBounds().height/2);
+        originOffset = m_sprite.getOrigin();
         break;
     case Q:
         m_sprite.setTexture(m_player ? PieceTextures::whiteQueen : PieceTextures::blackQueen);
         m_sprite.setScale(1.625,1.625);
         m_sprite.setOrigin(m_sprite.getLocalBounds().width/2,m_sprite.getLocalBounds().height/2);
+        originOffset = m_sprite.getOrigin();
         break;
     case K:
         m_sprite.setTexture(m_player ? PieceTextures::whiteKing : PieceTextures::blackKing);
         m_sprite.setScale(1.625,1.625);
         m_sprite.setOrigin(m_sprite.getLocalBounds().width/2,m_sprite.getLocalBounds().height/2);
+        originOffset = m_sprite.getOrigin();
         break;
 
     default:
