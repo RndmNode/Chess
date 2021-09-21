@@ -929,6 +929,38 @@ void ChessGame::print_move_list(){
     printf("Total number of moves: %d\n\n", m_list_of_moves->count);
 }
 
+int ChessGame::make_move(int move, int move_flag){
+    // quiet moves
+    if(!move_flag){     // if move_flag is equal to 0 or 'all_moves' enum
+        // preserve board state for later restoring in case move is illegal
+        board.copy_board();
+        
+        // parse move
+        int source_square = get_move_source(move);
+        int target_square = get_move_target(move);
+        int piece = get_move_piece(move);
+        int promoted = get_move_promoted(move);
+        int capture = get_move_capture(move);
+        int doublePush = get_move_doublePush(move);
+        int enpass = get_move_enpassant(move);
+        int castle = get_move_castling(move);
+
+        // move piece
+        board.bitboards[piece][source_square].flip();
+        board.bitboards[piece][target_square].flip();
+
+        return 1;
+
+    }else{          // captures
+        if(get_move_capture(move)){
+            make_move(move, all_moves);
+        }else return 0;
+    }
+
+    return 1;
+}
+
+
 /**********************************\
  ==================================
              Drawing

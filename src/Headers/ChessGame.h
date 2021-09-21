@@ -40,11 +40,12 @@ extern BITBOARD bishop_attacks[64][512];
 extern BITBOARD rook_attacks[64][4096];
 extern unsigned int random_state;
 
+enum {all_moves, only_captures};
+
 struct moves{
     int moves[256];     // moves
     int count;          // move count
 };
-
 
 class ChessGame: public sf::Drawable {
     public:
@@ -84,6 +85,7 @@ class ChessGame: public sf::Drawable {
         void add_move(int);
         void print_move(int);
         void print_move_list();
+        int make_move(int, int);
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

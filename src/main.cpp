@@ -154,7 +154,28 @@ void printFullCharBoard(Board board){
 }
 
 int main(){ 
-    game();
+    // game();
+    cout << "constructing...\n";
+    ChessGame chess;
+    cout << "initializing...\n";
+    chess.init_all();
+    cout << "generating moves...\n";
+    chess.generateMoves();
+    cout << "printing board...\n\n";
+    printFullCharBoard(chess.board);
+
+    // loop over generated moves
+    for(int i=0; i<chess.m_list_of_moves->count; i++){
+        // init move
+        int move = chess.m_list_of_moves->moves[i];
+        //chess.board.copy_board();
+        chess.make_move(move, all_moves);
+        printFullCharBoard(chess.board);
+        getchar();
+        chess.board.restore_board();
+        printFullCharBoard(chess.board);
+        getchar();
+    }
 
     return 0;
 }
