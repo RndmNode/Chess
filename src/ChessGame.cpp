@@ -975,9 +975,24 @@ int ChessGame::make_move(int move, int move_flag){
 
         // handle pawn promotions
         if(promoted){
+            // change piece
             board.bitboards[piece][target_square].flip();
             board.bitboards[promoted][target_square].flip();
         }
+
+        // handle enpassant captures
+        if(enpass){
+            (!board.side_to_move) ? board.bitboards[p][target_square + 8].flip() : board.bitboards[P][target_square - 8].flip();
+        }
+
+        // reset enpassant square
+        board.enpassant_square = no_sq;
+
+        // handle double pawn push
+        if(doublePush){
+            board.enpassant_square = (!board.side_to_move) ? target_square + 8 : target_square - 8;
+        }
+
     }else{      // captures
         if(get_move_capture(move)){
             make_move(move, all_moves);
