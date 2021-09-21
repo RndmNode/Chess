@@ -35,7 +35,7 @@ Board::Board(int width, int height){
     }
 
     // set starting FEN and parse
-    FEN = START_POSITION;
+    FEN = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq c6 0 1";
     parseFen(FEN);
 
     // white Pawns
@@ -277,6 +277,29 @@ void Board::parseFen(string fen){
     occupancies[both] |= (occupancies[white] | occupancies[black]);
 }
 
+// preserve board state for undoing moves if illegal
+void Board::copy_board(){
+    bitboards_copy = bitboards;
+    occupancies_copy = occupancies;
+    side_copy = side_to_move;
+    enpass_copy = enpassant_square;
+    castle_copy = castling_rights;
+}
+
+// restore previous board state if illegal move was tried
+void Board::restore_board(){
+    bitboards = bitboards_copy;
+    occupancies = occupancies_copy;
+    side_to_move = side_copy;
+    enpassant_square = enpass_copy;
+    castling_rights = castle_copy;
+}
+
+/**********************************\
+ ==================================
+             Drawing
+ ==================================
+\**********************************/
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     for(auto &i : rectangles) target.draw(i);
     

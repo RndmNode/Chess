@@ -9,6 +9,7 @@
 
 using namespace std;
 
+#define EMPTY_BOARD "8/8/8/8/8/8/8/8 b KQkq - 0 1"
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_POSITION "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 #define DJAJA_STUDY "6R1/P2k4/r7/5N1P/r7/p7/7K/8 w - -"
@@ -63,8 +64,11 @@ class Board: public sf::Drawable{
                                  "blackPawn","blackKnight","blackBishop","blackRook","blackQueen","blackKing"};
 
         int side_to_move = -1;
+        int side_copy = -1;
         int enpassant_square = no_sq;
+        int enpass_copy = no_sq;
         int castling_rights;
+        int castle_copy = -1;
 
         //Methods
         void printBoard(int);
@@ -75,9 +79,15 @@ class Board: public sf::Drawable{
         int getBit(BITBOARD, int);
         void setBit(int board, int sqr){bitboards[board].set(sqr);};
         static BITBOARD setBit(BITBOARD board, int sqr){board.set(sqr); return board;}
+        void copy_board();
+        void restore_board();
+
+        void parseFen(string);
 
         vector<BITBOARD> bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
+        vector<BITBOARD> bitboards_copy;
         vector<BITBOARD> occupancies;
+        vector<BITBOARD> occupancies_copy;
         vector<Piece> pieces;
         
         ~Board(){};
@@ -89,7 +99,7 @@ class Board: public sf::Drawable{
         //Attributes
         string FEN;
 
-        void parseFen(string);
+        
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

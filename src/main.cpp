@@ -144,6 +144,13 @@ void printFullCharBoard(Board board){
         cout << "\n ";
     }
     cout << "\n      a b c d e f g h\n\n";
+
+    cout << "  Side: " << ((board.side_to_move) ? "black\n" : "white\n");
+    cout << "  Enpassant: " << square_to_coordinates[board.enpassant_square] << endl;
+    cout << "  Castling: " << ((board.castling_rights & wk) ? 'K' : '-' )<<  
+                              ((board.castling_rights & wq) ? 'Q' : '-' )<<
+                              ((board.castling_rights & bk) ? 'k' : '-' )<<
+                              ((board.castling_rights & bq) ? 'q' : '-' )<< '\n' << '\n';
 }
 
 int main(){ 
@@ -151,8 +158,13 @@ int main(){
     ChessGame chess;
     chess.init_all();
     printFullCharBoard(chess.board);
-    chess.generateMoves();
-    chess.print_move_list(chess.m_list_of_moves);
+    chess.board.copy_board();
+
+    chess.board.parseFen(EMPTY_BOARD);
+    printFullCharBoard(chess.board);
+
+    chess.board.restore_board();
+    printFullCharBoard(chess.board);
 
     return 0;
 }
