@@ -19,6 +19,7 @@ class Piece: public sf::Drawable {
         bool m_updated = false;
         int m_type;
         bool m_player;
+        int m_squarePosition;
 
         //Methods
         void setPosition(sf::RenderTarget& target, sf::Vector2f coordinates);

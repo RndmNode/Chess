@@ -150,15 +150,9 @@ int main(){
     // game();
     ChessGame chess;
     chess.init_all();
-
-    // create move list
-    moves move_list[1];
-    move_list->count = 0;
-
-    // create move
-    chess.add_move(move_list, encode_move(d7, e8, B, Q, 1, 0, 1, 0));
-
-    chess.print_move_list(move_list);
+    printFullCharBoard(chess.board);
+    chess.generateMoves();
+    chess.print_move_list(chess.m_list_of_moves);
 
     return 0;
 }

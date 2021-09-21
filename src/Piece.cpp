@@ -63,6 +63,8 @@ void Piece::setPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
     int y = (y_boardPos * side_y) + (side_y / 2);
 
     m_sprite.setPosition(x, y);
+
+    m_squarePosition = (x_boardPos * 8) + y_boardPos;
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const{

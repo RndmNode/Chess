@@ -533,6 +533,9 @@ void ChessGame::print_attacked_squares(int side){
 
 // generate all moves
 void ChessGame::generateMoves(){
+    // init move count
+    m_list_of_moves->count = 0;
+
     // define source and target squares
     int sourceSquare, targetSquare;
 
@@ -559,19 +562,19 @@ void ChessGame::generateMoves(){
                         // if pawn promotion
                         if(sourceSquare >= a7 && sourceSquare <= h7){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, Q, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, R, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, B, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, N, 0, 0, 0, 0));
                         }else{
                             // one square ahead
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            cout << "Pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
-
+                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                            
                             // two squares ahead
                             if((sourceSquare >= a2 && sourceSquare <= h2) && !board.getBit(board.occupancies[both], targetSquare - 8)){
-                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARES*2
-                                cout << "Double pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare - 8] << endl;
+                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                                add_move(encode_move(sourceSquare, (targetSquare-8), piece, 0, 0, 1, 0, 0));
                             }
                         }
                     }
@@ -586,13 +589,13 @@ void ChessGame::generateMoves(){
                         // handle capture and promotion combo
                         if(sourceSquare >= a7 && sourceSquare <= h7){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, Q, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, R, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, B, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, N, 1, 0, 0, 0));
                         }else{
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            cout << "Pawn capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                         }
                         // pop LS1B from bitboard copy
                         attacks.flip(targetSquare);
@@ -605,7 +608,7 @@ void ChessGame::generateMoves(){
                         // if enpassant is available
                         if(enpassant_attacks.to_ullong()){
                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
-                            cout << "Pawn enpassant capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[enpassant_target] << endl;
+                            add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
                         }
                     }
 
@@ -622,7 +625,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], f1) && !board.getBit(board.occupancies[both], g1)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e1, black) && !is_square_attacked(f1, black)){
-                            cout << "Castling move: e1g1" << endl;
+                            add_move(encode_move(e1, g1, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -633,7 +636,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], d1) && !board.getBit(board.occupancies[both], c1) && !board.getBit(board.occupancies[both], b1)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e1, black) && !is_square_attacked(d1, black)){
-                            cout << "Castling move: e1c1" << endl;
+                            add_move(encode_move(e1, c1, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -652,19 +655,19 @@ void ChessGame::generateMoves(){
                         // if pawn promotion
                         if(sourceSquare >= a2 && sourceSquare <= h2){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
-                            cout << "Pawn Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, q, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, r, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, b, 0, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, n, 0, 0, 0, 0));
                         }else{
                             // one square ahead
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            cout << "Pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
 
                             // two squares ahead
                             if((sourceSquare >= a7 && sourceSquare <= h7) && !board.getBit(board.occupancies[both], targetSquare + 8)){
-                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARES*2
-                                cout << "Double pawn push: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare + 8] << endl;
+                                //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+                                add_move(encode_move(sourceSquare, (targetSquare+8), piece, 0, 0, 1, 0, 0));
                             }
                         }
                     }
@@ -679,13 +682,13 @@ void ChessGame::generateMoves(){
                         // handle capture and promotion combo
                         if(sourceSquare >= a2 && sourceSquare <= h2){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "q" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "r" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "n" << endl;
-                            cout << "Pawn capture Promotion: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << "b" << endl;
-                        }else{
+                            add_move(encode_move(sourceSquare, targetSquare, piece, q, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, r, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, b, 1, 0, 0, 0));
+                            add_move(encode_move(sourceSquare, targetSquare, piece, n, 1, 0, 0, 0));
+                        }else{  // captures
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            cout << "Pawn capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                         }
                         // pop LS1B from bitboard copy
                         attacks.flip(targetSquare);
@@ -698,7 +701,7 @@ void ChessGame::generateMoves(){
                         // if enpassant is available
                         if(enpassant_attacks.to_ullong()){
                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
-                            cout << "Pawn enpassant capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[enpassant_target] << endl;
+                            add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
                         }
                     }
                     // pop LS1B from bitboard copy
@@ -714,7 +717,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], f8) && !board.getBit(board.occupancies[both], g8)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e8, white) && !is_square_attacked(f8, white)){
-                            cout << "Castling move: e8g8" << endl;
+                            add_move(encode_move(e8, g8, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -725,7 +728,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], d8) && !board.getBit(board.occupancies[both], c8) && !board.getBit(board.occupancies[both], b8)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e8, white) && !is_square_attacked(d8, white)){
-                            cout << "Castling move: e8c8" << endl;
+                            add_move(encode_move(e8, c8, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -748,9 +751,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        cout << "Knight Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        cout << "Knight Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -778,9 +781,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        cout << "Bishop Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        cout << "Bishop Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -808,9 +811,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        cout << "Rook Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        cout << "Rook Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -838,9 +841,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        cout << "Queen Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        cout << "Queen Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -868,9 +871,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        cout << "King Quiet Move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        cout << "King Capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -884,12 +887,12 @@ void ChessGame::generateMoves(){
 }
 
 // add move to move_list
-void ChessGame::add_move(moves *move_list, int move){
+void ChessGame::add_move(int move){
     // store move
-    move_list->moves[move_list->count] = move;
+    m_list_of_moves->moves[m_list_of_moves->count] = move;
 
     // increment move count
-    move_list->count++;
+    m_list_of_moves->count++;
 }
 
 // short version of printing a move
@@ -902,6 +905,11 @@ void ChessGame::print_move(int move){
 
 // print move list
 void ChessGame::print_move_list(moves *move_list){
+    // do nothing on empty move list
+    if(!move_list->count){
+        cout << "  No move in the move list!" << endl;
+    }
+
     printf("\n   move    piece   capture   doublePush   enpass   castling\n\n");
     // loop over moves in list
     for(int move_count=0; move_count<move_list->count; move_count++){
@@ -909,7 +917,7 @@ void ChessGame::print_move_list(moves *move_list){
         printf("   %s%s%c   %c       %d         %d            %d        %d\n", 
                 square_to_coordinates[get_move_source(move)], 
                 square_to_coordinates[get_move_target(move)],
-                promoted_piece.at(get_move_promoted(move)),
+                get_move_promoted(move) ? promoted_piece.at(get_move_promoted(move)) : ' ',
                 piece_to_char.at(get_move_piece(move)),
                 (get_move_capture(move)) ? 1:0, 
                 (get_move_doublePush(move)) ? 1:0,
