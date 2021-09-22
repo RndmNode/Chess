@@ -26,6 +26,9 @@ color light = {255, 248, 227}; //light squares
 color dark = {122, 109, 94};   //dark squares
 
 Board::Board(int width, int height){
+    window_w = width;
+    window_h = height;
+
     // initializing boards and pieces
     BITBOARD temp;
     temp.all();
@@ -35,7 +38,7 @@ Board::Board(int width, int height){
     }
 
     // set starting FEN and parse
-    FEN = TRICKY_POSITION;
+    FEN = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
     parseFen(FEN);
 
     // white Pawns
@@ -79,6 +82,8 @@ Board::Board(int width, int height){
     for(unsigned long int i=0; i<pieces.size(); i++){
         pieces[i].setTexture();
     }
+
+    pieceOffset = pieces[0].m_sprite.getOrigin();
     
     loadBoard(width, height);
     findPieces();
@@ -110,10 +115,7 @@ int Board::getBit(BITBOARD board, int index){
 void Board::findPieces(){
     // loop through all pieces to reset their m_updated bool
     for(int i=0; i<32; i++){
-        // if not captured
-        if(!pieces[i].m_captured){
-            pieces[i].m_updated = false;
-        }
+        pieces[i].m_updated = false;
     }
 
     // loop through ranks and files
@@ -140,38 +142,35 @@ void Board::findPieces(){
 }
 
 void Board::placePiece(int type, sf::Vector2f square, int color){
-    sf::Vector2f pos = sf::Vector2f(square.x * 100 + 50, square.y * 100 + 50);
+    sf::Vector2f pos = sf::Vector2f((square.x * int(rectangles[0].getSize().x)) + (int(rectangles[0].getSize().x)/2), 
+                                    (square.y * int(rectangles[0].getSize().y)) + (int(rectangles[0].getSize().y)/2));
 
     // check for color of piece to edit
     if(color == white){
         // loop through pieces to find which to edit
         for(int i=0; i<16; i++){
-            // if not captured
-            if(!pieces[i].m_captured){
-                // check type
-                if(pieces[i].m_type == type){
-                    //check updated
-                    if(!pieces[i].m_updated){
-                        pieces[i].m_updated = true;
-                        pieces[i].m_sprite.setPosition(pos);
-                        break;
-                    }
+            // check type
+            if(pieces[i].m_type == type){
+                //check updated
+                if(!pieces[i].m_updated){
+                    pieces[i].m_updated = true;
+                    pieces[i].m_sprite.setPosition(pos);
+                    pieces[i].m_squarePosition = (square.x * 8) + square.y;
+                    break;
                 }
             }
         }
     }else{
         // loop through pieces to find which to edit
         for(int i=16; i<32; i++){
-            // if not captured
-            if(!pieces[i].m_captured){
-                // check type
-                if(pieces[i].m_type == type){
-                    //check updated
-                    if(!pieces[i].m_updated){
-                        pieces[i].m_updated = true;
-                        pieces[i].m_sprite.setPosition(pos);
-                        break;
-                    }
+            // check type
+            if(pieces[i].m_type == type){
+                //check updated
+                if(!pieces[i].m_updated){
+                    pieces[i].m_updated = true;
+                    pieces[i].m_sprite.setPosition(pos);
+                    pieces[i].m_squarePosition = (square.x * 8) + square.y;
+                    break;
                 }
             }
         }
@@ -293,6 +292,7 @@ void Board::restore_board(){
     side_to_move = side_copy;
     enpassant_square = enpass_copy;
     castling_rights = castle_copy;
+    findPieces();
 }
 
 /**********************************\
@@ -307,7 +307,7 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
     int iter = 0;
     for(auto &i : pieces){
         if(!i.m_selected){
-            if(!i.m_captured && i.m_updated){
+            if(i.m_updated){
                 target.draw(i);
             }
         }else selected = iter;

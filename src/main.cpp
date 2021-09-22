@@ -111,6 +111,72 @@ void game() {
     }
 }
 
+void move() {
+    sf::RenderWindow window;
+
+    window.create(sf::VideoMode(width, height), "CHESS!");
+    ChessGame chess(window);
+    chess.init_all();
+
+    int i=0;
+    int end = chess.m_list_of_moves->count;
+    int move = 0;
+    bool rest = false;
+
+    // run the program as long as the window is open
+    while(window.isOpen()){
+        // check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
+
+        while(window.pollEvent(event)){
+            switch (event.type)
+            {
+            case sf::Event::Closed:
+                window.close();
+                break;
+
+            case sf::Event::MouseButtonPressed:
+                switch (event.key.code)
+                {
+                case sf::Mouse::Left:
+                    // cout << "mouse left pressed.\n";
+                    // cout << "i: " << i << "\n";
+                    if(i < end){
+                        if(!rest){
+                            // cout << "i: " << i << "\n";
+                            move = chess.m_list_of_moves->moves[i];
+                            chess.make_move(move, all_moves);
+                            i++;
+                            rest = true;
+                        }else{
+                            // cout << "restoring board.\n";
+                            chess.board.restore_board();
+                            rest = false;
+                        }
+                    } else {
+                        window.close();
+                    }
+                    break;
+                //-------
+                default:
+                    break;
+                //-------
+                }
+                break;
+            //-------
+            default:
+                break;
+            //-------
+            }
+        }
+
+        // clear and draw screen
+        window.clear();
+        window.draw(chess);
+        window.display();
+    }
+}
+
 // FEN parsing debugger
 void printFullCharBoard(Board board){
     char fullBoard[64];
@@ -155,27 +221,7 @@ void printFullCharBoard(Board board){
 
 int main(){ 
     // game();
-    cout << "constructing...\n";
-    ChessGame chess;
-    cout << "initializing...\n";
-    chess.init_all();
-    cout << "generating moves...\n";
-    chess.generateMoves();
-    cout << "printing board...\n\n";
-    printFullCharBoard(chess.board);
-
-    // loop over generated moves
-    for(int i=0; i<chess.m_list_of_moves->count; i++){
-        // init move
-        int move = chess.m_list_of_moves->moves[i];
-        //chess.board.copy_board();
-        chess.make_move(move, all_moves);
-        printFullCharBoard(chess.board);
-        getchar();
-        chess.board.restore_board();
-        printFullCharBoard(chess.board);
-        getchar();
-    }
+    move();
 
     return 0;
 }

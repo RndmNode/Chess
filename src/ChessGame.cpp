@@ -482,6 +482,7 @@ void ChessGame::init_all(){
     init_leaper_attacks();
     init_slider_attacks(bishop);
     init_slider_attacks(rook);
+    generateMoves();
 }
 
 /**********************************\
@@ -533,6 +534,8 @@ void ChessGame::print_attacked_squares(int side){
 
 // generate all moves
 void ChessGame::generateMoves(){
+
+    // cout << "generating moves...\n";
     // init move count
     m_list_of_moves->count = 0;
 
@@ -884,6 +887,7 @@ void ChessGame::generateMoves(){
             }
         }
     }
+    // cout << "Total moves generated: " << m_list_of_moves->count << "\n";
 }
 
 // add move to move_list
@@ -949,14 +953,38 @@ int ChessGame::make_move(int move, int move_flag){
         board.bitboards[piece][source_square].flip();
         board.bitboards[piece][target_square].flip();
 
-        return 1;
+        if(capture){
+            if(!board.side_to_move){        // white
+                for(int piece=p; piece<=k; piece++){
+                    // if bit is occupied by piece, flip it
+                    if(board.getBit(board.bitboards[piece], target_square)){
+                        board.bitboards[piece][target_square].flip();
+                        break;
+                    }
+                }
+            }else{                          // black
+                for(int piece=P; piece<p; piece++){
+                    // if bit is occupied by piece, flip it
+                    if(board.getBit(board.bitboards[piece], target_square)){
+                        board.bitboards[piece][target_square].flip();
+                        break;
+                    }
+                }
+            }
+        }
 
-    }else{          // captures
+        // handle pawn promotions
+        if(promoted){
+            board.bitboards[piece][target_square].flip();
+            board.bitboards[promoted][target_square].flip();
+        }
+    }else{      // captures
         if(get_move_capture(move)){
             make_move(move, all_moves);
         }else return 0;
     }
 
+    board.findPieces();
     return 1;
 }
 

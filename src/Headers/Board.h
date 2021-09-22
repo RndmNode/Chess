@@ -63,12 +63,15 @@ class Board: public sf::Drawable{
         string boardNames[12] = {"whitePawn","whiteKnight","whiteBishop","whiteRook","whiteQueen","whiteKing",
                                  "blackPawn","blackKnight","blackBishop","blackRook","blackQueen","blackKing"};
 
+        int window_w = 0;
+        int window_h = 0;
         int side_to_move = -1;
         int side_copy = -1;
         int enpassant_square = no_sq;
         int enpass_copy = no_sq;
         int castling_rights;
         int castle_copy = -1;
+        sf::Vector2f pieceOffset;
 
         //Methods
         void printBoard(int);
