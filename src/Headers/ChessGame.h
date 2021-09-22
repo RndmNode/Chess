@@ -39,6 +39,7 @@ extern BITBOARD rook_masks[64];
 extern BITBOARD bishop_attacks[64][512];
 extern BITBOARD rook_attacks[64][4096];
 extern unsigned int random_state;
+extern const int castle_rights[64];
 
 enum {all_moves, only_captures};
 

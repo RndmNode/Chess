@@ -29,6 +29,15 @@ const int rook_relevant_bits[64] = {12, 11, 11, 11, 11, 11, 11, 12,
                                     11, 10, 10, 10, 10, 10, 10, 11,
                                     12, 11, 11, 11, 11, 11, 11, 12};
 
+const int castle_rights[64] = {7, 15, 15, 15, 3, 15, 15, 11,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              15, 15, 15, 15, 15, 15, 15, 15,
+                              13, 15, 15, 15, 12, 15, 15, 14};
+
 const BITBOARD rook_magic_numbers[64] = {
     0x8a80104000800020ULL, 0x140002000100040ULL, 0x2801880a0017001ULL, 0x100081001000420ULL,
     0x200020010080420ULL, 0x3001c0002010008ULL, 0x8480008002000100ULL, 0x2080088004402900ULL,
@@ -938,7 +947,7 @@ int ChessGame::make_move(int move, int move_flag){
     if(!move_flag){     // if move_flag is equal to 0 or 'all_moves' enum
         // preserve board state for later restoring in case move is illegal
         board.copy_board();
-        
+
         // parse move
         int source_square = get_move_source(move);
         int target_square = get_move_target(move);
@@ -993,14 +1002,90 @@ int ChessGame::make_move(int move, int move_flag){
             board.enpassant_square = (!board.side_to_move) ? target_square + 8 : target_square - 8;
         }
 
+        // handle castle move
+        if(castle){
+            switch (target_square)
+            {
+            case g1:
+                // white castle king side
+                board.bitboards[R][h1].flip();
+                board.bitboards[R][f1].flip();
+                break;
+            case c1:
+                // white castle queen side
+                board.bitboards[R][a1].flip();
+                board.bitboards[R][d1].flip();
+                break;
+            case g8:
+                // black castle king side
+                board.bitboards[r][h8].flip();
+                board.bitboards[r][f8].flip();
+                break;
+            case c8:
+                // black castle queen side
+                board.bitboards[r][a8].flip();
+                board.bitboards[r][d8].flip();
+                break;
+            
+            default:
+                break;
+            }
+        } 
+        // update castling rights
+        /*
+                                                castling    move      in         in 
+                                                rights      update    binary     decimal
+
+            king & rooks haven't moved:         1111    &    1111  =  1111  -->  15
+
+                      white king moved:         1111    &    1100  =  1100  -->  12
+               white king's rook moved:         1111    &    1110  =  1110  -->  14
+              white queen's rook moved:         1111    &    1101  =  1101  -->  13
+
+                      black king moved:         1111    &    0011  =  0011  -->  3
+               black king's rook moved:         1111    &    1011  =  1011  -->  11
+              black queen's rook moved:         1111    &    0111  =  0111  -->  7
+
+        */
+
+        // update castling rights
+        board.castling_rights &= castle_rights[source_square];
+        board.castling_rights &= castle_rights[target_square];
+
+        //-------------update occupancy boards
+        // clear boards
+        board.occupancies[white].reset();
+        board.occupancies[black].reset();
+        board.occupancies[both].reset();
+        // loop over pieces to create occupancy boards
+        for(int i=P; i<=K; i++){
+            board.occupancies[white] |= board.bitboards[i];
+            board.occupancies[black] |= board.bitboards[i + 6];
+        }
+        // reset occupancies
+        board.occupancies[both] |= board.occupancies[white]; 
+        board.occupancies[both] |= board.occupancies[black];
+
+        //-------------check if king is in check (distinguishing between pseudo-legal and legal move)
+        // change sides
+        board.side_to_move ^= 1;
+
+        // make sure that the king has not been exposed
+        if(is_square_attacked((!board.side_to_move) ? indexLeastSigBit(board.bitboards[k]) : indexLeastSigBit(board.bitboards[K]), board.side_to_move)){
+            // move is illegal; restore board
+            board.restore_board();
+            return 0;
+        }else{
+            board.findPieces();
+            return 1;
+        }
+
     }else{      // captures
         if(get_move_capture(move)){
             make_move(move, all_moves);
         }else return 0;
     }
-
-    board.findPieces();
-    return 1;
+    return 0;
 }
 
 

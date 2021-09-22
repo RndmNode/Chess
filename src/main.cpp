@@ -187,10 +187,13 @@ void move() {
                         if(!rest){
                             // cout << "i: " << i << "\n";
                             move = chess.m_list_of_moves->moves[i];
-                            chess.make_move(move, all_moves);
-                            i++;
-                            rest = true;
-                            printFullCharBoard(chess.board);
+                            if(chess.make_move(move, all_moves)){
+                                i++;
+                                rest = true;
+                                printFullCharBoard(chess.board);
+                            }else{
+                                i++;
+                            }
                         }else{
                             // cout << "restoring board.\n";
                             chess.board.restore_board();
