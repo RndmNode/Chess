@@ -226,7 +226,22 @@ void move() {
 
 int main(){ 
     // game();
-    move();
+    // move();
+    ChessGame chess;
+    chess.init_all();
+
+    long goals[6] = {0,20,400,8902,197281};
+
+    for(int i=1; i<5; i++){
+        int start = chess.time_in_ms();
+        int nodes = chess.PERFT_Driver(i);
+        int end = chess.time_in_ms();
+        cout << "\ndepth: " << i;
+        cout << "\t  time: " << end - start << "ms";
+        cout << "\t  nodes: " << nodes;
+        cout << "\t  goal: " << goals[i];
+        cout << "\t  discrepency: " << nodes - goals[i] << endl;
+    }
 
     return 0;
 }

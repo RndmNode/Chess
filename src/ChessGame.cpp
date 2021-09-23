@@ -491,7 +491,7 @@ void ChessGame::init_all(){
     init_leaper_attacks();
     init_slider_attacks(bishop);
     init_slider_attacks(rook);
-    generateMoves();
+    generateMoves(m_list_of_moves);
 }
 
 /**********************************\
@@ -541,12 +541,370 @@ void ChessGame::print_attacked_squares(int side){
     cout << "\n     a b c d e f g h\n\n";
 }
 
+// // generate all moves
+// void ChessGame::generateMoves(){
+
+//     // cout << "generating moves...\n";
+//     // init move count
+//     m_list_of_moves->count = 0;
+
+//     // define source and target squares
+//     int sourceSquare, targetSquare;
+
+//     // define current piece's bitboard copy & its attacks
+//     BITBOARD bitboard, attacks;
+
+//     // loop over all bitboards
+//     for(int piece=P; piece<=k; piece++){
+//         // init bitboard copy
+//         bitboard = board.bitboards[piece];
+
+//         // generate white pawns & white king castling
+//         if(board.side_to_move == white){
+//             // Pawns
+//             if(piece == P){
+//                 // while pieces have not been accounted for (bitboard.to_ullong() is greater than 0)
+//                 while(bitboard.to_ullong()){
+//                     // init source and target square
+//                     sourceSquare = indexLeastSigBit(bitboard);
+//                     targetSquare = sourceSquare - 8;
+
+//                     // generate quiet pawn moves
+//                     if(!(targetSquare < a8) && !board.getBit(board.occupancies[both],targetSquare)){
+//                         // if pawn promotion
+//                         if(sourceSquare >= a7 && sourceSquare <= h7){
+//                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, Q, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, R, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, B, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, N, 0, 0, 0, 0));
+//                         }else{
+//                             // one square ahead
+//                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                            
+//                             // two squares ahead
+//                             if((sourceSquare >= a2 && sourceSquare <= h2) && !board.getBit(board.occupancies[both], targetSquare - 8)){
+//                                 //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                                 add_move(encode_move(sourceSquare, (targetSquare-8), piece, 0, 0, 1, 0, 0));
+//                             }
+//                         }
+//                     }
+
+//                     // init pawn attacks bitboard
+//                     attacks = pawn_attacks[board.side_to_move][sourceSquare] & board.occupancies[black];
+
+//                     // generate pawn captures
+//                     while(attacks.to_ullong()){
+//                         targetSquare = indexLeastSigBit(attacks);
+
+//                         // handle capture and promotion combo
+//                         if(sourceSquare >= a7 && sourceSquare <= h7){
+//                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, Q, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, R, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, B, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, N, 1, 0, 0, 0));
+//                         }else{
+//                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                         }
+//                         // pop LS1B from bitboard copy
+//                         attacks.flip(targetSquare);
+//                     }
+
+//                     // generate enpassant captures
+//                     if(board.enpassant_square != no_sq){
+//                         BITBOARD enpassant_attacks = pawn_attacks[board.side_to_move][sourceSquare].to_ullong() & (1ULL << board.enpassant_square);
+
+//                         // if enpassant is available
+//                         if(enpassant_attacks.to_ullong()){
+//                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
+//                             add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
+//                         }
+//                     }
+
+//                     // pop LS1B from bitboard copy
+//                     bitboard.flip(sourceSquare);
+//                 }
+//             }
+
+//             // castling moves
+//             if(piece == K){
+//                 // king side castling
+//                 if(board.castling_rights & wk){
+//                     // make sure no pieces are between the king and king's rook
+//                     if (!board.getBit(board.occupancies[both], f1) && !board.getBit(board.occupancies[both], g1)){
+//                         // make sure king is not moving out of, or through, check
+//                         if(!is_square_attacked(e1, black) && !is_square_attacked(f1, black)){
+//                             add_move(encode_move(e1, g1, piece, 0, 0, 0, 0, 1));
+//                         }
+//                     }
+//                 }
+
+//                 // queen side castling
+//                 if(board.castling_rights & wq){
+//                     // make sure no pieces are between the king and queen's rook
+//                     if (!board.getBit(board.occupancies[both], d1) && !board.getBit(board.occupancies[both], c1) && !board.getBit(board.occupancies[both], b1)){
+//                         // make sure king is not moving out of, or through, check
+//                         if(!is_square_attacked(e1, black) && !is_square_attacked(d1, black)){
+//                             add_move(encode_move(e1, c1, piece, 0, 0, 0, 0, 1));
+//                         }
+//                     }
+//                 }
+//             }
+//         } else {    // black pawns & king castling
+//             // Pawns
+//             if(piece == p){
+//                 // while pieces have not been accounted for (bitboard.to_ullong() is greater than 0)
+//                 while(bitboard.to_ullong()){
+//                     // init source and target square
+//                     sourceSquare = indexLeastSigBit(bitboard);
+//                     targetSquare = sourceSquare + 8;
+
+//                     // generate quiet pawn moves
+//                     if(!(targetSquare < a8) && !board.getBit(board.occupancies[both],targetSquare)){
+//                         // if pawn promotion
+//                         if(sourceSquare >= a2 && sourceSquare <= h2){
+//                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, q, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, r, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, b, 0, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, n, 0, 0, 0, 0));
+//                         }else{
+//                             // one square ahead
+//                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+
+//                             // two squares ahead
+//                             if((sourceSquare >= a7 && sourceSquare <= h7) && !board.getBit(board.occupancies[both], targetSquare + 8)){
+//                                 //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                                 add_move(encode_move(sourceSquare, (targetSquare+8), piece, 0, 0, 1, 0, 0));
+//                             }
+//                         }
+//                     }
+
+//                     // init pawn attacks bitboard
+//                     attacks = pawn_attacks[board.side_to_move][sourceSquare] & board.occupancies[white];
+
+//                     // generate pawn captures
+//                     while(attacks.to_ullong()){
+//                         targetSquare = indexLeastSigBit(attacks);
+
+//                         // handle capture and promotion combo
+//                         if(sourceSquare >= a2 && sourceSquare <= h2){
+//                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, q, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, r, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, b, 1, 0, 0, 0));
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, n, 1, 0, 0, 0));
+//                         }else{  // captures
+//                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
+//                             add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                         }
+//                         // pop LS1B from bitboard copy
+//                         attacks.flip(targetSquare);
+//                     }
+
+//                     // generate enpassant captures
+//                     if(board.enpassant_square != no_sq){
+//                         BITBOARD enpassant_attacks = pawn_attacks[board.side_to_move][sourceSquare].to_ullong() & (1ULL << board.enpassant_square);
+
+//                         // if enpassant is available
+//                         if(enpassant_attacks.to_ullong()){
+//                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
+//                             add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
+//                         }
+//                     }
+//                     // pop LS1B from bitboard copy
+//                     bitboard.flip(sourceSquare);
+//                 }
+//             }
+
+//             // castling moves
+//             if(piece == k){
+//                 // king side castling
+//                 if(board.castling_rights & bk){
+//                     // make sure no pieces are between the king and king's rook
+//                     if (!board.getBit(board.occupancies[both], f8) && !board.getBit(board.occupancies[both], g8)){
+//                         // make sure king is not moving out of, or through, check
+//                         if(!is_square_attacked(e8, white) && !is_square_attacked(f8, white)){
+//                             add_move(encode_move(e8, g8, piece, 0, 0, 0, 0, 1));
+//                         }
+//                     }
+//                 }
+
+//                 // queen side castling
+//                 if(board.castling_rights & bq){
+//                     // make sure no pieces are between the king and queen's rook
+//                     if (!board.getBit(board.occupancies[both], d8) && !board.getBit(board.occupancies[both], c8) && !board.getBit(board.occupancies[both], b8)){
+//                         // make sure king is not moving out of, or through, check
+//                         if(!is_square_attacked(e8, white) && !is_square_attacked(d8, white)){
+//                             add_move(encode_move(e8, c8, piece, 0, 0, 0, 0, 1));
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+
+//         // generate knight moves
+//         if((board.side_to_move == white) ? piece == N : piece == n){
+//             // loop over source squares of piece bitboard copy
+//             while(bitboard.to_ullong()){
+//                 // init source square
+//                 sourceSquare = indexLeastSigBit(bitboard);
+
+//                 // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+//                 attacks = knight_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+//                 while (attacks.to_ullong()){
+//                     // init target square
+//                     targetSquare = indexLeastSigBit(attacks);
+
+//                     // quiet move
+//                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+//                     } else { // captures
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                     }
+
+//                     // pop ls1b
+//                     attacks.flip(targetSquare);
+//                 }
+//                 // pop ls1b
+//                 bitboard.flip(sourceSquare);
+//             }
+//         }
+        
+//         // generate bishop moves
+//         if((board.side_to_move == white) ? piece == B : piece == b){
+//             // loop over source squares of piece bitboard copy
+//             while(bitboard.to_ullong()){
+//                 // init source square
+//                 sourceSquare = indexLeastSigBit(bitboard);
+
+//                 // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+//                 attacks = get_Bishop_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+//                 // loop over attack squares of attack bitboard
+//                 while (attacks.to_ullong()){
+//                     // init target square
+//                     targetSquare = indexLeastSigBit(attacks);
+
+//                     // quiet move
+//                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+//                     } else { // captures
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                     }
+
+//                     // pop ls1b
+//                     attacks.flip(targetSquare);
+//                 }
+//                 // pop ls1b
+//                 bitboard.flip(sourceSquare);
+//             }
+//         }
+
+//         // generate rook moves
+//         if((board.side_to_move == white) ? piece == R : piece == r){
+//             // loop over source squares of piece bitboard copy
+//             while(bitboard.to_ullong()){
+//                 // init source square
+//                 sourceSquare = indexLeastSigBit(bitboard);
+
+//                 // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+//                 attacks = get_Rook_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+//                 // loop over attack squares of attack bitboard
+//                 while (attacks.to_ullong()){
+//                     // init target square
+//                     targetSquare = indexLeastSigBit(attacks);
+
+//                     // quiet move
+//                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+//                     } else { // captures
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                     }
+
+//                     // pop ls1b
+//                     attacks.flip(targetSquare);
+//                 }
+//                 // pop ls1b
+//                 bitboard.flip(sourceSquare);
+//             }
+//         }
+
+//         // generate queen moves
+//         if((board.side_to_move == white) ? piece == Q : piece == q){
+//             // loop over source squares of piece bitboard copy
+//             while(bitboard.to_ullong()){
+//                 // init source square
+//                 sourceSquare = indexLeastSigBit(bitboard);
+
+//                 // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+//                 attacks = get_Queen_Attacks(sourceSquare,board.occupancies[both]) & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+//                 // loop over attack squares of attack bitboard
+//                 while (attacks.to_ullong()){
+//                     // init target square
+//                     targetSquare = indexLeastSigBit(attacks);
+
+//                     // quiet move
+//                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+//                     } else { // captures
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                     }
+
+//                     // pop ls1b
+//                     attacks.flip(targetSquare);
+//                 }
+//                 // pop ls1b
+//                 bitboard.flip(sourceSquare);
+//             }
+//         }
+
+//         // generate king moves
+//         if((board.side_to_move == white) ? piece == K : piece == k){
+//             // loop over source squares of piece bitboard copy
+//             while(bitboard.to_ullong()){
+//                 // init source square
+//                 sourceSquare = indexLeastSigBit(bitboard);
+
+//                 // init piece attacks in order to get set of target squares (avoids attacking own pieces given side-to-move)
+//                 attacks = king_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+
+//                 // loop over attack squares of attack bitboard
+//                 while (attacks.to_ullong()){
+//                     // init target square
+//                     targetSquare = indexLeastSigBit(attacks);
+
+//                     // quiet move
+//                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+//                     } else { // captures
+//                         add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+//                     }
+
+//                     // pop ls1b
+//                     attacks.flip(targetSquare);
+//                 }
+//                 // pop ls1b
+//                 bitboard.flip(sourceSquare);
+//             }
+//         }
+//     }
+//     // cout << "Total moves generated: " << m_list_of_moves->count << "\n";
+// }
+
 // generate all moves
-void ChessGame::generateMoves(){
+long ChessGame::generateMoves(moves *move_list){
 
     // cout << "generating moves...\n";
     // init move count
-    m_list_of_moves->count = 0;
+    move_list->count = 0;
 
     // define source and target squares
     int sourceSquare, targetSquare;
@@ -574,19 +932,19 @@ void ChessGame::generateMoves(){
                         // if pawn promotion
                         if(sourceSquare >= a7 && sourceSquare <= h7){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            add_move(encode_move(sourceSquare, targetSquare, piece, Q, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, R, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, B, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, N, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, Q, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, R, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, B, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, N, 0, 0, 0, 0));
                         }else{
                             // one square ahead
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                             
                             // two squares ahead
                             if((sourceSquare >= a2 && sourceSquare <= h2) && !board.getBit(board.occupancies[both], targetSquare - 8)){
                                 //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                                add_move(encode_move(sourceSquare, (targetSquare-8), piece, 0, 0, 1, 0, 0));
+                                add_move(move_list, encode_move(sourceSquare, (targetSquare-8), piece, 0, 0, 1, 0, 0));
                             }
                         }
                     }
@@ -601,13 +959,13 @@ void ChessGame::generateMoves(){
                         // handle capture and promotion combo
                         if(sourceSquare >= a7 && sourceSquare <= h7){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            add_move(encode_move(sourceSquare, targetSquare, piece, Q, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, R, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, B, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, N, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, Q, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, R, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, B, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, N, 1, 0, 0, 0));
                         }else{
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                         }
                         // pop LS1B from bitboard copy
                         attacks.flip(targetSquare);
@@ -620,7 +978,7 @@ void ChessGame::generateMoves(){
                         // if enpassant is available
                         if(enpassant_attacks.to_ullong()){
                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
-                            add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
+                            add_move(move_list, encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
                         }
                     }
 
@@ -637,7 +995,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], f1) && !board.getBit(board.occupancies[both], g1)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e1, black) && !is_square_attacked(f1, black)){
-                            add_move(encode_move(e1, g1, piece, 0, 0, 0, 0, 1));
+                            add_move(move_list, encode_move(e1, g1, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -648,7 +1006,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], d1) && !board.getBit(board.occupancies[both], c1) && !board.getBit(board.occupancies[both], b1)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e1, black) && !is_square_attacked(d1, black)){
-                            add_move(encode_move(e1, c1, piece, 0, 0, 0, 0, 1));
+                            add_move(move_list, encode_move(e1, c1, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -667,19 +1025,19 @@ void ChessGame::generateMoves(){
                         // if pawn promotion
                         if(sourceSquare >= a2 && sourceSquare <= h2){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            add_move(encode_move(sourceSquare, targetSquare, piece, q, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, r, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, b, 0, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, n, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, q, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, r, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, b, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, n, 0, 0, 0, 0));
                         }else{
                             // one square ahead
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
 
                             // two squares ahead
                             if((sourceSquare >= a7 && sourceSquare <= h7) && !board.getBit(board.occupancies[both], targetSquare + 8)){
                                 //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                                add_move(encode_move(sourceSquare, (targetSquare+8), piece, 0, 0, 1, 0, 0));
+                                add_move(move_list, encode_move(sourceSquare, (targetSquare+8), piece, 0, 0, 1, 0, 0));
                             }
                         }
                     }
@@ -694,13 +1052,13 @@ void ChessGame::generateMoves(){
                         // handle capture and promotion combo
                         if(sourceSquare >= a2 && sourceSquare <= h2){
                             //------ ADD FOUR MOVES TO MOVE LIST (PROMOTE TO Q, R, N, B)
-                            add_move(encode_move(sourceSquare, targetSquare, piece, q, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, r, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, b, 1, 0, 0, 0));
-                            add_move(encode_move(sourceSquare, targetSquare, piece, n, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, q, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, r, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, b, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, n, 1, 0, 0, 0));
                         }else{  // captures
                             //------ ADD ONE MOVE FROM SOURCE TO TARGET SQUARE
-                            add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                            add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                         }
                         // pop LS1B from bitboard copy
                         attacks.flip(targetSquare);
@@ -713,7 +1071,7 @@ void ChessGame::generateMoves(){
                         // if enpassant is available
                         if(enpassant_attacks.to_ullong()){
                             int enpassant_target = indexLeastSigBit(enpassant_attacks);
-                            add_move(encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
+                            add_move(move_list, encode_move(sourceSquare, enpassant_target, piece, 0, 1, 0, 1, 0));
                         }
                     }
                     // pop LS1B from bitboard copy
@@ -729,7 +1087,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], f8) && !board.getBit(board.occupancies[both], g8)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e8, white) && !is_square_attacked(f8, white)){
-                            add_move(encode_move(e8, g8, piece, 0, 0, 0, 0, 1));
+                            add_move(move_list, encode_move(e8, g8, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -740,7 +1098,7 @@ void ChessGame::generateMoves(){
                     if (!board.getBit(board.occupancies[both], d8) && !board.getBit(board.occupancies[both], c8) && !board.getBit(board.occupancies[both], b8)){
                         // make sure king is not moving out of, or through, check
                         if(!is_square_attacked(e8, white) && !is_square_attacked(d8, white)){
-                            add_move(encode_move(e8, c8, piece, 0, 0, 0, 0, 1));
+                            add_move(move_list, encode_move(e8, c8, piece, 0, 0, 0, 0, 1));
                         }
                     }
                 }
@@ -763,9 +1121,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -793,9 +1151,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -823,9 +1181,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -853,9 +1211,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -883,9 +1241,9 @@ void ChessGame::generateMoves(){
 
                     // quiet move
                     if(!board.getBit((board.side_to_move == white) ? board.occupancies[black] : board.occupancies[white], targetSquare)){
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0));
                     } else { // captures
-                        add_move(encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
+                        add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
 
                     // pop ls1b
@@ -897,15 +1255,20 @@ void ChessGame::generateMoves(){
         }
     }
     // cout << "Total moves generated: " << m_list_of_moves->count << "\n";
+    return m_list_of_moves->count;
 }
 
 // add move to move_list
-void ChessGame::add_move(int move){
-    // store move
-    m_list_of_moves->moves[m_list_of_moves->count] = move;
+void ChessGame::add_move(moves *move_list, int move){
+    if(make_move(move, all_moves)){
+        // store move
+        move_list->moves[move_list->count] = move;
 
-    // increment move count
-    m_list_of_moves->count++;
+        // increment move count
+        move_list->count++;
+
+        board.restore_board();
+    }
 }
 
 // short version of printing a move
@@ -1088,7 +1451,30 @@ int ChessGame::make_move(int move, int move_flag){
     return 0;
 }
 
+int ChessGame::time_in_ms(){
+    timeval time;
+    gettimeofday(&time,NULL);
+    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
+}
 
+long ChessGame::PERFT_Driver(int depth){
+    moves move_list[1];
+    long moveNum = generateMoves(move_list);
+    long nodes = 0;
+    
+    // exit condition
+    if(depth == 1){
+        return moveNum;
+    }
+
+    for(int i=0; i<m_list_of_moves->count; i++){
+        board.copy_board();
+        make_move(move_list->moves[i], all_moves);
+        nodes += PERFT_Driver(depth - 1);
+        board.restore_board();
+    }
+    return nodes;
+}
 /**********************************\
  ==================================
              Drawing

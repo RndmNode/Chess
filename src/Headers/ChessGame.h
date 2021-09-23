@@ -3,6 +3,7 @@
 
 #include "Board.h"
 #include <string.h>
+#include <sys/time.h>
 
 // encode moves into integers
 #define encode_move(source, target, piece, promoted, capture, doublePush, enpassant, castling)\
@@ -55,6 +56,7 @@ class ChessGame: public sf::Drawable {
         moves m_list_of_moves[1];
 
         // attributes
+        // long nodes = 0;
 
         // methods
         unsigned int get_random_U32_number();
@@ -82,11 +84,15 @@ class ChessGame: public sf::Drawable {
 
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
-        void generateMoves();
-        void add_move(int);
+        long generateMoves(moves *move_list);
+        void add_move(moves *move_list, int move);
         void print_move(int);
         void print_move_list();
         int make_move(int move, int move_flag);
+
+        // PERFT testing
+        int time_in_ms();
+        long PERFT_Driver(int depth);
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
