@@ -1255,7 +1255,7 @@ long ChessGame::generateMoves(moves *move_list){
         }
     }
     // cout << "Total moves generated: " << m_list_of_moves->count << "\n";
-    return m_list_of_moves->count;
+    return move_list->count;
 }
 
 // add move to move_list
