@@ -227,6 +227,7 @@ void printFullCharBoard(Board board){
 int main(){ 
     // game();
     // move();
+    
     moves move_list[1];
     ChessGame chess;
     chess.init_all();
