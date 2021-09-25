@@ -153,95 +153,85 @@ void printFullCharBoard(Board board){
                               ((board.castling_rights & bq) ? 'q' : '-' )<< '\n' << '\n';
 }
 
-void move() {
-    sf::RenderWindow window;
+// void move() {
+//     sf::RenderWindow window;
 
-    window.create(sf::VideoMode(width, height), "CHESS!");
-    ChessGame chess(window);
-    chess.init_all();
+//     window.create(sf::VideoMode(width, height), "CHESS!");
+//     ChessGame chess(window);
+//     chess.init_all();
 
-    int i=0;
-    int end = chess.m_list_of_moves->count;
-    int move = 0;
-    bool rest = false;
+//     int i=0;
+//     int end = chess.m_list_of_moves->count;
+//     int move = 0;
+//     bool rest = false;
 
-    // run the program as long as the window is open
-    while(window.isOpen()){
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
+//     // run the program as long as the window is open
+//     while(window.isOpen()){
+//         // check all the window's events that were triggered since the last iteration of the loop
+//         sf::Event event;
 
-        while(window.pollEvent(event)){
-            switch (event.type)
-            {
-            case sf::Event::Closed:
-                window.close();
-                break;
+//         while(window.pollEvent(event)){
+//             switch (event.type)
+//             {
+//             case sf::Event::Closed:
+//                 window.close();
+//                 break;
 
-            case sf::Event::MouseButtonPressed:
-                switch (event.key.code)
-                {
-                case sf::Mouse::Left:
-                    // cout << "mouse left pressed.\n";
-                    // cout << "i: " << i << "\n";
-                    if(i < end){
-                        if(!rest){
-                            // cout << "i: " << i << "\n";
-                            move = chess.m_list_of_moves->moves[i];
-                            if(chess.make_move(move, all_moves)){
-                                i++;
-                                rest = true;
-                                printFullCharBoard(chess.board);
-                            }else{
-                                i++;
-                            }
-                        }else{
-                            // cout << "restoring board.\n";
-                            chess.board.restore_board();
-                            rest = false;
-                            printFullCharBoard(chess.board);
-                        }
-                    } else {
-                        window.close();
-                    }
-                    break;
-                //-------
-                default:
-                    break;
-                //-------
-                }
-                break;
-            //-------
-            default:
-                break;
-            //-------
-            }
-        }
+//             case sf::Event::MouseButtonPressed:
+//                 switch (event.key.code)
+//                 {
+//                 case sf::Mouse::Left:
+//                     // cout << "mouse left pressed.\n";
+//                     // cout << "i: " << i << "\n";
+//                     if(i < end){
+//                         if(!rest){
+//                             // cout << "i: " << i << "\n";
+//                             move = chess.m_list_of_moves->moves[i];
+//                             if(chess.make_move(move, all_moves)){
+//                                 i++;
+//                                 rest = true;
+//                                 printFullCharBoard(chess.board);
+//                             }else{
+//                                 i++;
+//                             }
+//                         }else{
+//                             // cout << "restoring board.\n";
+//                             chess.board.restore_board();
+//                             rest = false;
+//                             printFullCharBoard(chess.board);
+//                         }
+//                     } else {
+//                         window.close();
+//                     }
+//                     break;
+//                 //-------
+//                 default:
+//                     break;
+//                 //-------
+//                 }
+//                 break;
+//             //-------
+//             default:
+//                 break;
+//             //-------
+//             }
+//         }
 
-        // clear and draw screen
-        window.clear();
-        window.draw(chess);
-        window.display();
-    }
-}
+//         // clear and draw screen
+//         window.clear();
+//         window.draw(chess);
+//         window.display();
+//     }
+// }
 
 int main(){ 
     // game();
     // move();
+    moves move_list[1];
     ChessGame chess;
     chess.init_all();
-
-    long goals[6] = {0,20,400,8902,197281};
-
-    for(int i=1; i<5; i++){
-        int start = chess.time_in_ms();
-        int nodes = chess.PERFT_Driver(i);
-        int end = chess.time_in_ms();
-        cout << "\ndepth: " << i;
-        cout << "\t  time: " << end - start << "ms";
-        cout << "\t  nodes: " << nodes;
-        cout << "\t  goal: " << goals[i];
-        cout << "\t  discrepency: " << nodes - goals[i] << endl;
-    }
+    printFullCharBoard(chess.board);
+    chess.generateMoves(move_list);
 
     return 0;
 }
