@@ -855,6 +855,11 @@ void ChessGame::generateMoves(moves *move_list){
     }
 }
 
+// function to check legality of move
+bool ChessGame::check_legality(int move){
+    
+}
+
 // short version of printing a move
 void ChessGame::print_move(int move){
     cout << square_to_coordinates[get_move_source(move)] << 
