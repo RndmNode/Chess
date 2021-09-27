@@ -741,15 +741,117 @@ void ChessGame::generateMoves(moves *move_list){
         }
 
         // knight moves
+        if((!board.side_to_move) ? piece == N : piece == n){
+            while(bitboard.to_ullong()){
+                sourceSquare = indexLeastSigBit(bitboard);
+                attacks = knight_attacks[sourceSquare].to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white].to_ullong() : ~board.occupancies[black].to_ullong());
+                
+                while(attacks.to_ullong()){
+                    targetSquare = indexLeastSigBit(attacks);
 
+                    // quiet move
+                    if(!board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), targetSquare)){
+                        cout << "Knight move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }else{      // captures
+                        cout << "Knight captures: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    // pop ls1b
+                    attacks.flip(targetSquare);
+                }
+
+                // pop ls1b
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // bishop moves
+        if((!board.side_to_move) ? piece == B : piece == b){
+            while(bitboard.to_ullong()){
+                sourceSquare = indexLeastSigBit(bitboard);
+                attacks = get_Bishop_Attacks(sourceSquare, board.occupancies[both]).to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white] : ~board.occupancies[black]).to_ullong();
+
+                while(attacks.to_ullong()){
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    if(!board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), targetSquare)){
+                        cout << "Bishop move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }else{
+                        cout << "Bishop capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    attacks.flip(targetSquare);
+                }
+
+                bitboard.flip(sourceSquare);
+            }
+        }
         
         // rook moves
+        if((!board.side_to_move) ? piece == R : piece == r){
+            while(bitboard.to_ullong()){
+                sourceSquare = indexLeastSigBit(bitboard);
+                attacks = get_Rook_Attacks(sourceSquare, board.occupancies[both]).to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white] : ~board.occupancies[black]).to_ullong();
+
+                while(attacks.to_ullong()){
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    if(!board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), targetSquare)){
+                        cout << "Rook move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }else{
+                        cout << "Rook capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    attacks.flip(targetSquare);
+                }
+
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // queen moves
+        if((!board.side_to_move) ? piece == Q : piece == q){
+            while(bitboard.to_ullong()){
+                sourceSquare = indexLeastSigBit(bitboard);
+                attacks = get_Queen_Attacks(sourceSquare, board.occupancies[both]).to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white] : ~board.occupancies[black]).to_ullong();
+
+                while(attacks.to_ullong()){
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    if(!board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), targetSquare)){
+                        cout << "Queen move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }else{
+                        cout << "Queen capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    attacks.flip(targetSquare);
+                }
+
+                bitboard.flip(sourceSquare);
+            }
+        }
 
         // king moves
+        if((!board.side_to_move) ? piece == K : piece == k){
+            while(bitboard.to_ullong()){
+                sourceSquare = indexLeastSigBit(bitboard);
+                attacks = king_attacks[sourceSquare].to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white].to_ullong() : ~board.occupancies[black].to_ullong());
+
+                while(attacks.to_ullong()){
+                    targetSquare = indexLeastSigBit(attacks);
+
+                    if(!board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), targetSquare)){
+                        cout << "King move: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }else{
+                        cout << "King capture: " << square_to_coordinates[sourceSquare] << square_to_coordinates[targetSquare] << endl;
+                    }
+
+                    attacks.flip(targetSquare);
+                }
+
+                bitboard.flip(sourceSquare);
+            }
+        }
     }
 }
 
