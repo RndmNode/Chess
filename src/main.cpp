@@ -153,86 +153,88 @@ void printFullCharBoard(Board board){
                               ((board.castling_rights & bq) ? 'q' : '-' )<< '\n' << '\n';
 }
 
-// void move() {
-//     sf::RenderWindow window;
+void move() {
+    sf::RenderWindow window;
 
-//     window.create(sf::VideoMode(width, height), "CHESS!");
-//     ChessGame chess(window);
-//     chess.init_all();
+    window.create(sf::VideoMode(width, height), "CHESS!");
+    ChessGame chess(window);
+    chess.init_all();
+    chess.generateMoves(chess.m_list_of_moves);
 
-//     int i=0;
-//     int end = chess.m_list_of_moves->count;
-//     int move = 0;
-//     bool rest = false;
+    int i=0;
+    int end = chess.m_list_of_moves->count;
+    int move = 0;
+    bool rest = false;
 
-//     // run the program as long as the window is open
-//     while(window.isOpen()){
-//         // check all the window's events that were triggered since the last iteration of the loop
-//         sf::Event event;
+    // run the program as long as the window is open
+    while(window.isOpen()){
+        // check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
 
-//         while(window.pollEvent(event)){
-//             switch (event.type)
-//             {
-//             case sf::Event::Closed:
-//                 window.close();
-//                 break;
+        while(window.pollEvent(event)){
+            switch (event.type)
+            {
+            case sf::Event::Closed:
+                window.close();
+                break;
 
-//             case sf::Event::MouseButtonPressed:
-//                 switch (event.key.code)
-//                 {
-//                 case sf::Mouse::Left:
-//                     // cout << "mouse left pressed.\n";
-//                     // cout << "i: " << i << "\n";
-//                     if(i < end){
-//                         if(!rest){
-//                             // cout << "i: " << i << "\n";
-//                             move = chess.m_list_of_moves->moves[i];
-//                             if(chess.make_move(move, all_moves)){
-//                                 i++;
-//                                 rest = true;
-//                                 printFullCharBoard(chess.board);
-//                             }else{
-//                                 i++;
-//                             }
-//                         }else{
-//                             // cout << "restoring board.\n";
-//                             chess.board.restore_board();
-//                             rest = false;
-//                             printFullCharBoard(chess.board);
-//                         }
-//                     } else {
-//                         window.close();
-//                     }
-//                     break;
-//                 //-------
-//                 default:
-//                     break;
-//                 //-------
-//                 }
-//                 break;
-//             //-------
-//             default:
-//                 break;
-//             //-------
-//             }
-//         }
+            case sf::Event::MouseButtonPressed:
+                switch (event.key.code)
+                {
+                case sf::Mouse::Left:
+                    // cout << "mouse left pressed.\n";
+                    // cout << "i: " << i << "\n";
+                    if(i < end){
+                        if(!rest){
+                            // cout << "i: " << i << "\n";
+                            move = chess.m_list_of_moves->moves[i];
+                            if(chess.make_move(move, all_moves)){
+                                i++;
+                                rest = true;
+                                printFullCharBoard(chess.board);
+                            }else{
+                                i++;
+                            }
+                        }else{
+                            // cout << "restoring board.\n";
+                            chess.board.restore_board();
+                            rest = false;
+                            printFullCharBoard(chess.board);
+                        }
+                    } else {
+                        window.close();
+                    }
+                    break;
+                //-------
+                default:
+                    break;
+                //-------
+                }
+                break;
+            //-------
+            default:
+                break;
+            //-------
+            }
+        }
 
-//         // clear and draw screen
-//         window.clear();
-//         window.draw(chess);
-//         window.display();
-//     }
-// }
+        // clear and draw screen
+        window.clear();
+        window.draw(chess);
+        window.display();
+    }
+}
 
 int main(){ 
     // game();
     // move();
     
-    moves move_list[1];
+    // moves move_list[1];
     ChessGame chess;
     chess.init_all();
     printFullCharBoard(chess.board);
-    chess.generateMoves(move_list);
+    chess.generateMoves(chess.m_list_of_moves);
+    chess.print_move_list(chess.m_list_of_moves);
 
     return 0;
 }

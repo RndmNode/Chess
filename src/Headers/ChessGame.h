@@ -86,8 +86,10 @@ class ChessGame: public sf::Drawable {
         void print_attacked_squares(int);
         void generateMoves(moves *move_list);
         bool check_legality(int move);
+        void add_move(moves* move_list, int move);
         void print_move(int move);
-        void print_move_list();
+        void print_move_list(moves *move_list);
+        int make_move(int move, int move_flag);
 
         // PERFT testing
         int time_in_ms();
