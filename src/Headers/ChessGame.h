@@ -93,6 +93,7 @@ class ChessGame: public sf::Drawable {
 
         // PERFT testing
         int time_in_ms();
+        long PERFT_Driver(int depth, long nodes);
         long PERFT_Driver(int depth);
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

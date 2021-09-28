@@ -159,9 +159,12 @@ void move() {
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
     chess.init_all();
+
+    moves move_list[1];
+    chess.generateMoves(move_list);
     chess.generateMoves(chess.m_list_of_moves);
 
-    int i=0;
+    int i=0, j=0;
     int end = chess.m_list_of_moves->count;
     int move = 0;
     bool rest = false;
@@ -202,8 +205,18 @@ void move() {
                             printFullCharBoard(chess.board);
                         }
                     } else {
-                        window.close();
+                        chess.board.restore_board();
+                        i=0;
+                        chess.board.parseFen(START_POSITION);
+                        move = move_list->moves[j];
+                        j++;
+                        chess.make_move(move, all_moves);
+                        chess.generateMoves(chess.m_list_of_moves);
                     }
+                    break;
+
+                case sf::Mouse::Right:
+                    i--;
                     break;
                 //-------
                 default:
@@ -223,21 +236,36 @@ void move() {
         window.draw(chess);
         window.display();
     }
+    cout << chess.m_list_of_moves->count + move_list->count << endl;
 }
 
 int main(){ 
     // game();
     // move();
-    
-    // moves move_list[1];
     ChessGame chess;
     chess.init_all();
-    // printFullCharBoard(chess.board);
-    // chess.generateMoves(chess.m_list_of_moves);
-    // chess.print_move_list(chess.m_list_of_moves);
-    int nodes = chess.PERFT_Driver(1);
 
-    cout << "nodes: " << nodes << endl;
+    int moveCount = 0;
+    moves move_list[1];
+    // chess.generateMoves(chess.m_list_of_moves);
+    // for(int i=0; i<chess.m_list_of_moves->count; i++){
+    //     chess.board.copy_board();
+    //     chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
+    //     printFullCharBoard(chess.board);
+    //     moveCount += chess.generateMoves(move_list);
+    //     chess.board.restore_board();
+    //     printFullCharBoard(chess.board);
+    // }
+
+    // cout << "\nloop generated moves: " << moveCount << endl;
+
+    chess.generateMoves(chess.m_list_of_moves);
+    for(int i=0; i<chess.m_list_of_moves->count; i++){
+        chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
+        printFullCharBoard(chess.board);
+        moveCount += chess.generateMoves(move_list);
+        chess.board.restore_board();
+    }
 
     return 0;
 }
