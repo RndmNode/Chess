@@ -84,7 +84,7 @@ class ChessGame: public sf::Drawable {
 
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
-        void generateMoves(moves *move_list);
+        long generateMoves(moves *move_list);
         bool check_legality(int move);
         void add_move(moves* move_list, int move);
         void print_move(int move);

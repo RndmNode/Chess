@@ -232,9 +232,12 @@ int main(){
     // moves move_list[1];
     ChessGame chess;
     chess.init_all();
-    printFullCharBoard(chess.board);
-    chess.generateMoves(chess.m_list_of_moves);
-    chess.print_move_list(chess.m_list_of_moves);
+    // printFullCharBoard(chess.board);
+    // chess.generateMoves(chess.m_list_of_moves);
+    // chess.print_move_list(chess.m_list_of_moves);
+    int nodes = chess.PERFT_Driver(1);
+
+    cout << "nodes: " << nodes << endl;
 
     return 0;
 }

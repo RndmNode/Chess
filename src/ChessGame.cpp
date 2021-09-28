@@ -541,10 +541,7 @@ void ChessGame::print_attacked_squares(int side){
 }
 
 // generate all possible moves
-void ChessGame::generateMoves(moves *move_list){
-    move_list->count = 0;
-    fill_n(move_list->moves, move_list->count, 0);
-
+long ChessGame::generateMoves(moves *move_list){
     // define source and target squares
     int sourceSquare, targetSquare;
 
@@ -856,6 +853,7 @@ void ChessGame::generateMoves(moves *move_list){
             }
         }
     }
+    return move_list->count;
 }
 
 // function to check legality of move
@@ -1055,6 +1053,25 @@ int ChessGame::time_in_ms(){
     timeval time;
     gettimeofday(&time,NULL);
     return (time.tv_sec * 1000) + (time.tv_usec / 1000);
+}
+
+long ChessGame::PERFT_Driver(int depth){
+    moves move_list[1];
+    int n_moves, i;
+    long nodes;
+
+    n_moves = generateMoves(move_list);
+
+    if(depth == 1){
+        return n_moves;
+    }
+
+    for(i=0; i<n_moves; i++){
+        make_move(move_list->moves[i], all_moves);
+        nodes += PERFT_Driver(depth-1);
+        board.restore_board();
+    }
+    return nodes;
 }
 
 /**********************************\
