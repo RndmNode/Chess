@@ -1301,9 +1301,7 @@ bool ChessGame::check_legality(int move){
 
 // add moves to move list ---------------------------- MY VERSION
 void ChessGame::add_move(moves *move_list, int move){
-    board.copy_board();
     if(check_legality(move)){
-        board.restore_board();
         move_list->moves[move_list->count] = move;
         move_list->count++;
     }

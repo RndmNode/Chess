@@ -244,26 +244,21 @@ int main(){
     // move();
     ChessGame chess;
     chess.init_all();
-
-    int moveCount = 0;
     moves move_list[1];
-    // chess.generateMoves(chess.m_list_of_moves);
-    // for(int i=0; i<chess.m_list_of_moves->count; i++){
-    //     chess.board.copy_board();
-    //     chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
-    //     printFullCharBoard(chess.board);
-    //     moveCount += chess.generateMoves(move_list);
-    //     chess.board.restore_board();
-    //     printFullCharBoard(chess.board);
-    // }
-
-    // cout << "\nloop generated moves: " << moveCount << endl;
 
     chess.generateMoves(chess.m_list_of_moves);
+
     for(int i=0; i<chess.m_list_of_moves->count; i++){
-        chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
-        printFullCharBoard(chess.board);
-        moveCount += chess.generateMoves(move_list);
+        int move_1 = chess.m_list_of_moves->moves[i];
+        chess.make_move(move_1, all_moves);
+        chess.generateMoves(move_list);
+        for(int j=0; j<move_list->count; j++){
+            int move_2 = move_list->moves[j];
+            chess.make_move(move_2, all_moves);
+            printFullCharBoard(chess.board);
+            getchar();
+            chess.board.restore_board();
+        }
         chess.board.restore_board();
     }
 
