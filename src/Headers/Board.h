@@ -44,7 +44,7 @@ const map<char, int> char_to_piece {{'P',P}, {'N',N}, {'B',B}, {'R',R}, {'Q',Q},
 const map<int, char> piece_to_char {{P,'P'}, {N,'N'}, {B,'B'}, {R,'R'}, {Q,'Q'}, {K,'K'},
                                     {p,'p'}, {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}, {k,'k'}};
 const map<int, char> promoted_piece {{N,'n'}, {B,'b'}, {R,'r'}, {Q,'q'},
-                                     {n,'n'}, {b,'b'}, {r,'R'}, {q,'Q'}};
+                                     {n,'n'}, {b,'b'}, {r,'r'}, {q,'q'}};
 
 // not_boards
 extern const BITBOARD not_a_file;
@@ -72,6 +72,7 @@ class Board: public sf::Drawable{
         int castling_rights;
         int castle_copy = -1;
         sf::Vector2f pieceOffset;
+        string FEN;
 
         //Methods
         void printBoard(int);
@@ -86,6 +87,7 @@ class Board: public sf::Drawable{
         void restore_board();
 
         void parseFen(string);
+        string updateFEN();
 
         vector<BITBOARD> bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
         vector<BITBOARD> bitboards_copy;
@@ -100,7 +102,7 @@ class Board: public sf::Drawable{
         sf::RectangleShape rectangles[64];
 
         //Attributes
-        string FEN;
+        
 
         
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

@@ -4,6 +4,7 @@
 #include "Board.h"
 #include <string.h>
 #include <sys/time.h>
+#include <stack>
 
 // encode moves into integers
 #define encode_move(source, target, piece, promoted, capture, doublePush, enpassant, castling)\
@@ -54,6 +55,7 @@ class ChessGame: public sf::Drawable {
         // objects, vectors, enums
         Board board;
         moves m_list_of_moves[1];
+        stack<string> move_history;
 
         // attributes
         // long nodes = 0;
@@ -90,6 +92,7 @@ class ChessGame: public sf::Drawable {
         void print_move(int move);
         void print_move_list(moves *move_list);
         int make_move(int move, int move_flag);
+        void undo_move();
 
         // PERFT testing
         int time_in_ms();

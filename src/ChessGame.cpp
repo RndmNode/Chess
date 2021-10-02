@@ -491,6 +491,7 @@ void ChessGame::init_all(){
     init_leaper_attacks();
     init_slider_attacks(bishop);
     init_slider_attacks(rook);
+    move_history.push(board.FEN);
 }
 
 /**********************************\
@@ -1288,6 +1289,7 @@ long ChessGame::generateMoves(moves *move_list){
 // function to check legality of move
 bool ChessGame::check_legality(int move){
     if(make_move(move, all_moves)){
+        move_history.pop();
         board.restore_board();
         return true;
     }else return false;
@@ -1475,6 +1477,7 @@ int ChessGame::make_move(int move, int move_flag){
             board.restore_board();
             return 0;
         }else {
+            move_history.push(board.updateFEN());
             board.findPieces();
             return 1;
         }
@@ -1704,21 +1707,28 @@ int ChessGame::time_in_ms(){
 //     return nodes;
 // }
 
+void ChessGame::undo_move(){
+    move_history.pop();
+    board.FEN = move_history.top();
+    board.parseFen(board.FEN);
+}
+
 // PERFT Driver ------------------ MY VERSION
 long ChessGame::PERFT_Driver(int depth){
     int n_moves, i;
     long nodes = 0;
+    moves move_list[1];
 
-    n_moves = generateMoves(m_list_of_moves);
+    n_moves = generateMoves(move_list);
 
     if(depth == 1){
         return n_moves;
     }
 
-    for(i=0; i<m_list_of_moves->count; i++){
-        make_move(m_list_of_moves->moves[i], all_moves);
+    for(i=0; i<move_list->count; i++){
+        make_move(move_list->moves[i], all_moves);
         nodes += PERFT_Driver(depth - 1);
-        board.restore_board();
+        undo_move();
     }
     return nodes;
 }

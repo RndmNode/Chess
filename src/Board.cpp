@@ -15,7 +15,7 @@ const char *square_to_coordinates[] = {
                    "a4","b4","c4","d4","e4","f4","g4","h4",
                    "a3","b3","c3","d3","e3","f3","g3","h3",
                    "a2","b2","c2","d2","e2","f2","g2","h2",
-                   "a1","b1","c1","d1","e1","f1","g1","h1", "no_sq"};
+                   "a1","b1","c1","d1","e1","f1","g1","h1", "-"};
 
 struct color{
     int r;
@@ -39,7 +39,7 @@ Board::Board(int width, int height){
 
     // set starting FEN and parse
     // "r3k2r/p1ppqpb1/1n2pnp1/3PN3/1p2P3/2N2Q1p/PPPBqPPP/R3K2R w KQkq - 0 1"
-    FEN = START_POSITION;
+    FEN = KIWIPETE;
     parseFen(FEN);
 
     // white Pawns
@@ -277,6 +277,89 @@ void Board::parseFen(string fen){
     occupancies[both] |= (occupancies[white] | occupancies[black]);
 }
 
+// updating FEN string using the boards
+string Board::updateFEN(){
+    // declare output string
+    string output;
+
+    // declare empty checker and counter
+    bool empty = true;
+    int empty_squares = 0;
+    int piece_occupier = -1;
+
+    // loop over ranks
+    for(int rank=0; rank<8; rank++){
+        // add empty spaces and / after every rank
+        if(rank > 0){
+            if(empty_squares > 0){
+                char num = empty_squares + '0';
+                output += num;
+                empty_squares = 0;
+            }
+            output += '/';
+        }
+
+        // loop over files
+        for(int file=0; file<8; file++){
+            // reset empty bool for every square and set square index
+            empty = true;
+            int square = (rank * 8) + file;
+
+            // loop over piece bitboards to find if a square is occupied by a piece
+            for(int piece=P; piece<=k; piece++){
+                if(getBit(bitboards[piece], square)){
+                    piece_occupier = piece;
+                    empty = false;
+                    break;
+                }
+            }
+
+            // check if square is empty
+            if(!empty){
+                // check if there were any empty spaces before this
+                if(empty_squares > 0){
+                    // if so, add the number of empty spaces
+                    char num = empty_squares + '0';
+                    output += num;
+                    empty_squares = 0;
+                }
+                output += piece_to_char.at(piece_occupier);
+            }else{
+                empty_squares++;
+            }
+        }
+    }
+
+    // add side to move
+    output += ' ';
+    if(side_to_move == white) output += 'w';
+    else output += 'b';    
+
+    // castling rights
+    output += ' ';
+    if(castling_rights){
+        if(castling_rights & wk) output += 'K';
+        else output += '-';
+        if(castling_rights & wq) output += 'Q';
+        else output += '-';
+        if(castling_rights & bk) output += 'k';
+        else output += '-';
+        if(castling_rights & bq) output += 'q';
+        else output += '-';
+    }else output += '-';
+
+    // enpassant square
+    output += ' ';
+    if(enpassant_square) output += square_to_coordinates[enpassant_square];
+    else output += '-';
+
+    // temp move clock holders
+    output += " 0 1";
+
+    FEN = output;
+    return output;
+}
+
 // preserve board state for undoing moves if illegal
 void Board::copy_board(){
     bitboards_copy = bitboards;
@@ -293,6 +376,7 @@ void Board::restore_board(){
     side_to_move = side_copy;
     enpassant_square = enpass_copy;
     castling_rights = castle_copy;
+    updateFEN();
     findPieces();
 }
 

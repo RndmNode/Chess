@@ -150,7 +150,8 @@ void printFullCharBoard(Board board){
     cout << "  Castling: " << ((board.castling_rights & wk) ? 'K' : '-' )<<  
                               ((board.castling_rights & wq) ? 'Q' : '-' )<<
                               ((board.castling_rights & bk) ? 'k' : '-' )<<
-                              ((board.castling_rights & bq) ? 'q' : '-' )<< '\n' << '\n';
+                              ((board.castling_rights & bq) ? 'q' : '-' )<< '\n';
+    cout << "  FEN: " << board.FEN << "\n\n";
 }
 
 void move() {
@@ -244,23 +245,16 @@ int main(){
     // move();
     ChessGame chess;
     chess.init_all();
-    moves move_list[1];
-
     chess.generateMoves(chess.m_list_of_moves);
+    // printFullCharBoard(chess.board);
+    // cout << chess.board.FEN << endl;
 
-    for(int i=0; i<chess.m_list_of_moves->count; i++){
-        int move_1 = chess.m_list_of_moves->moves[i];
-        chess.make_move(move_1, all_moves);
-        chess.generateMoves(move_list);
-        for(int j=0; j<move_list->count; j++){
-            int move_2 = move_list->moves[j];
-            chess.make_move(move_2, all_moves);
-            printFullCharBoard(chess.board);
-            getchar();
-            chess.board.restore_board();
-        }
-        chess.board.restore_board();
-    }
+    // for(int i=0; i<chess.m_list_of_moves->count; i++){
+    //     chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
+    //     printFullCharBoard(chess.board);
+    //     chess.undo_move();
+    // }
+    cout << chess.PERFT_Driver(2) << endl;
 
     return 0;
 }
