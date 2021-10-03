@@ -37,11 +37,6 @@ Board::Board(int width, int height){
         if(i<3) occupancies.push_back(temp);
     }
 
-    // set starting FEN and parse
-    // "r3k2r/p1ppqpb1/1n2pnp1/3PN3/1p2P3/2N2Q1p/PPPBqPPP/R3K2R w KQkq - 0 1"
-    FEN = KIWIPETE;
-    parseFen(FEN);
-
     // white Pawns
     for(int w=0; w<8; w++){
         pieces.push_back(Piece(P, true));
@@ -86,8 +81,13 @@ Board::Board(int width, int height){
 
     pieceOffset = pieces[0].m_sprite.getOrigin();
     
+    // load squares
     loadBoard(width, height);
-    findPieces();
+
+    // set starting FEN and parse
+    // "r3k2r/p1ppqpb1/1n2pnp1/3PN3/1p2P3/2N2Q1p/PPPBqPPP/R3K2R w KQkq - 0 1"
+    FEN = KIWIPETE;
+    parseFen(FEN);
 }
 
 void Board::loadBoard(int width, int height){
@@ -204,7 +204,7 @@ void Board::printBitboard(BITBOARD bitboard){
 
 void Board::parseFen(string fen){
     // reset game variables
-    for(int i=0; i<12; i++){
+    for(int i=P; i<=k; i++){
         bitboards[i].reset();
     }
     side_to_move = -1;
@@ -269,12 +269,18 @@ void Board::parseFen(string fen){
         enpassant_square = no_sq;
     }
 
+    occupancies[white].reset();
+    occupancies[black].reset();
+    occupancies[both].reset();
+
     // init occupancy boards
     for(int piece=P; piece<=K; piece++){
         occupancies[white] |= bitboards[piece];
         occupancies[black] |= bitboards[piece + p];
     }
     occupancies[both] |= (occupancies[white] | occupancies[black]);
+
+    findPieces();
 }
 
 // updating FEN string using the boards

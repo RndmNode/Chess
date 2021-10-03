@@ -1,4 +1,4 @@
-CXX		  := g++
+CXX		  := g++ -Ofast
 CXX_FLAGS := -Wall -Wextra -std=c++17 -ggdb
 
 BIN		:= bin

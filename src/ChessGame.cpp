@@ -839,7 +839,7 @@ long ChessGame::generateMoves(moves *move_list){
         if((!board.side_to_move) ? piece == K : piece == k){
             while(bitboard.to_ullong()){
                 sourceSquare = indexLeastSigBit(bitboard);
-                attacks = king_attacks[sourceSquare].to_ullong() & ((!board.side_to_move) ? ~board.occupancies[white].to_ullong() : ~board.occupancies[black].to_ullong());
+                attacks = king_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
 
                 while(attacks.to_ullong()){
                     targetSquare = indexLeastSigBit(attacks);
@@ -1289,8 +1289,7 @@ long ChessGame::generateMoves(moves *move_list){
 // function to check legality of move
 bool ChessGame::check_legality(int move){
     if(make_move(move, all_moves)){
-        move_history.pop();
-        board.restore_board();
+        undo_move();
         return true;
     }else return false;
 }
@@ -1462,7 +1461,7 @@ int ChessGame::make_move(int move, int move_flag){
         // loop over piece bitboards to update side occupancy bitboards
         for(int i=P; i<=K; i++){
             board.occupancies[white] |= board.bitboards[i];
-            board.occupancies[black] |= board.bitboards[i + 6];
+            board.occupancies[black] |= board.bitboards[i + p];
         }
 
         // set overall occupancy bitboard
@@ -1474,7 +1473,7 @@ int ChessGame::make_move(int move, int move_flag){
 
         // make sure king is not now exposed
         if(is_square_attacked((!board.side_to_move) ? indexLeastSigBit(board.bitboards[k]) : indexLeastSigBit(board.bitboards[K]), board.side_to_move)){
-            board.restore_board();
+            board.parseFen(move_history.top());
             return 0;
         }else {
             move_history.push(board.updateFEN());
@@ -1713,27 +1712,72 @@ void ChessGame::undo_move(){
     board.parseFen(board.FEN);
 }
 
+/**********************************\
+ ==================================
+               Perft
+ ==================================
+\**********************************/
+
 // PERFT Driver ------------------ MY VERSION
-long ChessGame::PERFT_Driver(int depth){
+inline long ChessGame::PERFT_Driver(int depth){
     int n_moves, i;
     long nodes = 0;
     moves move_list[1];
 
     n_moves = generateMoves(move_list);
 
-    if(depth == 1){
+    switch (depth)
+    {
+    case 0:
+        return 1;
+        break;
+    
+    case 1:
         return n_moves;
-    }
-
-    for(i=0; i<move_list->count; i++){
-        make_move(move_list->moves[i], all_moves);
-        nodes += PERFT_Driver(depth - 1);
-        undo_move();
+    
+    default:
+        for(i=0; i<move_list->count; i++){
+            make_move(move_list->moves[i], all_moves);
+            nodes += PERFT_Driver(depth - 1);
+            undo_move();
+        }
+        break;
     }
     return nodes;
 }
 
+void ChessGame::PERFT_Test(int depth){
+    cout << "\n  Performance Test\n\n";
 
+    long nodes = 0;
+    moves move_list[1];
+
+    generateMoves(move_list);
+
+    // init start timer
+    int start = time_in_ms();
+
+    for(int i=0; i<move_list->count; i++){
+        make_move(move_list->moves[i], all_moves);
+
+        long cumulative_nodes = nodes;
+        nodes += PERFT_Driver(depth - 1);
+        long old_nodes = nodes - cumulative_nodes;
+
+        undo_move();
+
+        // print move
+        printf("     move: %s%s%c  nodes: %ld\n", square_to_coordinates[get_move_source(move_list->moves[i])],
+                                                  square_to_coordinates[get_move_target(move_list->moves[i])],
+                                                  get_move_promoted(move_list->moves[i]) ? promoted_piece.at(get_move_promoted(move_list->moves[i])) : ' ',
+                                                  old_nodes);
+    }
+
+    // print results
+    printf("\n    Depth: %d\n", depth);
+    printf("    Nodes: %ld\n", nodes);
+    printf("     Time: %i\n\n", time_in_ms() - start);
+}
 
 /**********************************\
  ==================================

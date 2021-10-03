@@ -166,8 +166,9 @@ void move() {
     chess.generateMoves(chess.m_list_of_moves);
 
     int i=0, j=0;
+    int sourceSquare;
     int end = chess.m_list_of_moves->count;
-    int move = 0;
+    // int move = 0;
     bool rest = false;
 
     // run the program as long as the window is open
@@ -186,38 +187,33 @@ void move() {
                 switch (event.key.code)
                 {
                 case sf::Mouse::Left:
-                    // cout << "mouse left pressed.\n";
-                    // cout << "i: " << i << "\n";
-                    if(i < end){
+                    if(i<end){
                         if(!rest){
-                            // cout << "i: " << i << "\n";
-                            move = chess.m_list_of_moves->moves[i];
-                            if(chess.make_move(move, all_moves)){
-                                i++;
-                                rest = true;
-                                printFullCharBoard(chess.board);
-                            }else{
-                                i++;
-                            }
+                            sourceSquare = get_move_source(chess.m_list_of_moves->moves[i]);
+                            chess.board.rectangles[sourceSquare].setFillColor(sf::Color::Red);
+                            chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
+                            cout << "size: " << chess.move_history.size() << "    top: " << chess.move_history.top() << endl;
+                            rest = true;
                         }else{
-                            // cout << "restoring board.\n";
-                            chess.board.restore_board();
+                            chess.undo_move();
+                            chess.board.loadBoard(width, height);
+                            i++;
                             rest = false;
-                            printFullCharBoard(chess.board);
                         }
-                    } else {
-                        chess.board.restore_board();
+                    }else{
+                        if(j>0) chess.undo_move();
+                        chess.board.loadBoard(width, height);
                         i=0;
-                        chess.board.parseFen(START_POSITION);
-                        move = move_list->moves[j];
+                        sourceSquare = get_move_source(move_list->moves[j]);
+                        chess.board.rectangles[sourceSquare].setFillColor(sf::Color::Green);
+                        chess.make_move(move_list->moves[j], all_moves);
                         j++;
-                        chess.make_move(move, all_moves);
                         chess.generateMoves(chess.m_list_of_moves);
+                        end = chess.m_list_of_moves->count;
                     }
                     break;
 
                 case sf::Mouse::Right:
-                    i--;
                     break;
                 //-------
                 default:
@@ -237,7 +233,6 @@ void move() {
         window.draw(chess);
         window.display();
     }
-    cout << chess.m_list_of_moves->count + move_list->count << endl;
 }
 
 int main(){ 
@@ -246,15 +241,8 @@ int main(){
     ChessGame chess;
     chess.init_all();
     chess.generateMoves(chess.m_list_of_moves);
-    // printFullCharBoard(chess.board);
-    // cout << chess.board.FEN << endl;
 
-    // for(int i=0; i<chess.m_list_of_moves->count; i++){
-    //     chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
-    //     printFullCharBoard(chess.board);
-    //     chess.undo_move();
-    // }
-    cout << chess.PERFT_Driver(2) << endl;
+    chess.PERFT_Test(5);
 
     return 0;
 }
