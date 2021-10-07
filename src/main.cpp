@@ -238,9 +238,12 @@ void move() {
 int main(){ 
     // game();
     // move();
+
+    // initialize objects
     ChessGame chess;
     chess.init_all();
-    chess.generateMoves(chess.m_list_of_moves);
+
+    printFullCharBoard(chess.board);
 
     chess.PERFT_Test(5);
 

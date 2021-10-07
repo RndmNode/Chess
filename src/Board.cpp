@@ -86,7 +86,7 @@ Board::Board(int width, int height){
 
     // set starting FEN and parse
     // "r3k2r/p1ppqpb1/1n2pnp1/3PN3/1p2P3/2N2Q1p/PPPBqPPP/R3K2R w KQkq - 0 1"
-    FEN = KIWIPETE;
+    FEN = START_POSITION;
     parseFen(FEN);
 }
 
