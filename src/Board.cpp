@@ -366,26 +366,6 @@ string Board::updateFEN(){
     return output;
 }
 
-// preserve board state for undoing moves if illegal
-void Board::copy_board(){
-    bitboards_copy = bitboards;
-    occupancies_copy = occupancies;
-    side_copy = side_to_move;
-    enpass_copy = enpassant_square;
-    castle_copy = castling_rights;
-}
-
-// restore previous board state if illegal move was tried
-void Board::restore_board(){
-    bitboards = bitboards_copy;
-    occupancies = occupancies_copy;
-    side_to_move = side_copy;
-    enpassant_square = enpass_copy;
-    castling_rights = castle_copy;
-    updateFEN();
-    findPieces();
-}
-
 /**********************************\
  ==================================
              Drawing

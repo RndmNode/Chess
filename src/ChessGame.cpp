@@ -905,8 +905,6 @@ void ChessGame::print_move_list(moves *move_list){
 int ChessGame::make_move(int move, int move_flag){
     // quiet moves
     if(move_flag == all_moves){
-        // copy board to restore in case move is illegal
-        board.copy_board();
 
         // parse move
         int sourceSquare = get_move_source(move);

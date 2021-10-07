@@ -245,7 +245,7 @@ int main(){
 
     printFullCharBoard(chess.board);
 
-    chess.PERFT_Test(5);
+    chess.PERFT_Test(4);
 
     return 0;
 }

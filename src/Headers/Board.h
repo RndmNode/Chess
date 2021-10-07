@@ -54,7 +54,6 @@ extern const BITBOARD not_ab_file;
 
 //***----------------------------***//
 
-
 class Board: public sf::Drawable{
     public:
         Board(){};
@@ -66,16 +65,13 @@ class Board: public sf::Drawable{
         int window_w = 0;
         int window_h = 0;
         int side_to_move = -1;
-        int side_copy = -1;
         int enpassant_square = no_sq;
-        int enpass_copy = no_sq;
         int castling_rights;
-        int castle_copy = -1;
         sf::Vector2f pieceOffset;
         string FEN;
         sf::RectangleShape rectangles[64];
 
-        //Methods
+        // Methods
         void printBoard(int);
         void printBitboard(BITBOARD);
         void loadBoard(int width, int height);
@@ -84,28 +80,23 @@ class Board: public sf::Drawable{
         int getBit(BITBOARD, int);
         void setBit(int board, int sqr){bitboards[board].set(sqr);};
         static BITBOARD setBit(BITBOARD board, int sqr){board.set(sqr); return board;}
-        void copy_board();
-        void restore_board();
 
         void parseFen(string);
         string updateFEN();
 
         vector<BITBOARD> bitboards;      // vector to hold piece bitboards ordered by encoded piece enumeration
-        vector<BITBOARD> bitboards_copy;
         vector<BITBOARD> occupancies;
-        vector<BITBOARD> occupancies_copy;
         vector<Piece> pieces;
         
         ~Board(){};
 
     private:
-        //Objects, Vectors, enums
+        // Objects, Vectors, enums, etc
         
 
-        //Attributes
-        
+        // Attributes
 
-        
+        // Methods
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

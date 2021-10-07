@@ -52,20 +52,20 @@ struct moves{
 
 class ChessGame: public sf::Drawable {
     public:
-        // objects, vectors, enums
+        // objects, vectors, enums, etc.
         Board board;
         moves m_list_of_moves[1];
         stack<string> move_history;
 
         // attributes
-        // long nodes = 0;
 
         // methods
-        unsigned int get_random_U32_number();
-        BITBOARD get_random_U64_number();
-        BITBOARD get_random_magic_number();
-        BITBOARD find_magic_number(int, int, int);
-        void init_magic();
+        //---generating attacks---//
+        // unsigned int get_random_U32_number();
+        // BITBOARD get_random_U64_number();
+        // BITBOARD get_random_magic_number();
+        // BITBOARD find_magic_number(int, int, int);
+        // void init_magic();
         BITBOARD generatePawnAttacks(int side, int square);
         BITBOARD generateKnightAttacks(int square);
         BITBOARD generateKingAttacks(int square);
@@ -84,6 +84,7 @@ class ChessGame: public sf::Drawable {
         int countBits(BITBOARD);
         int indexLeastSigBit(BITBOARD);
 
+        //---move generation---//
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
         long generateMoves(moves *move_list);
@@ -93,7 +94,7 @@ class ChessGame: public sf::Drawable {
         int make_move(int move, int move_flag);
         void undo_move();
 
-        // PERFT testing
+        //---PERFT testing---//
         int time_in_ms();
         long PERFT_Driver(int depth);
         void PERFT_Test(int depth);
