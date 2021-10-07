@@ -53,8 +53,8 @@ Board::Board(int width, int height){
     for(int w=0; w<2; w++){
         pieces.push_back(Piece(R, true));
     }
-    pieces.push_back(Piece(Q,true));
-    pieces.push_back(Piece(K,true));
+    pieces.push_back(Piece(Q, true));
+    pieces.push_back(Piece(K, true));
 
     // black Pawns
     for(int w=0; w<8; w++){
@@ -72,8 +72,8 @@ Board::Board(int width, int height){
     for(int w=0; w<2; w++){
         pieces.push_back(Piece(R, false));
     }
-    pieces.push_back(Piece(Q,false));
-    pieces.push_back(Piece(K,false));
+    pieces.push_back(Piece(Q, false));
+    pieces.push_back(Piece(K, false));
 
     for(unsigned long int i=0; i<pieces.size(); i++){
         pieces[i].setTexture();

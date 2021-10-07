@@ -5,25 +5,56 @@ using namespace std;
 int width = 800;
 int height = 800;
 
-bool dragging = false;
+bool dragging, moving = false;
 float mouseX = 0.0f;
 float mouseY = 0.0f;
 
-sf::Vector2f traslateToSquare(sf::Vector2f pos, sf::RenderTarget &target){
-    int windowX = target.getSize().x;
-    int windowY = target.getSize().y;
+// move information variables
+int sourceSquare, targetSquare, piece, _move;
 
-    int side_x = windowX/8;
-    int side_y = windowY/8;
+// FEN parsing debugger
+void printFullCharBoard(Board board){
+    char fullBoard[64];
+    bool occupied;
 
-    int x_boardPos = pos.x/side_x;
-    int y_boardPos = pos.y/side_y;
+    // loop through the squares
+    for(int rank=0; rank<8; rank++){
+        for(int file=0; file<8; file++){
+            int square = (rank*8)+file;
+            occupied = false;
 
-    int x = (x_boardPos * side_x) + (side_x / 2);
-    int y = (y_boardPos * side_y) + (side_y / 2);
+            // loop through the boards to check bits
+            for(int i=P; i<=k; i++){
+                int bit = board.getBit(board.bitboards[i], square);
+                if(bit == 1){
+                    occupied = true;
+                    fullBoard[square] = piece_to_char.at(i);
+                    break;
+                }
+            }
+            if(!occupied) fullBoard[square] = '.';
+        }   
+    }
 
-    return sf::Vector2f(x, y);
+    cout << "\n  Full Board:\n\n ";
+    for(int rank=0; rank<8; rank++){
+        cout << " " << 8 - rank << "   ";
+        for(int file=0; file<8; file++){
+            cout << fullBoard[(rank*8)+file] << " ";
+        }
+        cout << "\n ";
+    }
+    cout << "\n      a b c d e f g h\n\n";
+
+    cout << "  Side: " << ((board.side_to_move) ? "black\n" : "white\n");
+    cout << "  Enpassant: " << square_to_coordinates[board.enpassant_square] << endl;
+    cout << "  Castling: " << ((board.castling_rights & wk) ? 'K' : '-' )<<  
+                              ((board.castling_rights & wq) ? 'Q' : '-' )<<
+                              ((board.castling_rights & bk) ? 'k' : '-' )<<
+                              ((board.castling_rights & bq) ? 'q' : '-' )<< '\n';
+    cout << "  FEN: " << board.FEN << "\n\n";
 }
+
 
 void game() {
     sf::RenderWindow window;
@@ -91,15 +122,30 @@ void game() {
         if(dragging){
             for(auto &i : chess.board.pieces){
                 if(i.m_selected){
+                    if(!moving){
+                        piece = (i.m_player) ? i.m_type : i.m_type + 6;
+                        sourceSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
+                        cout << "\nsource: " << square_to_coordinates[sourceSquare] << endl;
+                    }
                     i.m_sprite.setPosition(mouseX, mouseY);
+                    moving = true;
                     break;
                 }
             }
         }else{
             for(auto &i :chess.board.pieces){
                 if(i.m_selected){
+                    targetSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
                     i.setPosition(window, sf::Vector2f(mouseX, mouseY));
                     i.m_selected = false;
+                    cout << "\nsource: " << square_to_coordinates[sourceSquare] << endl;
+                    cout << "target: " << square_to_coordinates[targetSquare] << endl;
+                    cout << "piece: " << piece_to_char.at(piece) << endl;
+                    _move = encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0);
+                    chess.make_move(_move, all_moves);
+                    printFullCharBoard(chess.board);
+                    sourceSquare = -1, targetSquare = -1, piece = -1, _move = -1;
+                    moving = false;
                 }
             }
         }
@@ -111,48 +157,6 @@ void game() {
     }
 }
 
-// FEN parsing debugger
-void printFullCharBoard(Board board){
-    char fullBoard[64];
-    bool occupied;
-
-    // loop through the squares
-    for(int rank=0; rank<8; rank++){
-        for(int file=0; file<8; file++){
-            int square = (rank*8)+file;
-            occupied = false;
-
-            // loop through the boards to check bits
-            for(int i=P; i<=k; i++){
-                int bit = board.getBit(board.bitboards[i], square);
-                if(bit == 1){
-                    occupied = true;
-                    fullBoard[square] = piece_to_char.at(i);
-                    break;
-                }
-            }
-            if(!occupied) fullBoard[square] = '.';
-        }   
-    }
-
-    cout << "\n  Full Board:\n\n ";
-    for(int rank=0; rank<8; rank++){
-        cout << " " << 8 - rank << "   ";
-        for(int file=0; file<8; file++){
-            cout << fullBoard[(rank*8)+file] << " ";
-        }
-        cout << "\n ";
-    }
-    cout << "\n      a b c d e f g h\n\n";
-
-    cout << "  Side: " << ((board.side_to_move) ? "black\n" : "white\n");
-    cout << "  Enpassant: " << square_to_coordinates[board.enpassant_square] << endl;
-    cout << "  Castling: " << ((board.castling_rights & wk) ? 'K' : '-' )<<  
-                              ((board.castling_rights & wq) ? 'Q' : '-' )<<
-                              ((board.castling_rights & bk) ? 'k' : '-' )<<
-                              ((board.castling_rights & bq) ? 'q' : '-' )<< '\n';
-    cout << "  FEN: " << board.FEN << "\n\n";
-}
 
 void move() {
     sf::RenderWindow window;
@@ -236,16 +240,8 @@ void move() {
 }
 
 int main(){ 
-    // game();
+    game();
     // move();
-
-    // initialize objects
-    ChessGame chess;
-    chess.init_all();
-
-    printFullCharBoard(chess.board);
-
-    chess.PERFT_Test(4);
 
     return 0;
 }

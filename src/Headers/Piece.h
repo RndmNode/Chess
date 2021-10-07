@@ -22,6 +22,7 @@ class Piece: public sf::Drawable {
 
         //Methods
         void setPosition(sf::RenderTarget& target, sf::Vector2f coordinates);
+        int getPosition(sf::RenderTarget& target, sf::Vector2f coordinates);
         void setTexture();
 
         ~Piece(){};

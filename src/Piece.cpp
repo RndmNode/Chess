@@ -54,7 +54,6 @@ void Piece::setTexture(){
 }
 
 void Piece::setPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
-    
     int windowX = target.getSize().x;
     int windowY = target.getSize().y;
 
@@ -68,8 +67,22 @@ void Piece::setPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
     int y = (y_boardPos * side_y) + (side_y / 2);
 
     m_sprite.setPosition(x, y);
+}
 
-    m_squarePosition = (x_boardPos * 8) + y_boardPos;
+int Piece::getPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
+    int windowX = target.getSize().x;
+    int windowY = target.getSize().y;
+
+    int side_x = windowX/8;
+    int side_y = windowY/8;
+
+    int x_boardPos = coordinates.x/side_x;
+    int y_boardPos = coordinates.y/side_y;
+
+    cout << "x_board: " << x_boardPos << endl;
+    cout << "y_board: " << y_boardPos << endl;
+
+    return (y_boardPos * 8) + x_boardPos;
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const{
