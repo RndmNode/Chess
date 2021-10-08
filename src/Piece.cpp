@@ -79,9 +79,6 @@ int Piece::getPosition(sf::RenderTarget& target, sf::Vector2f coordinates){
     int x_boardPos = coordinates.x/side_x;
     int y_boardPos = coordinates.y/side_y;
 
-    cout << "x_board: " << x_boardPos << endl;
-    cout << "y_board: " << y_boardPos << endl;
-
     return (y_boardPos * 8) + x_boardPos;
 }
 

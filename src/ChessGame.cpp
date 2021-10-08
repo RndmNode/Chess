@@ -492,6 +492,7 @@ void ChessGame::init_all(){
     init_slider_attacks(bishop);
     init_slider_attacks(rook);
     move_history.push(board.FEN);
+    generateMoves(m_list_of_moves);
 }
 
 /**********************************\
@@ -870,9 +871,11 @@ void ChessGame::add_move(moves *move_list, int move){
 // short version of printing a move
 void ChessGame::print_move(int move){
     cout << square_to_coordinates[get_move_source(move)] << 
-            square_to_coordinates[get_move_target(move)] << 
-            promoted_piece.at(get_move_promoted(move)) << 
-            endl;
+            square_to_coordinates[get_move_target(move)];
+
+    if(get_move_promoted(move) > 0){
+        cout << promoted_piece.at(get_move_promoted(move)) << endl; 
+    }
 }
 
 // print move list
@@ -1055,6 +1058,101 @@ void ChessGame::undo_move(){
     move_history.pop();
     board.FEN = move_history.top();
     board.parseFen(board.FEN);
+}
+
+// function that is called from the UI game loop to take in user input and process it
+void ChessGame::handle_move(int source, int target, int piece){
+    int move = 0;
+
+    switch (piece)
+    {
+    case P:
+        // double push
+        if((source >= a2 && source <= h2) && source - 16 == target){
+            move = encode_move(source, target, P, 0, 0, 1, 0, 0);
+            break;
+        }
+
+        // promotion and captures
+        if(source >=a7 && source <= h7){
+            if(board.getBit(board.occupancies[black], target)) move = encode_move(source, target, P, Q, 1, 0, 0, 0);
+            else move = encode_move(source, target, P, Q, 0, 0, 0, 0);
+            break;
+        }
+
+        // captures
+        if(board.getBit(board.occupancies[black], target)){
+            move = encode_move(source, target, P, 0, 1, 0, 0, 0);
+            break;
+        } 
+        
+        // enpassant captures
+        if((1ULL << target) & (1ULL << board.enpassant_square)){
+            move = encode_move(source, target, P, 0, 1, 0, 1, 0);
+            break;
+        }
+
+        // regular single push
+        move = encode_move(source, target, P, 0, 0, 0, 0, 0);
+        break;
+
+    case p:
+        // double push
+        if((source >= a7 && source <= h7) && source + 16 == target){
+            move = encode_move(source, target, p, 0, 0, 1, 0, 0);
+            break;
+        }
+
+        // promotion and captures
+        if(source >=a2 && source <= h2){
+            if(board.getBit(board.occupancies[white], target)) move = encode_move(source, target, p, q, 1, 0, 0, 0);
+            else move = encode_move(source, target, p, q, 0, 0, 0, 0);
+            break;
+        }
+
+        // captures
+        if(board.getBit(board.occupancies[white], target)){
+            move = encode_move(source, target, p, 0, 1, 0, 0, 0);
+            break;
+        } 
+        
+        // enpassant captures
+        if(pawn_attacks[black][source].to_ullong() & 1ULL << board.enpassant_square){
+            move = encode_move(source, target, p, 0, 1, 0, 1, 0);
+            break;
+        }
+
+        // regular single push
+        move = encode_move(source, target, p, 0, 0, 0, 0, 0);
+        break;
+    
+    default:
+        break;
+    }
+
+    if(move>0){
+        cout << "\ngenerated move:\n";
+        print_move(move);
+        cout << "\nmove value: " << move << endl;
+        cout << "source: " << get_move_source(move) << endl;
+        cout << "target: " << get_move_target(move) << endl;
+        cout << "piece: " << get_move_piece(move) << endl;
+        cout << "capture: " << get_move_capture(move) << endl;
+        cout << "enpassant: " << get_move_enpassant(move) << endl;
+        int tempMove = encode_move(source, target, P, 0, 1, 0, 1, 0);
+        cout << "expected value: " << tempMove << endl;
+    }
+
+    for(int _move=0; _move < m_list_of_moves->count; _move++){
+        if(m_list_of_moves->moves[_move] == move){
+            cout << "\nmove matches" << endl;
+            make_move(move, all_moves);
+            cout << move_history.size() << endl;
+            return;
+        }
+    }
+    cout << "\ndidn't find a matching legal move" << endl;
+    board.parseFen(move_history.top());
 }
 
 /**********************************\

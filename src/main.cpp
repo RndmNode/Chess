@@ -87,6 +87,9 @@ void game() {
                         }else i.m_selected = false;
                     }
                     break;
+                case sf::Mouse::Right:
+                    chess.undo_move();
+                    break;
                 //-------
                 default:
                     break;
@@ -125,7 +128,6 @@ void game() {
                     if(!moving){
                         piece = (i.m_player) ? i.m_type : i.m_type + 6;
                         sourceSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
-                        cout << "\nsource: " << square_to_coordinates[sourceSquare] << endl;
                     }
                     i.m_sprite.setPosition(mouseX, mouseY);
                     moving = true;
@@ -137,15 +139,13 @@ void game() {
                 if(i.m_selected){
                     targetSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
                     i.setPosition(window, sf::Vector2f(mouseX, mouseY));
-                    i.m_selected = false;
-                    cout << "\nsource: " << square_to_coordinates[sourceSquare] << endl;
-                    cout << "target: " << square_to_coordinates[targetSquare] << endl;
-                    cout << "piece: " << piece_to_char.at(piece) << endl;
-                    _move = encode_move(sourceSquare, targetSquare, piece, 0, 0, 0, 0, 0);
-                    chess.make_move(_move, all_moves);
+                    chess.handle_move(sourceSquare, targetSquare, piece);
                     printFullCharBoard(chess.board);
+                    chess.generateMoves(chess.m_list_of_moves);
+                    // chess.print_move_list(chess.m_list_of_moves);
                     sourceSquare = -1, targetSquare = -1, piece = -1, _move = -1;
                     moving = false;
+                    i.m_selected = false;
                 }
             }
         }

@@ -93,6 +93,7 @@ class ChessGame: public sf::Drawable {
         void print_move_list(moves *move_list);
         int make_move(int move, int move_flag);
         void undo_move();
+        void handle_move(int source, int target, int piece);
 
         //---PERFT testing---//
         int time_in_ms();
