@@ -91,7 +91,7 @@ const BITBOARD bishop_magic_numbers[64] = {
 
 */
 
-ChessGame::ChessGame(sf::RenderTarget& target){
+ChessGame::ChessGame(sf::RenderTarget& target) : m_target(target){
     board = Board(target.getSize().x,target.getSize().y);
 }
 
@@ -739,7 +739,6 @@ long ChessGame::generateMoves(moves *move_list){
                         }
                     }
                 }
-
             }
         }
 
@@ -758,11 +757,9 @@ long ChessGame::generateMoves(moves *move_list){
                     }else{      // captures
                         add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
-
                     // pop ls1b
                     attacks.flip(targetSquare);
                 }
-
                 // pop ls1b
                 bitboard.flip(sourceSquare);
             }
@@ -782,10 +779,8 @@ long ChessGame::generateMoves(moves *move_list){
                     }else{
                         add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
-
                     attacks.flip(targetSquare);
                 }
-
                 bitboard.flip(sourceSquare);
             }
         }
@@ -804,10 +799,8 @@ long ChessGame::generateMoves(moves *move_list){
                     }else{
                         add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
-
                     attacks.flip(targetSquare);
                 }
-
                 bitboard.flip(sourceSquare);
             }
         }
@@ -826,10 +819,8 @@ long ChessGame::generateMoves(moves *move_list){
                     }else{
                         add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
-
                     attacks.flip(targetSquare);
                 }
-
                 bitboard.flip(sourceSquare);
             }
         }
@@ -838,7 +829,7 @@ long ChessGame::generateMoves(moves *move_list){
         if((!board.side_to_move) ? piece == K : piece == k){
             while(bitboard.to_ullong()){
                 sourceSquare = indexLeastSigBit(bitboard);
-                attacks = king_attacks[sourceSquare] & ((board.side_to_move == white) ? ~board.occupancies[white] : ~board.occupancies[black]);
+                attacks = king_attacks[sourceSquare] & ((!board.side_to_move) ? ~board.occupancies[white] : ~board.occupancies[black]);
 
                 while(attacks.to_ullong()){
                     targetSquare = indexLeastSigBit(attacks);
@@ -848,10 +839,8 @@ long ChessGame::generateMoves(moves *move_list){
                     }else{
                         add_move(move_list, encode_move(sourceSquare, targetSquare, piece, 0, 1, 0, 0, 0));
                     }
-
                     attacks.flip(targetSquare);
                 }
-
                 bitboard.flip(sourceSquare);
             }
         }
@@ -1055,99 +1044,167 @@ int ChessGame::time_in_ms(){
 
 // undo move
 void ChessGame::undo_move(){
-    move_history.pop();
-    board.FEN = move_history.top();
-    board.parseFen(board.FEN);
+    if(move_history.size() > 1){
+        move_history.pop();
+        board.FEN = move_history.top();
+        board.parseFen(board.FEN);
+    }
 }
 
 // function that is called from the UI game loop to take in user input and process it
 void ChessGame::handle_move(int source, int target, int piece){
     int move = 0;
 
+    if(board.side_to_move){
+        source = 63 - source;
+        target = 63 - target;
+    }
+
     switch (piece)
     {
     case P:
         // double push
         if((source >= a2 && source <= h2) && source - 16 == target){
-            move = encode_move(source, target, P, 0, 0, 1, 0, 0);
+            move = encode_move(source, target, piece, 0, 0, 1, 0, 0);
             break;
         }
 
         // promotion and captures
         if(source >=a7 && source <= h7){
             if(board.getBit(board.occupancies[black], target)) move = encode_move(source, target, P, Q, 1, 0, 0, 0);
-            else move = encode_move(source, target, P, Q, 0, 0, 0, 0);
+            else move = encode_move(source, target, piece, Q, 0, 0, 0, 0);
             break;
         }
 
         // captures
         if(board.getBit(board.occupancies[black], target)){
-            move = encode_move(source, target, P, 0, 1, 0, 0, 0);
+            move = encode_move(source, target, piece, 0, 1, 0, 0, 0);
             break;
         } 
         
         // enpassant captures
         if((1ULL << target) & (1ULL << board.enpassant_square)){
-            move = encode_move(source, target, P, 0, 1, 0, 1, 0);
+            move = encode_move(source, target, piece, 0, 1, 0, 1, 0);
             break;
         }
 
         // regular single push
-        move = encode_move(source, target, P, 0, 0, 0, 0, 0);
+        move = encode_move(source, target, piece, 0, 0, 0, 0, 0);
+        break;
+    
+    case K:
+        // castling
+            // king side castling available
+        if(board.castling_rights & wk){
+                // make sure nothing is blocking
+            if(!board.getBit(board.occupancies[both], f1) && !board.getBit(board.occupancies[both], g1)){
+                    // make sure path is not in check
+                if(!is_square_attacked(e1, black) && !is_square_attacked(f1, black)){
+                    move = encode_move(e1, g1, piece, 0, 0, 0, 0, 1);
+                    break;
+                }
+            }
+        }
+            // queen side castling is available
+        if(board.castling_rights & wq){
+                // make sure nothing is blocking
+            if(!board.getBit(board.occupancies[both], b1) && !board.getBit(board.occupancies[both], c1), !board.getBit(board.occupancies[both], d1)){
+                    // make sure path is not in check
+                if(!is_square_attacked(e1, black) && !is_square_attacked(d1, black)){
+                    move = encode_move(e1, c1, piece, 0, 0, 0, 0, 1);
+                    break;
+                }
+            }
+        }
+
+        // captures
+        if(board.getBit(board.occupancies[black], target)){
+            move = encode_move(source, target, piece, 0, 1, 0, 0, 0);
+            break;
+        }
+
+        // regular move
+        move = encode_move(source, target, piece, 0, 0, 0, 0, 0);
         break;
 
     case p:
         // double push
         if((source >= a7 && source <= h7) && source + 16 == target){
-            move = encode_move(source, target, p, 0, 0, 1, 0, 0);
+            move = encode_move(source, target, piece, 0, 0, 1, 0, 0);
             break;
         }
 
         // promotion and captures
         if(source >=a2 && source <= h2){
             if(board.getBit(board.occupancies[white], target)) move = encode_move(source, target, p, q, 1, 0, 0, 0);
-            else move = encode_move(source, target, p, q, 0, 0, 0, 0);
+            else move = encode_move(source, target, piece, q, 0, 0, 0, 0);
             break;
         }
 
         // captures
         if(board.getBit(board.occupancies[white], target)){
-            move = encode_move(source, target, p, 0, 1, 0, 0, 0);
+            move = encode_move(source, target, piece, 0, 1, 0, 0, 0);
             break;
         } 
         
         // enpassant captures
         if(pawn_attacks[black][source].to_ullong() & 1ULL << board.enpassant_square){
-            move = encode_move(source, target, p, 0, 1, 0, 1, 0);
+            move = encode_move(source, target, piece, 0, 1, 0, 1, 0);
             break;
         }
 
         // regular single push
-        move = encode_move(source, target, p, 0, 0, 0, 0, 0);
+        move = encode_move(source, target, piece, 0, 0, 0, 0, 0);
+        break;
+    
+    case k:
+        // castling
+            // king side castling available
+        if(board.castling_rights & bk){
+                // make sure nothing is blocking
+            if(!board.getBit(board.occupancies[both], f8) && !board.getBit(board.occupancies[both], g8)){
+                    // make sure path is not in check
+                if(!is_square_attacked(e8, white) && !is_square_attacked(f8, white)){
+                    move = encode_move(e8, g8, piece, 0, 0, 0, 0, 1);
+                    break;
+                }
+            }
+        }
+            // queen side castling is available
+        if(board.castling_rights & bq){
+                // make sure nothing is blocking
+            if(!board.getBit(board.occupancies[both], b8) && !board.getBit(board.occupancies[both], c8), !board.getBit(board.occupancies[both], d8)){
+                    // make sure path is not in check
+                if(!is_square_attacked(e8, white) && !is_square_attacked(d8, white)){
+                    move = encode_move(e8, c8, piece, 0, 0, 0, 0, 1);
+                    break;
+                }
+            }
+        }
+
+        // captures
+        if(board.getBit(board.occupancies[white], target)){
+            move = encode_move(source, target, k, 0, 1, 0, 0, 0);
+            break;
+        }
+
+        // regular move
+        move = encode_move(source, target, piece, 0, 0, 0, 0, 0);
         break;
     
     default:
+        if(board.getBit(((!board.side_to_move) ? board.occupancies[black] : board.occupancies[white]), target)){
+            move = encode_move(source, target, piece, 0, 1, 0, 0, 0);
+        }else{
+            move = encode_move(source, target, piece, 0, 0, 0, 0, 0);
+        }
         break;
-    }
-
-    if(move>0){
-        cout << "\ngenerated move:\n";
-        print_move(move);
-        cout << "\nmove value: " << move << endl;
-        cout << "source: " << get_move_source(move) << endl;
-        cout << "target: " << get_move_target(move) << endl;
-        cout << "piece: " << get_move_piece(move) << endl;
-        cout << "capture: " << get_move_capture(move) << endl;
-        cout << "enpassant: " << get_move_enpassant(move) << endl;
-        int tempMove = encode_move(source, target, P, 0, 1, 0, 1, 0);
-        cout << "expected value: " << tempMove << endl;
     }
 
     for(int _move=0; _move < m_list_of_moves->count; _move++){
         if(m_list_of_moves->moves[_move] == move){
             cout << "\nmove matches" << endl;
             make_move(move, all_moves);
-            cout << move_history.size() << endl;
             return;
         }
     }

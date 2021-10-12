@@ -158,22 +158,12 @@ void game() {
 }
 
 
-void move() {
+void test() {
     sf::RenderWindow window;
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
     chess.init_all();
-
-    moves move_list[1];
-    chess.generateMoves(move_list);
-    chess.generateMoves(chess.m_list_of_moves);
-
-    int i=0, j=0;
-    int sourceSquare;
-    int end = chess.m_list_of_moves->count;
-    // int move = 0;
-    bool rest = false;
 
     // run the program as long as the window is open
     while(window.isOpen()){
@@ -191,31 +181,7 @@ void move() {
                 switch (event.key.code)
                 {
                 case sf::Mouse::Left:
-                    if(i<end){
-                        if(!rest){
-                            sourceSquare = get_move_source(chess.m_list_of_moves->moves[i]);
-                            chess.board.rectangles[sourceSquare].setFillColor(sf::Color::Red);
-                            chess.make_move(chess.m_list_of_moves->moves[i], all_moves);
-                            cout << "size: " << chess.move_history.size() << "    top: " << chess.move_history.top() << endl;
-                            rest = true;
-                        }else{
-                            chess.undo_move();
-                            chess.board.loadBoard(width, height);
-                            i++;
-                            rest = false;
-                        }
-                    }else{
-                        if(j>0) chess.undo_move();
-                        chess.board.loadBoard(width, height);
-                        i=0;
-                        sourceSquare = get_move_source(move_list->moves[j]);
-                        chess.board.rectangles[sourceSquare].setFillColor(sf::Color::Green);
-                        chess.make_move(move_list->moves[j], all_moves);
-                        j++;
-                        chess.generateMoves(chess.m_list_of_moves);
-                        end = chess.m_list_of_moves->count;
-                    }
-                    break;
+                    chess.board.flipBoard();
 
                 case sf::Mouse::Right:
                     break;
@@ -241,7 +207,7 @@ void move() {
 
 int main(){ 
     game();
-    // move();
+    // test();
 
     return 0;
 }

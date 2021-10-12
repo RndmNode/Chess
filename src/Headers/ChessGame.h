@@ -56,6 +56,7 @@ class ChessGame: public sf::Drawable {
         Board board;
         moves m_list_of_moves[1];
         stack<string> move_history;
+        sf::RenderTarget &m_target;
 
         // attributes
 
@@ -102,7 +103,7 @@ class ChessGame: public sf::Drawable {
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);
-        ChessGame(){board = Board(800,800);};
+        // ChessGame() {board = Board(800,800);};
         ~ChessGame(){};
 };
 

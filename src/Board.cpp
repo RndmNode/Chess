@@ -82,20 +82,23 @@ Board::Board(int width, int height){
     pieceOffset = pieces[0].m_sprite.getOrigin();
     
     // load squares
-    loadBoard(width, height);
+    initBoard(width, height);
 
     // set starting FEN and parse
     FEN = START_POSITION;
     parseFen(FEN);
 }
 
-void Board::loadBoard(int width, int height){
+// create and set rectangles
+void Board::initBoard(int width, int height){
     float rectX = (width / 8.0f);
     float rectY = (height / 8.0f);
 
     // setting square sizes equal to width & height / 8
     for(int i=0; i<64; i++){
-        rectangles[i].setSize(sf::Vector2f(rectX, rectY));
+        sf::RectangleShape rect;
+        rect.setSize(sf::Vector2f(rectX, rectY));
+        rectangles.push_back(rect);
     }
 
     for(int rank=0; rank<8; rank++){
@@ -104,6 +107,22 @@ void Board::loadBoard(int width, int height){
             rectangles[file + (rank*8)].setFillColor(sf::Color(c.r, c.g, c.b));
             rectangles[file + (rank*8)].setPosition(sf::Vector2f(rectX * file, rectY * rank));
         }
+    }
+}
+
+// flip board entites depending on side to move
+void Board::flipBoard(){
+    float rectSizeX = rectangles[0].getSize().x;
+    float rectSizeY = rectangles[0].getSize().y;
+
+    for(auto &i : rectangles){
+        sf::Vector2f pos = i.getPosition();
+        i.setPosition(sf::Vector2f((window_w - pos.x) - rectSizeX, (window_h - pos.y) - rectSizeY));
+    }
+
+    for(auto &i : pieces){
+        sf::Vector2f pos = i.m_sprite.getPosition();
+        i.m_sprite.setPosition(sf::Vector2f((window_w - pos.x), (window_h - pos.y)));
     }
 }
 
@@ -139,6 +158,8 @@ void Board::findPieces(){
             }
         }
     }
+
+    if(side_to_move) flipBoard();
 }
 
 void Board::placePiece(int type, sf::Vector2f square, int color){
@@ -371,10 +392,11 @@ string Board::updateFEN(){
  ==================================
 \**********************************/
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-    for(auto &i : rectangles) target.draw(i);
-    
     int selected = 0;
     int iter = 0;
+    
+    for(auto &i : rectangles) target.draw(i);
+
     for(auto &i : pieces){
         if(!i.m_selected){
             if(i.m_updated){
@@ -383,5 +405,7 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const{
         }else selected = iter;
         iter++;
     }
+    
+    // draw current dragging piece
     target.draw(pieces[selected]);
 }
