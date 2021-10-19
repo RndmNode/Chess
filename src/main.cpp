@@ -142,7 +142,6 @@ void game() {
                     chess.handle_move(sourceSquare, targetSquare, piece);
                     printFullCharBoard(chess.board);
                     chess.generateMoves(chess.m_list_of_moves);
-                    // chess.print_move_list(chess.m_list_of_moves);
                     sourceSquare = -1, targetSquare = -1, piece = -1, _move = -1;
                     moving = false;
                     i.m_selected = false;
@@ -205,9 +204,24 @@ void test() {
     }
 }
 
+void test2(){
+    sf::RenderWindow window;
+
+    window.create(sf::VideoMode(width, height), "CHESS!");
+    ChessGame chess(window);
+    chess.init_all();
+    window.close();
+    chess.board.parseFen("rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1");
+
+    printFullCharBoard(chess.board);
+    printf("score: %d\n\n", chess.evaluate());
+
+}
+
 int main(){ 
-    game();
+    // game();
     // test();
+    test2();
 
     return 0;
 }

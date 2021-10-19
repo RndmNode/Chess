@@ -42,6 +42,13 @@ extern BITBOARD bishop_attacks[64][512];
 extern BITBOARD rook_attacks[64][4096];
 extern unsigned int random_state;
 extern const int castle_rights[64];
+extern const int material_score[12];
+extern const int pawn_score[64];
+extern const int knight_score[64];
+extern const int bishop_score[64];
+extern const int rook_score[64];
+extern const int king_score[64];
+extern const int mirror_score[128];
 
 enum {all_moves, only_captures};
 
@@ -100,6 +107,9 @@ class ChessGame: public sf::Drawable {
         int time_in_ms();
         long PERFT_Driver(int depth);
         void PERFT_Test(int depth);
+
+        //---EVALUATION---//
+        int evaluate();
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

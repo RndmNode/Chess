@@ -159,6 +159,13 @@ void Board::findPieces(){
         }
     }
 
+    // if a piece isn't updated, set piece away from board so it doesn't get 'picked up' later on
+    for(int piece=P; piece<=k; piece++){
+        if(!pieces[piece].m_updated){
+            pieces[piece].m_sprite.setPosition(sf::Vector2f(-100,100));
+        }
+    }
+
     if(side_to_move) flipBoard();
 }
 
