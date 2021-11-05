@@ -67,9 +67,10 @@ class ChessGame: public sf::Drawable {
         sf::RenderTarget &m_target;
 
         // attributes
-        int m_ply = 0;
-        long m_best_move = 0L;
-        long m_nodes = 0L;
+        int m_ply = 0;              // half-move counter
+        long m_best_move = 0L;      // holder for best move
+        long m_nodes = 0L;          // node counter for ai
+        int m_legal_moves_num = 0;
 
         // methods
         //---generating attacks---//
@@ -97,7 +98,7 @@ class ChessGame: public sf::Drawable {
         int indexLeastSigBit(BITBOARD);
 
         //---move generation---//
-        bool is_square_attacked(int, int);
+        bool is_square_attacked(int square, int side);
         void print_attacked_squares(int);
         void generateMoves(moves *move_list);
         void add_move(moves* move_list, int move);

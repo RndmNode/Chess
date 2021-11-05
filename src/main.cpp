@@ -1,3 +1,6 @@
+#include <chrono>
+#include <thread>
+
 #include "Headers/ChessGame.h"
 
 using namespace std;
@@ -5,12 +8,12 @@ using namespace std;
 int width = 800;
 int height = 800;
 
-bool dragging, moving = false;
+bool dragging, prevDragging, moving = false;
 float mouseX = 0.0f;
 float mouseY = 0.0f;
 
 // move information variables
-int sourceSquare, targetSquare, piece, _move;
+int sourceSquare, targetSquare, piece;
 
 // FEN parsing debugger
 void printFullCharBoard(Board board){
@@ -57,10 +60,13 @@ void printFullCharBoard(Board board){
 
 void game() {
     sf::RenderWindow window;
+    
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
     chess.init_all();
+
+    bool check = false;
 
     // run the program as long as the window is open
     while(window.isOpen()){
@@ -88,6 +94,8 @@ void game() {
                     break;
                 case sf::Mouse::Right:
                     chess.undo_move();
+                    chess.undo_move();
+                    chess.generateMoves(chess.m_list_of_moves);
                     break;
                 //-------
                 default:
@@ -120,38 +128,55 @@ void game() {
             //-------
             }
         }
-
-        if(dragging){
-            for(auto &i : chess.board.pieces){
-                if(i.m_selected){
-                    if(!moving){
-                        piece = (i.m_player) ? i.m_type : i.m_type + 6;
-                        sourceSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
+        if(chess.board.side_to_move == white){
+            if(dragging){
+                for(auto &i : chess.board.pieces){
+                    if(i.m_selected){
+                        if(!moving){
+                            piece = (i.m_player) ? i.m_type : i.m_type + 6;
+                            cout << "piece: " << piece_to_char.at(piece) << endl;
+                            sourceSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
+                            cout << "source: " << square_to_coordinates[sourceSquare] << endl;
+                            moving = true;
+                        }
+                        i.m_sprite.setPosition(mouseX, mouseY);
+                        break;
                     }
-                    i.m_sprite.setPosition(mouseX, mouseY);
-                    moving = true;
-                    break;
+                }
+            }else {
+                for(auto &i :chess.board.pieces){
+                    if(i.m_selected){
+                        targetSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
+                        i.setPosition(window, sf::Vector2f(mouseX, mouseY));
+                        chess.handle_move(sourceSquare, targetSquare, piece);
+                        printFullCharBoard(chess.board);
+                        sourceSquare = -1, targetSquare = -1, piece = -1;
+                        i.m_selected = false, moving = false;
+                    }
                 }
             }
-        }else{
-            for(auto &i :chess.board.pieces){
-                if(i.m_selected){
-                    targetSquare = i.getPosition(window, sf::Vector2f(mouseX, mouseY));
-                    i.setPosition(window, sf::Vector2f(mouseX, mouseY));
-                    chess.handle_move(sourceSquare, targetSquare, piece);
-                    printFullCharBoard(chess.board);
-                    chess.generateMoves(chess.m_list_of_moves);
-                    sourceSquare = -1, targetSquare = -1, piece = -1, _move = -1;
-                    moving = false;
-                    i.m_selected = false;
-                }
-            }
+        }else {
+            chess.search_position(3);
+            chess.make_move(chess.m_best_move, all_moves);
+            printFullCharBoard(chess.board);
+            chess.generateMoves(chess.m_list_of_moves);
         }
 
+        check = chess.is_square_attacked(((!chess.board.side_to_move) ? chess.indexLeastSigBit(chess.board.bitboards[K]) : 
+                                                                        chess.indexLeastSigBit(chess.board.bitboards[k])),
+                                                                        chess.board.side_to_move ^ 1);
+        
         // clear and draw screen
         window.clear();
         window.draw(chess);
         window.display();
+
+        if(check && !chess.m_legal_moves_num){
+            cout << "Checkmate!!!\n";
+            cout << ( (!chess.board.side_to_move) ? "Black " : "White " ) << "Wins!!!\n\n";
+            this_thread::sleep_for(chrono::seconds(5));
+            window.close();
+        }
     }
 }
 
@@ -162,8 +187,6 @@ void test() {
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
     chess.init_all();
-
-    // bool checkmate = false;
 
     printf("\n");
 
@@ -183,11 +206,8 @@ void test() {
                 switch (event.key.code)
                 {
                 case sf::Mouse::Left:
-                    cout << "-----------------------------\n";
-                    chess.search_position(1);
+                    chess.search_position(6);
                     chess.make_move(chess.m_best_move, all_moves);
-                    chess.print_move_details(chess.m_best_move);
-                    printFullCharBoard(chess.board);
                     break;
                 case sf::Mouse::Right:
                     chess.undo_move();
@@ -226,8 +246,8 @@ void test2(){
 }
 
 int main(){ 
-    // game();
-    test();
+    game();
+    // test();
     // test2();
 
     // sf::RenderWindow window;

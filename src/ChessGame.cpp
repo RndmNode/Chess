@@ -1133,8 +1133,6 @@ int ChessGame::make_move(int move, int move_flag){
         if(get_move_capture(move)) make_move(move, all_moves);
         else return 0;
     }
-    
-    // should never get here, but something went wrong if it did
     return 0;
 }
 
@@ -1158,7 +1156,7 @@ void ChessGame::undo_move(){
 void ChessGame::handle_move(int source, int target, int piece){
     int move = 0;
 
-    if(board.side_to_move){
+    if(board.side_to_move == black){
         source = 63 - source;
         target = 63 - target;
     }
@@ -1308,10 +1306,13 @@ void ChessGame::handle_move(int source, int target, int piece){
         if(m_list_of_moves->moves[_move] == move){
             cout << "\nmove matches" << endl;
             make_move(move, all_moves);
+            // board.flipBoard();
             return;
         }
     }
     cout << "\ndidn't find a matching legal move" << endl;
+    cout << "Attempted Move:\n";
+    print_move_details(move);
     board.parseFen(move_history.top());
 }
 
@@ -1460,13 +1461,13 @@ int ChessGame::quiescence(int alpha, int beta){
     moves move_list[1];
     generateMoves(move_list);
 
-    for(int i=0; i<move_list->count; i++){
+    for(int count=0; count<move_list->count; count++){
         m_ply++;
-        if(!make_move(move_list->moves[i], only_captures)){
+        if(make_move(move_list->moves[count], only_captures) == 0){
             m_ply--;
             continue;
         }
-
+        
         // score current move
         int score = -quiescence(-beta, -alpha);
 
@@ -1490,7 +1491,8 @@ int ChessGame::quiescence(int alpha, int beta){
 // alpha beta search (w/o pruning)
 int ChessGame::negamax(int alpha, int beta, int depth){
     if(depth == 0){
-        return quiescence(alpha, beta);
+        return evaluate();
+        // return quiescence(alpha, beta);
     }
     // increment nodes searched
     m_nodes++;
@@ -1501,10 +1503,10 @@ int ChessGame::negamax(int alpha, int beta, int depth){
                                                               board.side_to_move ^ 1);
 
     // legal move counter
-    int legal_moves = 0;
+    int m_legal_moves_num = 0;
 
     // best move so far
-    long best_so_far = 0;
+    long best_so_far;
 
     // old alpha
     int old_alpha = alpha;
@@ -1515,13 +1517,13 @@ int ChessGame::negamax(int alpha, int beta, int depth){
 
     for(int i=0; i<move_list->count; i++){
         m_ply++;
-        if(!make_move(move_list->moves[i], all_moves)){
+        if(make_move(move_list->moves[i], all_moves) == 0){
             m_ply--;
             continue;
         }
 
         // increment legal moves
-        legal_moves++;
+        m_legal_moves_num++;
 
         // score current move
         int score = -negamax(-beta, -alpha, depth-1);
@@ -1547,7 +1549,7 @@ int ChessGame::negamax(int alpha, int beta, int depth){
     }
 
     // if we don't have any legal moves to make
-    if(legal_moves == 0){
+    if(m_legal_moves_num == 0){
         // king is in check --> return mating score
         if(in_check) return -49000 + m_ply;
         // king is not in check --> return stalemate score
