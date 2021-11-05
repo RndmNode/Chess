@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <stack>
+#include <thread>
 
 // encode moves into integers
 #define encode_move(source, target, piece, promoted, capture, doublePush, enpassant, castling)\
@@ -66,6 +67,9 @@ class ChessGame: public sf::Drawable {
         sf::RenderTarget &m_target;
 
         // attributes
+        int m_ply = 0;
+        long m_best_move = 0L;
+        long m_nodes = 0L;
 
         // methods
         //---generating attacks---//
@@ -95,9 +99,10 @@ class ChessGame: public sf::Drawable {
         //---move generation---//
         bool is_square_attacked(int, int);
         void print_attacked_squares(int);
-        long generateMoves(moves *move_list);
+        void generateMoves(moves *move_list);
         void add_move(moves* move_list, int move);
         void print_move(int move);
+        void print_move_details(int move);
         void print_move_list(moves *move_list);
         int make_move(int move, int move_flag);
         void undo_move();
@@ -110,6 +115,11 @@ class ChessGame: public sf::Drawable {
 
         //---EVALUATION---//
         int evaluate();
+
+        //---Artificial Intelligence---//
+        void search_position(int depth);
+        int negamax(int alpha, int beta, int depth);
+        int quiescence(int alpha, int beta);
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         ChessGame(sf::RenderTarget& target);

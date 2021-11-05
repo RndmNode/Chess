@@ -55,7 +55,6 @@ void printFullCharBoard(Board board){
     cout << "  FEN: " << board.FEN << "\n\n";
 }
 
-
 void game() {
     sf::RenderWindow window;
 
@@ -164,6 +163,10 @@ void test() {
     ChessGame chess(window);
     chess.init_all();
 
+    // bool checkmate = false;
+
+    printf("\n");
+
     // run the program as long as the window is open
     while(window.isOpen()){
         // check all the window's events that were triggered since the last iteration of the loop
@@ -175,21 +178,24 @@ void test() {
             case sf::Event::Closed:
                 window.close();
                 break;
-
+            
             case sf::Event::MouseButtonPressed:
                 switch (event.key.code)
                 {
                 case sf::Mouse::Left:
-                    chess.board.flipBoard();
-
+                    cout << "-----------------------------\n";
+                    chess.search_position(1);
+                    chess.make_move(chess.m_best_move, all_moves);
+                    chess.print_move_details(chess.m_best_move);
+                    printFullCharBoard(chess.board);
+                    break;
                 case sf::Mouse::Right:
+                    chess.undo_move();
                     break;
                 //-------
                 default:
                     break;
-                //-------
                 }
-                break;
             //-------
             default:
                 break;
@@ -211,17 +217,27 @@ void test2(){
     ChessGame chess(window);
     chess.init_all();
     window.close();
-    chess.board.parseFen("rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1");
-
+    
     printFullCharBoard(chess.board);
-    printf("score: %d\n\n", chess.evaluate());
-
+    for(int i=0; i<12; i++){
+        cout << "\n  " << chess.board.boardNames[i] << ":\n";
+        chess.board.printBitboard(chess.board.bitboards[i]);
+    }
 }
 
 int main(){ 
     // game();
-    // test();
-    test2();
+    test();
+    // test2();
+
+    // sf::RenderWindow window;
+
+    // window.create(sf::VideoMode(width, height), "CHESS!");
+    // ChessGame chess(window);
+    // chess.init_all();
+    // window.close();
+
+    // chess.PERFT_Test(3);
 
     return 0;
 }

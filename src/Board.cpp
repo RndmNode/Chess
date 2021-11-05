@@ -166,7 +166,7 @@ void Board::findPieces(){
         }
     }
 
-    if(side_to_move) flipBoard();
+    // if(side_to_move) flipBoard();
 }
 
 void Board::placePiece(int type, sf::Vector2f square, int color){

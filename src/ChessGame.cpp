@@ -639,7 +639,7 @@ void ChessGame::print_attacked_squares(int side){
 }
 
 // generate all possible moves ---------------------------- MY VERSION
-long ChessGame::generateMoves(moves *move_list){
+void ChessGame::generateMoves(moves *move_list){
     move_list->count = 0;
     fill_n(move_list->moves, 256, 0);
 
@@ -941,16 +941,12 @@ long ChessGame::generateMoves(moves *move_list){
             }
         }
     }
-    return move_list->count;
 }
 
 // add moves to move list ---------------------------- MY VERSION
 void ChessGame::add_move(moves *move_list, int move){
-    if(make_move(move, all_moves)){
-        undo_move();
         move_list->moves[move_list->count] = move;
         move_list->count++;
-    }
 }
 
 // short version of printing a move
@@ -958,9 +954,17 @@ void ChessGame::print_move(int move){
     cout << square_to_coordinates[get_move_source(move)] << 
             square_to_coordinates[get_move_target(move)];
 
-    if(get_move_promoted(move) > 0){
-        cout << promoted_piece.at(get_move_promoted(move)) << endl; 
+    if(get_move_promoted(move)){
+        cout << promoted_piece.at(get_move_promoted(move)); 
     }
+}
+
+void ChessGame::print_move_details(int move){
+    cout << "piece: " << piece_to_char.at(get_move_piece(move)) << endl;
+    cout << "source: " << square_to_coordinates[get_move_source(move)] << endl;
+    cout << "target: " << square_to_coordinates[get_move_target(move)] << endl;
+    cout << "double push: " << (get_move_doublePush(move) ? "Yes" : "No") << endl;
+    cout << "capture: " << (get_move_capture(move) ? "Yes" : "No") << endl;
 }
 
 // print move list
@@ -1129,6 +1133,9 @@ int ChessGame::make_move(int move, int move_flag){
         if(get_move_capture(move)) make_move(move, all_moves);
         else return 0;
     }
+    
+    // should never get here, but something went wrong if it did
+    return 0;
 }
 
 // get time in milliseconds
@@ -1316,29 +1323,24 @@ void ChessGame::handle_move(int source, int target, int piece){
 
 // PERFT Driver 
 inline long ChessGame::PERFT_Driver(int depth){
-    int n_moves, i;
     long nodes = 0;
     moves move_list[1];
 
-    n_moves = generateMoves(move_list);
+    generateMoves(move_list);
 
-    switch (depth)
-    {
-    case 0:
-        return 1;
-        break;
-    
-    case 1:
-        return n_moves;
-    
-    default:
-        for(i=0; i<move_list->count; i++){
-            make_move(move_list->moves[i], all_moves);
-            nodes += PERFT_Driver(depth - 1);
-            undo_move();
-        }
-        break;
+    if(depth == 0){
+        return 1ULL;
     }
+
+    for(int move_count=0; move_count < move_list->count; move_count++){
+        if(!make_move(move_list->moves[move_count], all_moves))
+            continue;
+        
+        nodes += PERFT_Driver(depth - 1);
+
+        undo_move();
+    }
+
     return nodes;
 }
 
@@ -1355,7 +1357,8 @@ void ChessGame::PERFT_Test(int depth){
     int start = time_in_ms();
 
     for(int i=0; i<move_list->count; i++){
-        make_move(move_list->moves[i], all_moves);
+        if(!make_move(move_list->moves[i], all_moves)) 
+            continue;
 
         long cumulative_nodes = nodes;
         nodes += PERFT_Driver(depth - 1);
@@ -1431,6 +1434,148 @@ int ChessGame::evaluate(){
 
     // return final evaluation based on side
     return (!board.side_to_move) ? score : -score;
+}
+
+/**********************************\
+ ==================================
+       Artificial Intelligence
+ ==================================
+\**********************************/
+
+int ChessGame::quiescence(int alpha, int beta){
+    // evaluate position
+    int evaluation = evaluate();
+
+    // fail-hard beta cutoff
+    if(evaluation >= beta){
+        return beta; // move fails high
+    }
+
+    // found better move
+    if(evaluation > alpha){
+        alpha = evaluation;
+    }
+
+    // create move list instance and generate moves
+    moves move_list[1];
+    generateMoves(move_list);
+
+    for(int i=0; i<move_list->count; i++){
+        m_ply++;
+        if(!make_move(move_list->moves[i], only_captures)){
+            m_ply--;
+            continue;
+        }
+
+        // score current move
+        int score = -quiescence(-beta, -alpha);
+
+        m_ply--;
+        undo_move();
+        
+        // fail-hard beta cutoff
+        if(score >= beta){
+           return beta; // move fails high
+        }
+
+        // found better move
+        if(score > alpha){
+            alpha = score;
+        }
+    }
+    // node fails low
+    return alpha;
+}
+
+// alpha beta search (w/o pruning)
+int ChessGame::negamax(int alpha, int beta, int depth){
+    if(depth == 0){
+        return quiescence(alpha, beta);
+    }
+    // increment nodes searched
+    m_nodes++;
+
+    // is king in check
+    int in_check = is_square_attacked((!board.side_to_move) ? indexLeastSigBit(board.bitboards[K]) : 
+                                                              indexLeastSigBit(board.bitboards[k]), 
+                                                              board.side_to_move ^ 1);
+
+    // legal move counter
+    int legal_moves = 0;
+
+    // best move so far
+    long best_so_far = 0;
+
+    // old alpha
+    int old_alpha = alpha;
+
+    // create move list instance and generate moves
+    moves move_list[1];
+    generateMoves(move_list);
+
+    for(int i=0; i<move_list->count; i++){
+        m_ply++;
+        if(!make_move(move_list->moves[i], all_moves)){
+            m_ply--;
+            continue;
+        }
+
+        // increment legal moves
+        legal_moves++;
+
+        // score current move
+        int score = -negamax(-beta, -alpha, depth-1);
+
+        m_ply--;
+        undo_move();
+        
+        // fail-hard beta cutoff
+        if(score >= beta){
+           return beta; // move fails high
+        }
+
+        // found better move
+        if(score > alpha){
+            alpha = score;
+
+            // if root move
+            if(m_ply == 0){
+                // associate best move with best score
+                best_so_far = move_list->moves[i];
+            }
+        }
+    }
+
+    // if we don't have any legal moves to make
+    if(legal_moves == 0){
+        // king is in check --> return mating score
+        if(in_check) return -49000 + m_ply;
+        // king is not in check --> return stalemate score
+        else return 0;
+    }
+
+    // save better move in m_best_move
+    if(old_alpha != alpha){
+        // init best move
+        m_best_move = best_so_far;
+    }
+
+    // node(move) fails low
+    return alpha;
+}
+
+// search for best position
+void ChessGame::search_position(int depth){
+    // find best move given position
+    int score = negamax(-50000, 50000, depth);
+
+    if(m_best_move){
+        printf("info score cp %d depth %d nodes %ld  |  ", score, depth, m_nodes);
+        // print results
+        printf("best move: ");
+        print_move(m_best_move);
+        printf("\n");
+    }
 }
 
 /**********************************\

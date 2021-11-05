@@ -11,6 +11,7 @@ using namespace std;
 
 #define EMPTY_BOARD "8/8/8/8/8/8/8/8 w KQkq - 0 1"
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define MATE_IN_ONE "4k3/8/5K2/8/1Q7/8/8/8 w - - 0 1"
 #define KIWIPETE "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
 #define DJAJA_STUDY "6R1/P2k4/r7/5N1P/r7/p7/7K/8 w - -"
 #define HAKMEM_70 "5B2/6P1/1p6/8/1N6/kP6/2K5/8 w - - "
