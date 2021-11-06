@@ -1463,7 +1463,7 @@ int ChessGame::quiescence(int alpha, int beta){
 
     for(int count=0; count<move_list->count; count++){
         m_ply++;
-        if(make_move(move_list->moves[count], only_captures) == 0){
+        if(!make_move(move_list->moves[count], only_captures)){
             m_ply--;
             continue;
         }
@@ -1491,8 +1491,8 @@ int ChessGame::quiescence(int alpha, int beta){
 // alpha beta search (w/o pruning)
 int ChessGame::negamax(int alpha, int beta, int depth){
     if(depth == 0){
-        return evaluate();
-        // return quiescence(alpha, beta);
+        // return evaluate();
+        return quiescence(alpha, beta);
     }
     // increment nodes searched
     m_nodes++;
@@ -1503,10 +1503,10 @@ int ChessGame::negamax(int alpha, int beta, int depth){
                                                               board.side_to_move ^ 1);
 
     // legal move counter
-    int m_legal_moves_num = 0;
+    m_legal_moves_num = 0;
 
     // best move so far
-    long best_so_far;
+    long best_so_far = 0;
 
     // old alpha
     int old_alpha = alpha;
@@ -1517,7 +1517,7 @@ int ChessGame::negamax(int alpha, int beta, int depth){
 
     for(int i=0; i<move_list->count; i++){
         m_ply++;
-        if(make_move(move_list->moves[i], all_moves) == 0){
+        if(!make_move(move_list->moves[i], all_moves)){
             m_ply--;
             continue;
         }

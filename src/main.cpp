@@ -8,7 +8,7 @@ using namespace std;
 int width = 800;
 int height = 800;
 
-bool dragging, prevDragging, moving = false;
+bool positionChecked, dragging, prevDragging, moving = false;
 float mouseX = 0.0f;
 float mouseY = 0.0f;
 
@@ -171,12 +171,18 @@ void game() {
         window.draw(chess);
         window.display();
 
-        if(check && !chess.m_legal_moves_num){
-            cout << "Checkmate!!!\n";
-            cout << ( (!chess.board.side_to_move) ? "Black " : "White " ) << "Wins!!!\n\n";
-            this_thread::sleep_for(chrono::seconds(5));
-            window.close();
-        }
+        if(check){
+            if(!positionChecked){
+                chess.search_position(3);
+                positionChecked = true;
+            }
+            if(!chess.m_legal_moves_num){
+                cout << "Checkmate!!!\n";
+                cout << ( (!chess.board.side_to_move) ? "Black " : "White " ) << "Wins!!!\n\n";
+                this_thread::sleep_for(chrono::seconds(5));
+                window.close();
+            }
+        }else positionChecked = false;
     }
 }
 
@@ -230,34 +236,8 @@ void test() {
     }
 }
 
-void test2(){
-    sf::RenderWindow window;
-
-    window.create(sf::VideoMode(width, height), "CHESS!");
-    ChessGame chess(window);
-    chess.init_all();
-    window.close();
-    
-    printFullCharBoard(chess.board);
-    for(int i=0; i<12; i++){
-        cout << "\n  " << chess.board.boardNames[i] << ":\n";
-        chess.board.printBitboard(chess.board.bitboards[i]);
-    }
-}
-
 int main(){ 
     game();
-    // test();
-    // test2();
-
-    // sf::RenderWindow window;
-
-    // window.create(sf::VideoMode(width, height), "CHESS!");
-    // ChessGame chess(window);
-    // chess.init_all();
-    // window.close();
-
-    // chess.PERFT_Test(3);
 
     return 0;
 }
