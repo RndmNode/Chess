@@ -60,7 +60,6 @@ void printFullCharBoard(Board board){
 
 void game() {
     sf::RenderWindow window;
-    
 
     window.create(sf::VideoMode(width, height), "CHESS!");
     ChessGame chess(window);
