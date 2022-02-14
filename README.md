@@ -1,6 +1,6 @@
 # Chess Engine with SFML Graphics
 > Playable Chess Engine via SFML
-___________________
+_
 ## Engine Structure
 
 - PieceTexture Class
@@ -17,7 +17,7 @@ ___________________
     - Generates squares that each piece attacks
     - Evaluates game score
     - Holds AI functionality 
-_______________________
+_
 ## Main Data Structures
 
 ### Bitboards
@@ -31,6 +31,7 @@ String representation of the game state.
 
 
 Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+'''
 ╔═╤═╤═╤═╤═╤═╤═╤═╗╮
 ║♜│♞│♝│♛│♚│♝│♞│♜║8
 ╟─┼─┼─┼─┼─┼─┼─┼─╢┊
@@ -49,6 +50,7 @@ Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 ║♖│♘│♗│♕│♔│♗│♘│♖║1
 ╚═╧═╧═╧═╧═╧═╧═╧═╝┊
 ╰a┈b┈c┈d┈e┈f┈g┈h┈╯
+'''
 _
 ## Game Setup
 
