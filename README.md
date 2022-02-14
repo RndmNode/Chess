@@ -1,36 +1,55 @@
 # Chess Engine with SFML Graphics
 > Playable Chess Engine via SFML
-
+___________________
 ## Engine Structure
 
-### Main Objects
-
-- PieceTexture
+- PieceTexture Class
     - Holds the images for the piece textures
-- Piece
+- Piece Class
     - Instances of each piece are made up from this class
     - Piece class holds the type, color, and position of the object
-- Board
+- Board Class
     - Holds bitboard representations of the game states
     - Sets the position of each piece based on the bitboards
-- ChessGame
+- ChessGame Class
     - Holds an instance of the board class
     - Handles all game logic
     - Generates squares that each piece attacks
     - Evaluates game score
-    - Holds AI algorithms 
-
+    - Holds AI functionality 
+_______________________
 ## Main Data Structures
 
 ### Bitboards
 
-These are 64-bit integer representations of different aspects of the game state. 
+These are 64-bit integer representations of different aspects of the game state. Each bit represents a square
+on the chess board. A '0' represents and empty square and a '1' respresents an occupied square.
 
 ### FEN String (Forsyth-Edwards Notation)
 
 String representation of the game state.
 
-_____________
+
+Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+╔═╤═╤═╤═╤═╤═╤═╤═╗╮
+║♜│♞│♝│♛│♚│♝│♞│♜║8
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║♟│♟│♟│♟│♟│♟│♟│♟║7
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║ │░│ │░│ │░│ │░║6
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║░│ │░│ │░│ │░│ ║5
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║ │░│ │░│ │░│ │░║4
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║░│ │░│ │░│ │░│ ║3
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║♙│♙│♙│♙│♙│♙│♙│♙║2
+╟─┼─┼─┼─┼─┼─┼─┼─╢┊
+║♖│♘│♗│♕│♔│♗│♘│♖║1
+╚═╧═╧═╧═╧═╧═╧═╧═╝┊
+╰a┈b┈c┈d┈e┈f┈g┈h┈╯
+_
 ## Game Setup
 
 1) Creating an instance of ChessGame
@@ -43,7 +62,7 @@ _____________
     b. Generates a list of every possible move given the game state
 3) Start game loop
 
-__________________________
+_
 ## Artificial Intelligence 
 
 Explanation of the Negamax algorithm
