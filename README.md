@@ -31,7 +31,8 @@ String representation of the game state.
 
 
 Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-'''
+
+```shell
 ╔═╤═╤═╤═╤═╤═╤═╤═╗╮
 ║♜│♞│♝│♛│♚│♝│♞│♜║8
 ╟─┼─┼─┼─┼─┼─┼─┼─╢┊
@@ -50,7 +51,7 @@ Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 ║♖│♘│♗│♕│♔│♗│♘│♖║1
 ╚═╧═╧═╧═╧═╧═╧═╧═╝┊
 ╰a┈b┈c┈d┈e┈f┈g┈h┈╯
-'''
+```
 _
 ## Game Setup
 
