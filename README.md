@@ -25,12 +25,29 @@ _
 These are 64-bit integer representations of different aspects of the game state. Each bit represents a square
 on the chess board. A '0' represents and empty square and a '1' respresents an occupied square.
 
+
+
+For more information on bitboards, [follow this link.](https://www.chessprogramming.org/Bitboards)
+
 ### FEN String (Forsyth-Edwards Notation)
 
-String representation of the game state.
+A FEN string is a string representation of the game state. The first portion, and the longest portion, of the string is the representation of the pieces and their placement. Capital letters are the white pieces, and the lowercase are the black pieces. Each slash "/" represents a break to the next rank (row) and each number represents the number of empty squares until the next rank or piece. The board is filled left-to-right just as the string is read left-to-right. 
 
+For example, consider the following string: "R6r/4q2P/". This would represent one row having a white rook on the first square, followed by 6 empty spaces, and then a black rook. Then there is a slash "/" which represents the break to the next row, where it starts with 4 empty spaces, a black queen, 2 more empty spaces, before finishing with a white pawn. 
 
-Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+Following the letters and numbers that represent the pieces and placements, there is a space and either a w or b. This represents whose turn it is (w for white, b for black). After that comes the castling rights; KQkq means both players have not moved their king or either of their rooks from their starting positions, giving the king the right to castle to that side. 
+- K: White king-side
+- Q: White queen-side
+- k: Black king-side
+- q: black queen-side
+
+After the castling rights lives the space for the en passant square (if there is one). If there is a '-' in this space, then there is no legal en passant square during that turn. The number following this is the halfmove clock, and after that is the fullmove counter.
+
+#### Examples
+
+Empty board FEN : "8/8/8/8/8/8/8/8 w KQkq - 0 1"
+
+Starting position FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 ```shell
 ╔═╤═╤═╤═╤═╤═╤═╤═╗╮
@@ -52,6 +69,29 @@ Starting FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 ╚═╧═╧═╧═╧═╧═╧═╧═╝┊
 ╰a┈b┈c┈d┈e┈f┈g┈h┈╯
 ```
+
+♜♞♝♛♚♝♞♜
+♟♟♟♟♟♟♟♟
+        
+        
+        
+        
+♙♙♙♙♙♙♙♙
+♖♘♗♕♔♗♘♖
+
+
+♜♞♝♛♚♝♞♜| 8
+♟♟ ♟♟♟♟♟| 7
+        | 6
+  ♟     | 5
+    ♙   | 4
+     ♘  | 3
+♙♙♙♙ ♙♙♙| 2
+♖♘♗♕♔♗ ♖| 1
+--------
+abcdefgh
+
+For more information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
 _
 ## Game Setup
 
