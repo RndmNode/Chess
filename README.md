@@ -47,17 +47,15 @@ After the castling rights lives the space for the en passant square (if there is
 
 #### Examples
 
-Empty board FEN : "8/8/8/8/8/8/8/8 w KQkq - 0 1"
-
 Starting position FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 ![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phprLkH4s.png)
 
 FEN: "8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50"
 ![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phpllS96z.png)
 
-For more information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
+For more detailed information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
 Or
-[Here is a nice and easy explanation](https://www.chess.com/terms/fen-chess)
+[here is a nice and easy explanation.](https://www.chess.com/terms/fen-chess)
 
 
 ## Game Setup
