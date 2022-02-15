@@ -16,7 +16,8 @@ _
     - Handles all game logic
     - Generates squares that each piece attacks
     - Evaluates game score
-    - Holds AI functionality 
+    - Holds AI functionality
+
 _
 ## Main Data Structures
 
@@ -69,6 +70,8 @@ Starting position FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 ╚═╧═╧═╧═╧═╧═╧═╧═╝┊
 ╰a┈b┈c┈d┈e┈f┈g┈h┈╯
 ```
+
+![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phpGZzBq4.png)
 
 ♜♞♝♛♚♝♞♜
 ♟♟♟♟♟♟♟♟
