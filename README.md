@@ -49,52 +49,14 @@ After the castling rights lives the space for the en passant square (if there is
 Empty board FEN : "8/8/8/8/8/8/8/8 w KQkq - 0 1"
 
 Starting position FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phprLkH4s.png)
 
-```shell
-╔═╤═╤═╤═╤═╤═╤═╤═╗╮
-║♜│♞│♝│♛│♚│♝│♞│♜║8
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║♟│♟│♟│♟│♟│♟│♟│♟║7
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║ │░│ │░│ │░│ │░║6
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║░│ │░│ │░│ │░│ ║5
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║ │░│ │░│ │░│ │░║4
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║░│ │░│ │░│ │░│ ║3
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║♙│♙│♙│♙│♙│♙│♙│♙║2
-╟─┼─┼─┼─┼─┼─┼─┼─╢┊
-║♖│♘│♗│♕│♔│♗│♘│♖║1
-╚═╧═╧═╧═╧═╧═╧═╧═╝┊
-╰a┈b┈c┈d┈e┈f┈g┈h┈╯
-```
-
-![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phpGZzBq4.png)
-
-♜♞♝♛♚♝♞♜
-♟♟♟♟♟♟♟♟
-        
-        
-        
-        
-♙♙♙♙♙♙♙♙
-♖♘♗♕♔♗♘♖
-
-
-♜♞♝♛♚♝♞♜| 8
-♟♟ ♟♟♟♟♟| 7
-        | 6
-  ♟     | 5
-    ♙   | 4
-     ♘  | 3
-♙♙♙♙ ♙♙♙| 2
-♖♘♗♕♔♗ ♖| 1
---------
-abcdefgh
+FEN: "8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50"
+![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phpllS96z.png)
 
 For more information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
+Or
+[Here is a nice and easy explanation](https://www.chess.com/terms/fen-chess)
 _
 ## Game Setup
 
