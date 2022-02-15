@@ -1,6 +1,6 @@
 # Chess Engine with SFML Graphics
 > Playable Chess Engine via SFML
-_
+
 ## Engine Structure
 
 - PieceTexture Class
@@ -18,7 +18,7 @@ _
     - Evaluates game score
     - Holds AI functionality
 
-_
+
 ## Main Data Structures
 
 ### Bitboards
@@ -44,6 +44,7 @@ Following the letters and numbers that represent the pieces and placements, ther
 
 After the castling rights lives the space for the en passant square (if there is one). If there is a '-' in this space, then there is no legal en passant square during that turn. The number following this is the halfmove clock, and after that is the fullmove counter.
 
+
 #### Examples
 
 Empty board FEN : "8/8/8/8/8/8/8/8 w KQkq - 0 1"
@@ -57,7 +58,8 @@ FEN: "8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50"
 For more information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
 Or
 [Here is a nice and easy explanation](https://www.chess.com/terms/fen-chess)
-_
+
+
 ## Game Setup
 
 1) Creating an instance of ChessGame
@@ -70,7 +72,7 @@ _
     b. Generates a list of every possible move given the game state
 3) Start game loop
 
-_
+
 ## Artificial Intelligence 
 
 Explanation of the Negamax algorithm
