@@ -44,17 +44,17 @@ To reiterate, each piece type and color has its own bitboard, with '0's represen
 
 *Attacking squares examples:
 
-White Pawn on C4        Bishop on D5        Queen on E4
-00000000                10000010            10001000
-00000000                01000100            01001001
-00000000                00101000            00101010
-01010000                000x0000            00011100
-00x00000                00101000            1111x111
-00000000                01000100            00011100
-00000000                10000010            00101010
-00000000                00000001            01001001
+White Pawn on C4        Bishop on D5        Queen on E4  
+00000000                10000010            10001000  
+00000000                01000100            01001001  
+00000000                00101000            00101010  
+01010000                000x0000            00011100  
+00x00000                00101000            1111x111  
+00000000                01000100            00011100  
+00000000                10000010            00101010  
+00000000                00000001            01001001  
 
-<em>*An 'x' is representing where the piece is positioned and it is not actually a part of the bitboard. In the program, this is actually a '0'.<em>
+<em>*An 'x' is representing where the piece is positioned and it is not actually a part of the bitboard. In the program, this is actually a '0'.</em>
 
 For more information on bitboards, [follow this link.](https://www.chessprogramming.org/Bitboards)
 
