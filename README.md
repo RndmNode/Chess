@@ -18,15 +18,43 @@
     - Evaluates game score
     - Holds AI functionality
 
-
 ## Main Data Structures
 
-### Bitboards
+### Bitboards | Board representation
 
-These are 64-bit integer representations of different aspects of the game state. Each bit represents a square
-on the chess board. A '0' represents and empty square and a '1' respresents an occupied square.
+These are 64-bit binary representations of piece placement with each bit represents a square on the chess board. A '0' represents and empty square and a '1' respresents an occupied square. Because these data structures are effectively integers, they take up less memory and, as a result, are able to be referenced and manipulated efficiently.
 
+However, because not every piece can be represented with a '1' or a '0', the piece types and colors all have their own 'binary' representation given the game state. In other words, the white pawns have their own bitboard, the black knights the their own, the white king has its own, etc. etc.
 
+#### Examples:
+
+Given the starting position of a chess game...
+
+White Rooks         White Pawns         Black Bishops       Black King
+00000000            00000000            00100100            00001000
+00000000            00000000            00000000            00000000
+00000000            00000000            00000000            00000000
+00000000            00000000            00000000            00000000
+00000000            00000000            00000000            00000000
+00000000            00000000            00000000            00000000
+00000000            11111111            00000000            00000000
+10000001            00000000            00000000            00000000
+
+To reiterate, each piece type and color has its own bitboard, with '0's representing empty squares, and '1's representing occupied squares for that piece and color. We use these bitboard (with a combination of many other bitboards) to find out many things about the game. These bitboards are used in game score/evaluation, which piece is attacking which, check and checkmate, and more. 
+
+*Attacking squares examples:
+
+White Pawn on C4        Bishop on D5        Queen on E4
+00000000                10000010            10001000
+00000000                01000100            01001001
+00000000                00101000            00101010
+01010000                000x0000            00011100
+00x00000                00101000            1111x111
+00000000                01000100            00011100
+00000000                10000010            00101010
+00000000                00000001            01001001
+
+<em>*An 'x' is representing where the piece is positioned and it is not actually a part of the bitboard. In the program, this is actually a '0'.<em>
 
 For more information on bitboards, [follow this link.](https://www.chessprogramming.org/Bitboards)
 
@@ -44,8 +72,7 @@ Following the letters and numbers that represent the pieces and placements, ther
 
 After the castling rights lives the space for the en passant square (if there is one). If there is a '-' in this space, then there is no legal en passant square during that turn. The number following this is the halfmove clock, and after that is the fullmove counter.
 
-
-#### Examples
+#### Examples:
 
 Starting position FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 ![alt text](https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/pdrpnht/phprLkH4s.png)
@@ -55,7 +82,6 @@ FEN: "8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50"
 
 For more detailed information on FEN Strings, [follow this link.](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
 Or here is a [nice and easy explanation.](https://www.chess.com/terms/fen-chess)
-
 
 ## Game Setup
 
@@ -68,7 +94,6 @@ Or here is a [nice and easy explanation.](https://www.chess.com/terms/fen-chess)
     a. Calculates all squares being attacked by respective pieces
     b. Generates a list of every possible move given the game state
 3) Start game loop
-
 
 ## Artificial Intelligence 
 
