@@ -24,42 +24,7 @@
 
 These are 64-bit binary representations of piece placement with each bit represents a square on the chess board. A '0' represents and empty square and a '1' respresents an occupied square. Because these data structures are effectively integers, they take up less memory and, as a result, are able to be referenced and manipulated efficiently.
 
-However, because not every piece can be represented with a '1' or a '0', the piece types and colors all have their own 'binary' representation given the game state. In other words, the white pawns have their own bitboard, the black knights the their own, the white king has its own, etc. etc.
-
-#### Examples:
-
-Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
-Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
-
-Given the starting position of a chess game...
-
-White Rooks | White Pawns | Black Bishops | Black King
---- | --- | --- | ---
-00000000 | 00000000 | 00100100 | 00001000 | 
-00000000 | 00000000 | 00000000 | 00000000 | 
-00000000 | 00000000 | 00000000 | 00000000 | 
-00000000 | 00000000 | 00000000 | 00000000 | 
-00000000 | 00000000 | 00000000 | 00000000 | 
-00000000 | 00000000 | 00000000 | 00000000 | 
-00000000 | 11111111 | 00000000 | 00000000 | 
-10000001 | 00000000 | 00000000 | 00000000 | 
-
-To reiterate, each piece type and color has its own bitboard, with '0's representing empty squares, and '1's representing occupied squares for that piece and color. We use these bitboard (with a combination of many other bitboards) to find out many things about the game. These bitboards are used in game score/evaluation, which piece is attacking which, check and checkmate, and more. 
-
-*Attacking squares examples:
-
-White Pawn on C4        Bishop on D5        Queen on E4  
-00000000                10000010            10001000  
-00000000                01000100            01001001  
-00000000                00101000            00101010  
-01010000                000x0000            00011100  
-00x00000                00101000            1111x111  
-00000000                01000100            00011100  
-00000000                10000010            00101010  
-00000000                00000001            01001001  
-
-<em>*An 'x' is representing where the piece is positioned and it is not actually a part of the bitboard. In the program, this is actually a '0'.</em>
+However, because not every piece can be represented with a '1' or a '0', the piece types and colors all have their own 'binary' representation given the game state. In other words, the white pawns have their own bitboard, the black knights the their own, the white king has its own, etc. etc. We use these bitboard (with a combination of many other bitboards) to find out many things about the game. These bitboards are used in game score/evaluation, which piece is attacking which, check and checkmate, and more.
 
 For more information on bitboards, [follow this link.](https://www.chessprogramming.org/Bitboards)
 
