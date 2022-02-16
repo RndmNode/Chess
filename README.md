@@ -34,15 +34,16 @@ Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
 
 Given the starting position of a chess game...
 
-White Rooks         White Pawns         Black Bishops       Black King
-00000000            00000000            00100100            00001000  
-00000000            00000000            00000000            00000000  
-00000000            00000000            00000000            00000000  
-00000000            00000000            00000000            00000000  
-00000000            00000000            00000000            00000000  
-00000000            00000000            00000000            00000000  
-00000000            11111111            00000000            00000000  
-10000001            00000000            00000000            00000000  
+White Rooks | White Pawns | Black Bishops | Black King
+--- | --- | --- | ---
+00000000 | 00000000 | 00100100 | 00001000 | 
+00000000 | 00000000 | 00000000 | 00000000 | 
+00000000 | 00000000 | 00000000 | 00000000 | 
+00000000 | 00000000 | 00000000 | 00000000 | 
+00000000 | 00000000 | 00000000 | 00000000 | 
+00000000 | 00000000 | 00000000 | 00000000 | 
+00000000 | 11111111 | 00000000 | 00000000 | 
+10000001 | 00000000 | 00000000 | 00000000 | 
 
 To reiterate, each piece type and color has its own bitboard, with '0's representing empty squares, and '1's representing occupied squares for that piece and color. We use these bitboard (with a combination of many other bitboards) to find out many things about the game. These bitboards are used in game score/evaluation, which piece is attacking which, check and checkmate, and more. 
 
