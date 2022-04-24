@@ -67,4 +67,10 @@ Or here is a [nice and easy explanation.](https://www.chess.com/terms/fen-chess)
 
 ## Artificial Intelligence 
 
-Explanation of the Negamax algorithm
+The chose algorithm for this engine is the [Negamax Algorithm.](https://en.wikipedia.org/wiki/Negamax)
+
+The Negamax algorithm operates like a game tree. Each node in the tree represents a game state after a given possible move. Prior to building the game tree, the engine has to calculate and store all possible moves given a state and depth for how many possible moves into the future it should look.
+
+After generating all moves, the engine has to walk through each move and score that move based on the board state. From there, the algorithm traverses down the tree to find the next best move based on trying to maximize the score for the player that has the next move and minimizing the score for the opposing player. 
+
+[Here is an informative animation on how it works.](https://en.wikipedia.org/wiki/Negamax#/media/File:Plain_Negamax.gif)
