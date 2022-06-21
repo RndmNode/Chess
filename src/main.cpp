@@ -8,6 +8,8 @@ using namespace std;
 int width = 800;
 int height = 800;
 
+int search_depth = 4;
+
 bool positionChecked, dragging, prevDragging, moving = false;
 float mouseX = 0.0f;
 float mouseY = 0.0f;
@@ -155,7 +157,7 @@ void game() {
                 }
             }
         }else {
-            chess.search_position(3);
+            chess.search_position(search_depth);
             chess.make_move(chess.m_best_move, all_moves);
             printFullCharBoard(chess.board);
             chess.generateMoves(chess.m_list_of_moves);
@@ -172,7 +174,7 @@ void game() {
 
         if(check){
             if(!positionChecked){
-                chess.search_position(3);
+                chess.search_position(search_depth);
                 positionChecked = true;
             }
             if(!chess.m_legal_moves_num){
@@ -236,7 +238,12 @@ void test() {
 }
 
 int main(){ 
-    game();
+    // game();
+    sf::RenderWindow window;
+    ChessGame chess(window);
+    chess.init_all();
+
+    chess.PERFT_Test(5);
 
     return 0;
 }

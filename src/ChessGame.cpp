@@ -1491,8 +1491,8 @@ int ChessGame::quiescence(int alpha, int beta){
 // alpha beta search (w/o pruning)
 int ChessGame::negamax(int alpha, int beta, int depth){
     if(depth == 0){
-        // return evaluate();
-        return quiescence(alpha, beta);
+        return evaluate();
+        // return quiescence(alpha, beta);
     }
     // increment nodes searched
     m_nodes++;

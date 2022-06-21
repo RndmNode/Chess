@@ -3,8 +3,8 @@ CXX_FLAGS := -Wall -Wextra -std=c++17 -ggdb
 
 BIN		:= bin
 SRC		:= src
-INCLUDE	:= src/Headers
-LIB		:= lib
+INCLUDE	:= /opt/homebrew/include -Isrc/Headers
+LIB		:= /opt/homebrew/lib
 
 LIBRARIES	:= -lsfml-graphics -lsfml-window -lsfml-system
 EXECUTABLE	:= main

@@ -86,6 +86,7 @@ Board::Board(int width, int height){
 
     // set starting FEN and parse
     FEN = START_POSITION;
+    // FEN = "r3bk2/npp2pp1/4p1r1/4P1qp/PRP5/2N5/4BP2/3Q1RK w - - 0 1";
     parseFen(FEN);
 }
 
