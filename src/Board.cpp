@@ -29,6 +29,7 @@ Board::Board(int width, int height){
     window_w = width;
     window_h = height;
 
+    float scale = (1.625/800) * width;
     // initializing boards and pieces
     BITBOARD temp;
     temp.all();
@@ -39,41 +40,41 @@ Board::Board(int width, int height){
 
     // white Pawns
     for(int w=0; w<8; w++){
-        pieces.push_back(Piece(P, true));
+        pieces.push_back(Piece(P, true, scale));
     }
     // white Knights
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(N, true));
+        pieces.push_back(Piece(N, true, scale));
     }
     // white Bishops
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(B, true));
+        pieces.push_back(Piece(B, true, scale));
     }
     // white Rooks
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(R, true));
+        pieces.push_back(Piece(R, true, scale));
     }
-    pieces.push_back(Piece(Q, true));
-    pieces.push_back(Piece(K, true));
+    pieces.push_back(Piece(Q, true, scale));
+    pieces.push_back(Piece(K, true, scale));
 
     // black Pawns
     for(int w=0; w<8; w++){
-        pieces.push_back(Piece(P, false));
+        pieces.push_back(Piece(P, false, scale));
     }
     // black Knights
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(N, false));
+        pieces.push_back(Piece(N, false, scale));
     }
     // black Bishops
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(B, false));
+        pieces.push_back(Piece(B, false, scale));
     }
     // black Rooks
     for(int w=0; w<2; w++){
-        pieces.push_back(Piece(R, false));
+        pieces.push_back(Piece(R, false, scale));
     }
-    pieces.push_back(Piece(Q, false));
-    pieces.push_back(Piece(K, false));
+    pieces.push_back(Piece(Q, false, scale));
+    pieces.push_back(Piece(K, false, scale));
 
     for(unsigned long int i=0; i<pieces.size(); i++){
         pieces[i].setTexture();

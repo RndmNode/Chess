@@ -5,8 +5,8 @@
 
 using namespace std;
 
-int width = 800;
-int height = 800;
+int width = 1600;
+int height = 1600;
 
 int search_depth = 4;
 
@@ -187,63 +187,8 @@ void game() {
     }
 }
 
-
-void test() {
-    sf::RenderWindow window;
-
-    window.create(sf::VideoMode(width, height), "CHESS!");
-    ChessGame chess(window);
-    chess.init_all();
-
-    printf("\n");
-
-    // run the program as long as the window is open
-    while(window.isOpen()){
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-
-        while(window.pollEvent(event)){
-            switch (event.type)
-            {
-            case sf::Event::Closed:
-                window.close();
-                break;
-            
-            case sf::Event::MouseButtonPressed:
-                switch (event.key.code)
-                {
-                case sf::Mouse::Left:
-                    chess.search_position(6);
-                    chess.make_move(chess.m_best_move, all_moves);
-                    break;
-                case sf::Mouse::Right:
-                    chess.undo_move();
-                    break;
-                //-------
-                default:
-                    break;
-                }
-            //-------
-            default:
-                break;
-            //-------
-            }
-        }
-
-        // clear and draw screen
-        window.clear();
-        window.draw(chess);
-        window.display();
-    }
-}
-
 int main(){ 
-    // game();
-    sf::RenderWindow window;
-    ChessGame chess(window);
-    chess.init_all();
-
-    chess.PERFT_Test(5);
+    game();
 
     return 0;
 }

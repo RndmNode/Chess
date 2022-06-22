@@ -7,7 +7,7 @@ class Piece: public sf::Drawable {
     public:
         //Constructors
         Piece(){};
-        Piece(int type, bool color);
+        Piece(int type, bool color, float scale);
 
         //objects, vectors, enums
         sf::Sprite m_sprite;
@@ -19,6 +19,7 @@ class Piece: public sf::Drawable {
         int m_type;
         bool m_player;
         int m_squarePosition;
+        float m_scale;
 
         //Methods
         void setPosition(sf::RenderTarget& target, sf::Vector2f coordinates);
