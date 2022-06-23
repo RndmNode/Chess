@@ -4,6 +4,7 @@
 #include <bitset>
 #include <map>
 #include "Piece.h"
+#include "Instrumentor.h"
 
 #define BITBOARD bitset<64>
 
