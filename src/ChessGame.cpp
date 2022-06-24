@@ -598,6 +598,7 @@ void ChessGame::init_all(){
 \**********************************/
 
 bool ChessGame::is_square_attacked(int square, int side){
+    PROFILE_FUNCTION();
     // attacked by white pawns
     if((side == white) && (pawn_attacks[black][square] & board.bitboards[P]).to_ullong()) return true;
 
@@ -640,6 +641,7 @@ void ChessGame::print_attacked_squares(int side){
 
 // generate all possible moves ---------------------------- MY VERSION
 void ChessGame::generateMoves(moves *move_list){
+    PROFILE_FUNCTION();
     move_list->count = 0;
     fill_n(move_list->moves, 256, 0);
 
@@ -945,8 +947,9 @@ void ChessGame::generateMoves(moves *move_list){
 
 // add moves to move list ---------------------------- MY VERSION
 void ChessGame::add_move(moves *move_list, int move){
-        move_list->moves[move_list->count] = move;
-        move_list->count++;
+    PROFILE_FUNCTION();
+    move_list->moves[move_list->count] = move;
+    move_list->count++;
 }
 
 // short version of printing a move
@@ -995,6 +998,7 @@ void ChessGame::print_move_list(moves *move_list){
 
 // manipulate bitboards to "make move" -------------------------- MY VERSION
 int ChessGame::make_move(int move, int move_flag){
+    PROFILE_FUNCTION();
     // quiet moves
     if(move_flag == all_moves){
 
@@ -1145,6 +1149,7 @@ int ChessGame::time_in_ms(){
 
 // undo move
 void ChessGame::undo_move(){
+    PROFILE_FUNCTION();
     if(move_history.size() > 1){
         move_history.pop();
         board.FEN = move_history.top();
@@ -1154,6 +1159,7 @@ void ChessGame::undo_move(){
 
 // function that is called from the UI game loop to take in user input and process it
 void ChessGame::handle_move(int source, int target, int piece){
+    PROFILE_FUNCTION();
     int move = 0;
 
     if(board.side_to_move == black){
@@ -1324,6 +1330,7 @@ void ChessGame::handle_move(int source, int target, int piece){
 
 // PERFT Driver 
 inline long ChessGame::PERFT_Driver(int depth){
+    PROFILE_FUNCTION();
     long nodes = 0;
     moves move_list[1];
 
@@ -1347,6 +1354,7 @@ inline long ChessGame::PERFT_Driver(int depth){
 
 // test perft, given depth, and print results on each move 
 void ChessGame::PERFT_Test(int depth){
+    PROFILE_FUNCTION();
     cout << "\n  Performance Test\n\n";
 
     long nodes = 0;
@@ -1387,6 +1395,7 @@ void ChessGame::PERFT_Test(int depth){
 \**********************************/
 
 int ChessGame::evaluate(){
+    PROFILE_FUNCTION();
     // init static score, bitboards copy, piece, and square
     int score = 0;
     BITBOARD bitboard;
@@ -1444,6 +1453,7 @@ int ChessGame::evaluate(){
 \**********************************/
 
 int ChessGame::quiescence(int alpha, int beta){
+    PROFILE_FUNCTION();
     // evaluate position
     int evaluation = evaluate();
 
@@ -1490,6 +1500,7 @@ int ChessGame::quiescence(int alpha, int beta){
 
 // alpha beta search (w/o pruning)
 int ChessGame::negamax(int alpha, int beta, int depth){
+    PROFILE_FUNCTION();
     if(depth == 0){
         return evaluate();
         // return quiescence(alpha, beta);
@@ -1568,6 +1579,7 @@ int ChessGame::negamax(int alpha, int beta, int depth){
 
 // search for best position
 void ChessGame::search_position(int depth){
+    PROFILE_FUNCTION();
     // find best move given position
     int score = negamax(-50000, 50000, depth);
 

@@ -188,7 +188,8 @@ void game() {
 }
 
 int main(){ 
+    Instrumentor::Get().BeginSession("Profile");
     game();
-
+    Instrumentor::Get().EndSession();
     return 0;
 }
