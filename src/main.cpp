@@ -8,7 +8,7 @@ using namespace std;
 int width = 1600;
 int height = 1600;
 
-int search_depth = 3;
+int search_depth = 2;
 
 bool positionChecked, dragging, prevDragging, moving = false;
 float mouseX = 0.0f;
