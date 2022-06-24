@@ -232,6 +232,7 @@ void Board::printBitboard(BITBOARD bitboard){
 }
 
 void Board::parseFen(string fen){
+    cout << "Parsing FEN\n";
     // reset game variables
     for(int i=P; i<=k; i++){
         bitboards[i].reset();
@@ -308,7 +309,10 @@ void Board::parseFen(string fen){
         occupancies[black] |= bitboards[piece + p];
     }
     occupancies[both] |= (occupancies[white] | occupancies[black]);
-
+    for(int i=P; i<=k; i++){
+        cout << boardNames[i] << endl;
+        printBitboard(bitboards[i]);
+    }
     findPieces();
 }
 
@@ -340,7 +344,7 @@ string Board::updateFEN(){
             empty = true;
             int square = (rank * 8) + file;
 
-            // loop over piece bitboards to find if a square is occupied by a piece
+            // loop over piece bitboards to find if square is occupied by a piece
             for(int piece=P; piece<=k; piece++){
                 if(getBit(bitboards[piece], square)){
                     piece_occupier = piece;
