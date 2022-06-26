@@ -188,8 +188,13 @@ void game() {
 }
 
 int main(){ 
-    Instrumentor::Get().BeginSession("Profile");
-    game();
-    Instrumentor::Get().EndSession();
+    if (PROFILING){
+        Instrumentor::Get().BeginSession("Profile");
+        game();
+        Instrumentor::Get().EndSession();
+    }else{
+        game();
+    }
+    
     return 0;
 }

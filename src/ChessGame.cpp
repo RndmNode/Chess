@@ -999,7 +999,6 @@ void ChessGame::print_move_list(moves *move_list){
 // manipulate bitboards to "make move" -------------------------- MY VERSION
 int ChessGame::make_move(int move, int move_flag){
     PROFILE_FUNCTION();
-    cout << "make_move called\n";
     // quiet moves
     if(move_flag == all_moves){
 
@@ -1136,7 +1135,6 @@ int ChessGame::make_move(int move, int move_flag){
         }
     }else{
         if(get_move_capture(move)){
-            cout << "Move is a capture, making move now\n";
             make_move(move, all_moves);
         }
         else return 0;
@@ -1153,7 +1151,6 @@ int ChessGame::time_in_ms(){
 
 // undo move
 void ChessGame::undo_move(){
-    cout << "Undoing move\n";
     PROFILE_FUNCTION();
     if(move_history.size() > 1){
         move_history.pop();
@@ -1458,7 +1455,6 @@ int ChessGame::evaluate(){
 \**********************************/
 
 int ChessGame::quiescence(int alpha, int beta){
-    cout << "ENTERED quiescence FUNCTION-------------------------\n";
     PROFILE_FUNCTION();
     // evaluate position
     int evaluation = evaluate();
@@ -1508,8 +1504,8 @@ int ChessGame::quiescence(int alpha, int beta){
 int ChessGame::negamax(int alpha, int beta, int depth){
     PROFILE_FUNCTION();
     if(depth == 0){
-        // return evaluate();
-        return quiescence(alpha, beta);
+        return evaluate();
+        // return quiescence(alpha, beta);
     }
     // increment nodes searched
     m_nodes++;

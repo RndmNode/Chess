@@ -8,12 +8,12 @@
 
 #define BITBOARD bitset<64>
 
-#define PROFILING 1
+#define PROFILING 0
 #if PROFILING
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name)
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
 #else
-#define PROFILE_SCOPE(name)
+#define PROFILE_FUNCTION()
 #endif
 
 using namespace std;
